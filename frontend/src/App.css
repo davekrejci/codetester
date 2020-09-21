@@ -1,0 +1,10 @@
+/*** SCROLLBAR STYLE ***/
+body::-webkit-scrollbar {
+	width: 0.25rem;
+}
+body::-webkit-scrollbar-track {
+	background: #1e1e24;
+}
+::-webkit-scrollbar-thumb {
+	background: #ccc;
+}
