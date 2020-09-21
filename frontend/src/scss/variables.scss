@@ -1,0 +1,55 @@
+$base: #2f333e;
+$lighter-1: #3d4351;
+$lighter-2: #464d5d;
+$lighter-3: #4f5769;
+$lighter-4: #586074;
+$darker-1: #2c303a;
+$darker-2: #23262f;
+$darker-3: #1a1c23;
+$darker-4: #111317;
+
+$material-dark: (
+	'background': $lighter-1,
+	'app-bar': $base,
+	'navigation-drawer': $base,
+  'cards': $base,
+  'text': (
+      // 'theme': map-get($shades, 'white'),
+      'primary': #fafafe,
+      // 'secondary': rgba(map-get($shades, 'white'), 0.7),
+      // 'disabled': rgba(map-get($shades, 'white'), 0.5),
+      // 'link': map-get($blue, 'accent-1'),
+      // 'link-hover': map-get($grey, 'lighten-3')
+    ),
+    // 'icons': (
+    //   'active': map-get($shades, 'white'),
+    //   'inactive': rgba(map-get($shades, 'white'), 0.5)
+    // ),
+);
+
+$material-light: (
+	'background': #ffffff,
+	'app-bar': #fafafe,
+	'navigation-drawer': #fafafe,
+    'cards': #F6F7F8,
+    'text': (
+    //   'theme': map-get($shades, 'white'),
+    
+      'primary': #282B3C,
+      // 'primary': #031B4E,
+      'secondary': #72727e,
+      // 'secondary': #99A1B3,
+    //   'disabled': rgba(map-get($shades, 'white'), 0.5),
+    //   'link': map-get($blue, 'accent-1'),
+    //   'link-hover': map-get($grey, 'lighten-3')
+    ),
+    // 'icons': (
+    //   'active': map-get($shades, 'white'),
+    //   'inactive': rgba(map-get($shades, 'white'), 0.5)
+    // ),
+);
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+$title-font: 'Rubik', sans-serif;
+$heading-font-family: 'Rubik', sans-serif;
