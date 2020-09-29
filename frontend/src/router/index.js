@@ -5,21 +5,33 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue')
+  },
+  {
     path: '/',
-    name: 'Dashboard',
-    component: () => import('../views/Dashboard.vue')
-
+    component: () => import('../views/Dashboard.vue'),
+    redirect: '/assignements',
+    children: [
+      {
+        path: 'assignements',
+        name: 'Assignements',
+        component: () => import('../views/Assignements.vue')
+    
+      },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: () => import('../views/Settings.vue')
+      },
+      {
+        path: 'assignement-detail/:id',
+        name: 'AssignementDetail',
+        component: () => import('../views/AssignementDetail.vue')
+      },
+    ]
   },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: () => import('../views/Settings.vue')
-  },
-  {
-    path: '/assignement-detail/:id',
-    name: 'AssignementDetail',
-    component: () => import('../views/AssignementDetail.vue')
-  }
 ]
 
 const router = new VueRouter({
