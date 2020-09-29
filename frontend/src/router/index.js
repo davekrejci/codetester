@@ -32,6 +32,11 @@ const routes = [
       },
     ]
   },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: () => import('../views/404.vue')
+  }
 ]
 
 const router = new VueRouter({
