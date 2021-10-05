@@ -9,7 +9,7 @@
 				</v-list-item-content>
 			</v-list-item>
 			<v-card-actions>
-				<v-btn text class="primary">Take Test</v-btn>
+				<v-btn text class="primary">Zobrazit detaily</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-hover>

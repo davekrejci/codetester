@@ -2,7 +2,7 @@
 	<v-row>
 		<v-col cols="12" md="6">
 			<v-badge class="font-weight-bold" :content="assignements.length" offset-x="0" offset-y="10">
-				<h1>Your Assignements</h1>
+				<h1>Vaše úkoly</h1>
 			</v-badge>
 			<AssignementCard v-for="assignement in assignements" :key="assignement.id" :assignement="assignement" />
 		</v-col>
@@ -23,21 +23,45 @@ export default {
 		assignements: [
 			{
 				id: 1,
-				className: 'NAVZO - Design Patterns',
-				assignementName: 'Model-View-Controller Design Pattern',
-				description: 'Implement the MVC design pattern',
+				className: 'NAVZO - Návrhové vzory',
+				assignementName: 'Vzor Model-View-Controller',
+				description: 'Implementujte návrhový vzor MVC',
 			},
 			{
 				id: 2,
-				className: 'EPARP - Multithreaded and parallel programming',
-				assignementName: 'Controlling thread behavior and running order',
-				description: 'Present your knowledge of controlling thread behaviour in a multithreaded environement',
+				className: 'EPARP - Multivláknové a paralelní programování',
+				assignementName: 'Ovládání chování vlákna a běhové pořadí',
+				description: 'Dokažte vaše znalosti ovládání chování vlákna ve vícevláknovém prostředí',
 			},
 			{
 				id: 3,
-				className: 'Wapid - Web API and Machine Data Exchange',
+				className: 'Wapid - Webové API a strojová výměna dat',
 				assignementName: 'REST API',
-				description: 'Create a REST API with routes for getting and posting comments.',
+				description: 'Vytvořte REST API s endpointy pro zobrazení a postování komentů.',
+			},
+			{
+				id: 4,
+				className: 'Wapid - Webové API a strojová výměna dat',
+				assignementName: 'REST API',
+				description: 'Vytvořte REST API s endpointy pro zobrazení a postování komentů.',
+			},
+			{
+				id: 5,
+				className: 'Wapid - Webové API a strojová výměna dat',
+				assignementName: 'REST API',
+				description: 'Vytvořte REST API s endpointy pro zobrazení a postování komentů.',
+			},
+			{
+				id: 6,
+				className: 'Wapid - Webové API a strojová výměna dat',
+				assignementName: 'REST API',
+				description: 'Vytvořte REST API s endpointy pro zobrazení a postování komentů.',
+			},
+			{
+				id: 7,
+				className: 'Wapid - Webové API a strojová výměna dat',
+				assignementName: 'REST API',
+				description: 'Vytvořte REST API s endpointy pro zobrazení a postování komentů.',
 			},
 		],
 	}),

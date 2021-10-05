@@ -10,8 +10,8 @@
 				<v-row class="fill-height" :align="$vuetify.breakpoint.smAndDown ? 'start' : 'center'" justify="center">
 					<div id="loginContainer" :align="$vuetify.breakpoint.smAndDown ? 'center' : 'start'">
 						<v-img class="mb-4" src="../assets/svg/logo/text_logo.svg" max-height="100" max-width="150" contain></v-img>
-						<h1>Welcome Back!</h1>
-						<p>Please sign in to continue.</p>
+						<h1>Vítejte zpět!</h1>
+						<p>Pro pokračování se prosím přihlaště.</p>
 						<v-form v-model="valid" ref="form" lazy-validation @keyup.native.enter="submit">
 							<v-text-field
 								label="Email"
@@ -25,7 +25,7 @@
 								class="mb-1"
 							></v-text-field>
 							<v-text-field
-								label="Password"
+								label="Heslo"
 								v-model="password"
 								single-line
 								required
@@ -39,13 +39,13 @@
 								:type="value ? 'password' : 'text'"
 							>
 							</v-text-field>
-							<a id="forgotPasswordText" class="text--secondary text-caption">Forgot your password?</a>
+							<a id="forgotPasswordText" class="text--secondary text-caption">Zapomněli jste heslo?</a>
 						</v-form>
 						<v-card-actions>
-							<v-btn large block rounded text class="mt-2 px-5 primary" @click="submit" :disabled="!valid || loading">Sign In</v-btn>
+							<v-btn large block rounded text class="mt-2 px-5 primary" @click="submit" :disabled="!valid || loading">Přihlásit</v-btn>
 						</v-card-actions>
 						<v-divider class="my-4"></v-divider>
-						<p class="text-center text--secondary">Don't have an account yet? <a id="signUpText" class="text-decoration-none" href="#">Sign up</a></p>
+						<p class="text-center text--secondary">Nemáte ještě účet? <a id="signUpText" class="text-decoration-none" href="#">Zaregistrujte se</a></p>
 					</div>
 				</v-row>
 			</v-col>
@@ -102,7 +102,5 @@ export default {
 #signUpText:hover {
 	color: var(--v-primary-lighten1);
 }
->>> .v-input__prepend-inner .v-icon {
-	margin-right: 5px;
-}
+
 </style>
