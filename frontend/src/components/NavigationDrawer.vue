@@ -1,5 +1,5 @@
 <template>
-	<v-navigation-drawer :width="280" app permanent floating mini-variant-width="80" :mini-variant="$vuetify.breakpoint.mdAndDown">
+	<v-navigation-drawer v-if="$vuetify.breakpoint.mdAndUp" :width="280" app permanent floating mini-variant-width="80" :mini-variant="$vuetify.breakpoint.mdAndDown">
 		<v-list class="mt-2">
 			<v-list-item class="px-2">
 				<v-img src="../assets/svg/logo/symbol_logo.svg" max-height="25" max-width="60" contain></v-img>
@@ -15,7 +15,7 @@
 					</v-list-item-avatar>
 				</v-badge>
 				<v-list-item-content class="ml-4">
-					<v-list-item-title class="font-weight-medium">David Krejci</v-list-item-title>
+					<v-list-item-title class="font-weight-medium">David Krejčí</v-list-item-title>
 					<v-list-item-subtitle>Student</v-list-item-subtitle>
 				</v-list-item-content>
 
@@ -44,8 +44,8 @@ export default {
 	name: 'NavigationDrawer',
 	data: () => ({
 		items: [
-			{ title: 'Assignements', path: '/assignements', icon: 'mdi-view-dashboard' },
-			{ title: 'Settings', path: '/settings', icon: 'mdi-cog' },
+			{ title: 'Úkoly', path: '/assignements', icon: 'mdi-view-dashboard' },
+			{ title: 'Nastavení', path: '/settings', icon: 'mdi-cog' },
 		],
 	}),
 };
