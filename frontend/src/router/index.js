@@ -10,6 +10,11 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
+    path: '/assignement/:id',
+    name: 'Assignement',
+    component: () => import('../views/Assignement.vue')
+  },
+  {
     path: '/',
     component: () => import('../views/Dashboard.vue'),
     redirect: '/assignements',
@@ -32,6 +37,7 @@ const routes = [
       },
     ]
   },
+  
   {
     path: '*',
     name: 'NotFound',
@@ -40,6 +46,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  //mode: 'history',
   routes
 })
 
