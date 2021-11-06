@@ -15,6 +15,7 @@
                 :key="question.number"
                 class="short"
                 label
+                @click="$vuetify.goTo(`#question-${question.number}`)"
               >
                 <span class="text-center">
                   {{ question.number }}
@@ -52,13 +53,14 @@
     <v-app-bar dense app flat clipped-left>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
-      <v-chip :ripple="false">15:34</v-chip>
+      <time-remaining-tracker class="mx-auto"></time-remaining-tracker>
       <v-spacer></v-spacer>
+      <v-btn flat small primary>Odevzdat</v-btn>
     </v-app-bar>
     <v-main>
       <v-container fluid class="pa-0">
         <template v-for="question in questions" > 
-        <v-card :key="`question-${question.number}`" class="ma-0 pa-4" color="transparent" flat>
+        <v-card :key="`question-${question.number}`" :id="`question-${question.number}`" class="ma-0 pa-4" color="transparent" flat>
           <v-list-item three-line>
             <v-list-item-content>
               <div class="primary--text text-overline mb-4">Otázka {{question.number}}</div>
@@ -124,10 +126,12 @@
 
 <script>
 import FillBlankCodeEditor from '@/components/FillBlankCodeEditor.vue';
+import TimeRemainingTracker from '@/components/TimeRemainingTracker.vue';
 export default {
   name: "Assignement",
   components: {
 		FillBlankCodeEditor,
+    TimeRemainingTracker,
   },
   data() {
     return {
