@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation color="primary" v-if="$vuetify.breakpoint.smAndDown" app v-model="value">
+  <v-bottom-navigation color="primary" v-if="$vuetify.breakpoint.smAndDown" app>
     <v-btn  v-for="item in items" :key="item.title" :to="item.path" :value="item.title">
       <span>{{ item.title }}</span>
 
@@ -20,7 +20,7 @@ export default {
 	name: 'BottomNavigation',
 	data: () => ({
 		items: [
-			{ title: 'Úkoly', path: '/assignements', icon: 'mdi-view-dashboard' },
+			{ title: 'Testy', path: '/exams', icon: 'mdi-view-dashboard' },
 			{ title: 'Nastavení', path: '/settings', icon: 'mdi-cog' },
 		],
 	}),

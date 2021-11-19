@@ -44,7 +44,7 @@ export default {
 	name: 'NavigationDrawer',
 	data: () => ({
 		items: [
-			{ title: 'Úkoly', path: '/assignements', icon: 'mdi-view-dashboard' },
+			{ title: 'Testy', path: '/exams', icon: 'mdi-view-dashboard' },
 			{ title: 'Nastavení', path: '/settings', icon: 'mdi-cog' },
 		],
 	}),

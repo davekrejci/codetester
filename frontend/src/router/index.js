@@ -10,19 +10,19 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/assignement/:id',
-    name: 'Assignement',
-    component: () => import('../views/Assignement.vue')
+    path: '/exam/:id',
+    name: 'Exam',
+    component: () => import('../views/Exam.vue')
   },
   {
     path: '/',
     component: () => import('../views/Dashboard.vue'),
-    redirect: '/assignements',
+    redirect: '/exams',
     children: [
       {
-        path: 'assignements',
-        name: 'Assignements',
-        component: () => import('../views/Assignements.vue')
+        path: 'exams',
+        name: 'Exams',
+        component: () => import('../views/Exams.vue')
     
       },
       {
@@ -31,9 +31,9 @@ const routes = [
         component: () => import('../views/Settings.vue')
       },
       {
-        path: 'assignement-detail/:id',
-        name: 'AssignementDetail',
-        component: () => import('../views/AssignementDetail.vue')
+        path: 'exam-detail/:id',
+        name: 'ExamDetail',
+        component: () => import('../views/ExamDetail.vue')
       },
     ]
   },

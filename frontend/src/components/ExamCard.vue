@@ -1,11 +1,10 @@
 <template>
 	<v-hover v-slot:default="{ hover }">
-		<v-card class="my-2 pa-1" :to="'/assignement-detail/' + assignement.id" flat :class="{ 'on-hover': hover }">
+		<v-card class="my-2 pa-1" :to="'/exam-detail/' + exam.id" flat :class="{ 'on-hover': hover }">
 			<v-list-item three-line>
 				<v-list-item-content>
-					<div class="overline mb-2">{{ assignement.className }}</div>
-					<v-list-item-title class="headline mb-2">{{ assignement.assignementName }}</v-list-item-title>
-					<v-list-item-subtitle>{{ assignement.description }}</v-list-item-subtitle>
+					<div class="overline mb-2">{{ exam.className }}</div>
+					<v-list-item-title class="headline mb-2">{{ exam.examName }}</v-list-item-title>
 				</v-list-item-content>
 			</v-list-item>
 			<v-card-actions>
@@ -17,9 +16,9 @@
 
 <script>
 export default {
-	name: 'AssignementCard',
+	name: 'ExamCard',
 	props: {
-		assignement: {
+		exam: {
 			type: Object,
 			required: true,
 		},
