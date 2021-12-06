@@ -1,0 +1,43 @@
+{  "headers": [
+      { "text": "Předmět", "value": "name" },
+      { "text": "Zkratka", "value": "abbreviation" },
+      { "text": "Rok", "value": "year" },
+      { "text": "Semestr", "value": "semester" },
+      { "text": "Aktivní", "value": "active" },
+      { "text": "Vyučující", "value": "teacher" },
+      { "text": "Studenti", "value": "students.length" },
+      { "text": "Akce", "value": "actions", "sortable": false }
+    ],
+    "items": [
+        {
+            "id": 1,
+            "name": "Základy Algoritmizace",
+            "abbreviation": "ALG1",
+            "year": "2021",
+            "semester": "Zimní",
+            "active": true,
+            "teacher": "robert.jarusek@osu.cz",
+            "students": ["bob","alice"]
+        },
+        {
+            "id": 2,
+            "name": "Základy Algoritmizace",
+            "abbreviation": "ALG1",
+            "year": "2020",
+            "semester": "Zimní",
+            "active": true,
+            "teacher": "robert.jarusek@osu.cz",
+            "students": ["joe","jane"]
+        },
+        {
+            "id": 3,
+            "name": "Objektově Orientované Programování 2",
+            "abbreviation": "OOPR2",
+            "year": "2021",
+            "semester": "Letní",
+            "active": true,
+            "teacher": "marek.vajgl@osu.cz",
+            "students": ["joe","jane"]
+        }
+    ]
+  }
