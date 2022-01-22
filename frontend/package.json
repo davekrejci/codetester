@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "codemirror": "^5.63.1",
+    "codemirror-formatting": "^1.0.0",
     "core-js": "^3.6.5",
+    "tiptap-vuetify": "^2.24.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",
