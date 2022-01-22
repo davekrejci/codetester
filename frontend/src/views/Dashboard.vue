@@ -2,7 +2,7 @@
 	<div>
 		<navigation-drawer></navigation-drawer>
 		<v-main>
-			<v-container class="pl-4" fluid>
+			<v-container class="" fluid>
 				<router-view></router-view>
 			</v-container>
 		<bottom-navigation></bottom-navigation>

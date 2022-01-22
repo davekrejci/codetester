@@ -35,6 +35,42 @@ const routes = [
         name: 'ExamDetail',
         component: () => import('../views/ExamDetail.vue')
       },
+      {
+        path: 'courses',
+        name: 'Courses',
+        component: () => import('../views/Courses.vue')
+    
+      },
+      {
+        path: 'course-detail/:id',
+        name: 'CourseDetail',
+        component: () => import('../views/CourseDetail.vue')
+    
+      },
+      {
+        path: 'questions',
+        name: 'Questions',
+        component: () => import('../views/Questions.vue')
+    
+      },
+      {
+        path: 'questiondesigner',
+        name: 'QuestionDesigner',
+        component: () => import('../views/QuestionDesigner.vue')
+    
+      },
+      {
+        path: 'users',
+        name: 'Users',
+        component: () => import('../views/Users.vue')
+    
+      },
+      {
+        path: 'examdesigner',
+        name: 'Exam Designer',
+        component: () => import('../views/ExamDesigner.vue')
+    
+      },
     ]
   },
   
