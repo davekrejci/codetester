@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "email": "p19092@student.osu.cz",
+        "universityNumber": "p19092",
+        "firstName": "David",
+        "lastName": "Krejčí",
+        "type": "admin"
+    },
+    {
+        "id": 2,
+        "email": "p24069@student.osu.cz",
+        "universityNumber": "p24069",
+        "firstName": "John",
+        "lastName": "Doe",
+        "type": "student"
+    },
+    {
+        "id": 3,
+        "email": "p24083@student.osu.cz",
+        "universityNumber": "p24083",
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "type": "student"
+    }
+]

@@ -1,0 +1,66 @@
+[
+    {
+        "number": 1,
+        "type": "multichoice",
+        "difficulty": 1,
+        "question": "Co je to třída?",
+        "answers": [
+        {
+            "id": "9821390",
+            "text": "Předpis, který definuje strukturu objektu."
+        },
+        {
+            "id": "2981312",
+            "text": "Skupina, která obsahuje různorodé typy objektů."
+        },
+        { 
+            "id": "87126312",
+            "text": "Reálná věc." 
+        },
+        {
+            "id": "982173721",
+            "text": "Reprezentace konkrétní věci reálného světa."
+          }
+        ],
+        "tags": [
+            "OOP",
+            "Test",
+            "OOP",
+            "Test",
+            "OOP",
+            "Test",
+            "OOP",
+            "Test",
+            "OOP",
+            "Test"
+        ]
+    },
+    {
+        "number": 2,
+        "type": "multichoice",
+        "difficulty": 2,
+        "question": "Kdy je vykonána první část hlavičky cyklu for?",
+        "answers": [
+          { "id": "9221390", "text": "Při vstupu do cyklu." },
+          { "id": "2991312", "text": "Před každým průběhem cyklu." },
+          { "id": "87126352", "text": "Pouze po prvním průběhu cyklu." },
+          { "id": "982173021", "text": "Po každém průběhu cyklu." },
+          { "id": "982143821", "text": "Pouze po posledním průběhu cyklu." }
+        ],
+        "tags": [
+            "Cykly"
+        ]
+    },
+    {
+        "number": 3,
+        "type": "fill-in-code",
+        "difficulty": 3,
+        "question": "Doplnte kod",
+        "answers": "public boolean addPerson(Person personToAdd){\n\tif(personToAdd == null) return false;\n\tfor (int i = 0; i < persons.length; i++){\n\t\tif({\"widget_id\":\"98231\", \"length\":16}){\n\t\tpersons[i] = personToAdd;\n\t\treturn true;\n\t\t}\n\t}\n\treturn false;\n}",
+        "tags": [
+            "OOP",
+            "Test",
+            "OOP"
+        ]
+    }
+]
