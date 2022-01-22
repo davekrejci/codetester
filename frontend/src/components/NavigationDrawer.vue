@@ -16,7 +16,7 @@
 				</v-badge>
 				<v-list-item-content class="ml-4">
 					<v-list-item-title class="font-weight-medium">David Krejčí</v-list-item-title>
-					<v-list-item-subtitle>Student</v-list-item-subtitle>
+					<v-list-item-subtitle>Admin</v-list-item-subtitle>
 				</v-list-item-content>
 
 				<v-list-item-action>
@@ -44,7 +44,10 @@ export default {
 	name: 'NavigationDrawer',
 	data: () => ({
 		items: [
-			{ title: 'Testy', path: '/exams', icon: 'mdi-view-dashboard' },
+			{ title: 'Testy', path: '/exams', icon: 'mdi-pencil' },
+			{ title: 'Předměty', path: '/courses', icon: 'mdi-book-open' },
+			{ title: 'Otázky', path: '/questions', icon: 'mdi-help-circle' },
+			{ title: 'Uživatelé', path: '/users', icon: 'mdi-account-multiple' },
 			{ title: 'Nastavení', path: '/settings', icon: 'mdi-cog' },
 		],
 	}),
