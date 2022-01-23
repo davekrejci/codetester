@@ -30,7 +30,8 @@ namespace Codetester
         {
             services.AddDbContext<CodetesterContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("CodetesterConnection")));
             services.AddControllers();
-            services.AddScoped<ICodetesterRepo, MockCodetesterRepo>();
+            //services.AddScoped<ICodetesterRepo, MockCodetesterRepo>();
+            services.AddScoped<ICodetesterRepo, PostgreSQLCodetesterRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
