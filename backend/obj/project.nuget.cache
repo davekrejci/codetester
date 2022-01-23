@@ -1,8 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "GBOdFhGP9aGMg4RGlH+syIUntnfeu5ts2i6P8fNlYVf5mtvHzlR+cXY+l/chetc8dNmDDmRE+zCxrDW8WRnfBg==",
+  "dgSpecHash": "y10WU5h+FlEaWBxPw1Bg7TE/xZo3VtzK+R858aBWNHgDwyo5iBq5Qqe4QxPQ7J9JofPdVdgYnUTCwM+BBZYM3w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\krejcdav\\OneDrive\\School\\Diplomka\\codetester\\backend\\codetester\\codetester.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "G:\\My Drive\\Diplomka\\project\\codetester\\backend\\Codetester\\Codetester.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\krejcdav\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\krejcdav\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\krejcdav\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "C:\\Users\\krejcdav\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "C:\\Users\\krejcdav\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "C:\\Users\\krejcdav\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.6.3\\swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
   "logs": []
 }
