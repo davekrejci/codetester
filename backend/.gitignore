@@ -6,6 +6,10 @@
 # VS code specific files
 .vscode
 
+# bin/obj folders
+obj
+bin
+
 # User-specific files
 *.rsuser
 *.suo
