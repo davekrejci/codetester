@@ -9,6 +9,7 @@ namespace Codetester.Profiles
         public QuestionsProfile()
         {
             CreateMap<Question, QuestionReadDto>();
+            CreateMap<QuestionCreateDto, Question>();
         }
     }
 }

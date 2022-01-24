@@ -5,6 +5,11 @@ namespace Codetester.Data
 {
     public class MockCodetesterRepo : ICodetesterRepo
     {
+        public void CreateQuestion(Question question)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IEnumerable<Question> GetAllQuestions()
         {
             var questions = new List<Question>
@@ -19,6 +24,11 @@ namespace Codetester.Data
         public Question GetQuestionById(int id)
         {
             return new Question{Id=0, QuestionType="test", QuestionText="What is the airspeed velocity of an unladen swallow?"};
+        }
+
+        public bool SaveChanges()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

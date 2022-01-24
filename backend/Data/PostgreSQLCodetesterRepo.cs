@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Codetester.Models;
@@ -12,6 +13,17 @@ namespace Codetester.Data
         {
             _context = context;
         }
+
+        public void CreateQuestion(Question question)
+        {
+            if(question == null)
+            {
+                throw new ArgumentNullException(nameof(question));
+            }
+
+            _context.Questions.Add(question);
+        }
+
         public IEnumerable<Question> GetAllQuestions()
         {
             return _context.Questions.ToList();
@@ -20,6 +32,11 @@ namespace Codetester.Data
         public Question GetQuestionById(int id)
         {
             return _context.Questions.FirstOrDefault(q => q.Id == id);
+        }
+
+        public bool SaveChanges()
+        {
+            return (_context.SaveChanges() >= 0);
         }
     }
 }

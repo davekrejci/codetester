@@ -29,7 +29,7 @@ namespace Codetester.Controllers
         }
 
         //GET api/questions/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name="GetQuestionById")]
         public ActionResult <QuestionReadDto> GetQuestionById(int id)
         {
             var question = _repository.GetQuestionById(id);
@@ -38,6 +38,18 @@ namespace Codetester.Controllers
                 return Ok(_mapper.Map<QuestionReadDto>(question));
             }
             return NotFound();
+        }
+
+        //POST api/questions
+        [HttpPost]
+        public ActionResult <QuestionReadDto> CreateQuestion(QuestionCreateDto questionCreateDto)
+        {
+            var questionModel = _mapper.Map<Question>(questionCreateDto);
+            _repository.CreateQuestion(questionModel);
+            _repository.SaveChanges();
+
+            var questionReadDto = _mapper.Map<QuestionReadDto>(questionModel);
+            return CreatedAtRoute(nameof(GetQuestionById), new {Id = questionReadDto.Id}, questionReadDto);
         }
     }
 }
