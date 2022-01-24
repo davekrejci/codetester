@@ -33,11 +33,11 @@ namespace Codetester.Controllers
         public ActionResult <QuestionReadDto> GetQuestionById(int id)
         {
             var question = _repository.GetQuestionById(id);
-            if(question != null)
+            if(question == null)
             {
-                return Ok(_mapper.Map<QuestionReadDto>(question));
+                return NotFound();
             }
-            return NotFound();
+            return Ok(_mapper.Map<QuestionReadDto>(question));
         }
 
         //POST api/questions
@@ -51,5 +51,21 @@ namespace Codetester.Controllers
             var questionReadDto = _mapper.Map<QuestionReadDto>(questionModel);
             return CreatedAtRoute(nameof(GetQuestionById), new {Id = questionReadDto.Id}, questionReadDto);
         }
+
+        //PUT api/questions/{id}
+        [HttpPut("{id}")]
+        public ActionResult UpdateQuestion(int id, QuestionUpdateDto questionUpdateDto)
+        {
+            var question = _repository.GetQuestionById(id);
+            if(question == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(questionUpdateDto, question);
+            _repository.UpdateQuestion(question);
+            _repository.SaveChanges();
+            return NoContent();
+        }
+
     }
 }

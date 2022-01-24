@@ -38,5 +38,11 @@ namespace Codetester.Data
         {
             return (_context.SaveChanges() >= 0);
         }
+
+        public void UpdateQuestion(Question question)
+        {
+            // Nothing, updated automatically in controller thanks to mapping from DTO to repo model
+            // Keep here for sake of Interface implementation and/or possible future implementation changes
+        }
     }
 }

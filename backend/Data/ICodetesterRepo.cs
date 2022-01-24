@@ -9,5 +9,6 @@ namespace Codetester.Data
         IEnumerable<Question> GetAllQuestions();
         Question GetQuestionById(int id);
         void CreateQuestion(Question question);
+        void UpdateQuestion(Question question);
     }
 }

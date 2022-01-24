@@ -30,5 +30,10 @@ namespace Codetester.Data
         {
             throw new System.NotImplementedException();
         }
+
+        public void UpdateQuestion(Question question)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
