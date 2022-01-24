@@ -3,6 +3,7 @@ using AutoMapper;
 using Codetester.Data;
 using Codetester.Dtos;
 using Codetester.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Codetester.Controllers
@@ -62,6 +63,29 @@ namespace Codetester.Controllers
                 return NotFound();
             }
             _mapper.Map(questionUpdateDto, question);
+            _repository.UpdateQuestion(question);
+            _repository.SaveChanges();
+            return NoContent();
+        }
+
+        //PATCH api/questions/{id}
+        [HttpPatch("{id}")]
+        public ActionResult PartialQuestionUpdate(int id, JsonPatchDocument<QuestionUpdateDto> patchDoc)
+        {
+            var question = _repository.GetQuestionById(id);
+            if(question == null)
+            {
+                return NotFound();
+            }
+
+            var questionToPatch = _mapper.Map<QuestionUpdateDto>(question);
+            patchDoc.ApplyTo(questionToPatch, ModelState);
+            if(!TryValidateModel(questionToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(questionToPatch, question);
             _repository.UpdateQuestion(question);
             _repository.SaveChanges();
             return NoContent();

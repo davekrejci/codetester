@@ -11,6 +11,7 @@ namespace Codetester.Profiles
             CreateMap<Question, QuestionReadDto>();
             CreateMap<QuestionCreateDto, Question>();
             CreateMap<QuestionUpdateDto, Question>();
+            CreateMap<Question, QuestionUpdateDto>();
         }
     }
 }

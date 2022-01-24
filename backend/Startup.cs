@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 
 namespace Codetester
 {
@@ -29,7 +30,9 @@ namespace Codetester
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CodetesterContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("CodetesterConnection")));
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(s => {
+                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ICodetesterRepo, PostgreSQLCodetesterRepo>();
         }
