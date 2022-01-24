@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using AutoMapper;
 using Codetester.Data;
+using Codetester.Dtos;
 using Codetester.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +12,12 @@ namespace Codetester.Controllers
     public class QuestionsController : ControllerBase
     {
         private readonly ICodetesterRepo _repository;
-        public QuestionsController(ICodetesterRepo repository)
+        private readonly IMapper _mapper;
+
+        public QuestionsController(ICodetesterRepo repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         //GET api/questions
@@ -20,15 +25,19 @@ namespace Codetester.Controllers
         public ActionResult <IEnumerable<Question>> GetAllQuestions()
         {
             var questions = _repository.GetAllQuestions();
-            return Ok(questions);
+            return Ok(_mapper.Map<IEnumerable<QuestionReadDto>>(questions));
         }
 
         //GET api/questions/{id}
         [HttpGet("{id}")]
-        public ActionResult <Question> GetQuestionById(int id)
+        public ActionResult <QuestionReadDto> GetQuestionById(int id)
         {
             var question = _repository.GetQuestionById(id);
-            return Ok(question);
+            if(question != null)
+            {
+                return Ok(_mapper.Map<QuestionReadDto>(question));
+            }
+            return NotFound();
         }
     }
 }
