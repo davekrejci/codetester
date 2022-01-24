@@ -30,7 +30,7 @@ namespace Codetester
         {
             services.AddDbContext<CodetesterContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("CodetesterConnection")));
             services.AddControllers();
-            //services.AddScoped<ICodetesterRepo, MockCodetesterRepo>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ICodetesterRepo, PostgreSQLCodetesterRepo>();
         }
 
