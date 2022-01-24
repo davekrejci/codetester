@@ -24,6 +24,15 @@ namespace Codetester.Data
             _context.Questions.Add(question);
         }
 
+        public void DeleteQuestion(Question question)
+        {
+            if(question == null)
+            {
+                throw new ArgumentNullException(nameof(question));
+            }
+            _context.Questions.Remove(question);
+        }
+
         public IEnumerable<Question> GetAllQuestions()
         {
             return _context.Questions.ToList();

@@ -10,5 +10,6 @@ namespace Codetester.Data
         Question GetQuestionById(int id);
         void CreateQuestion(Question question);
         void UpdateQuestion(Question question);
+        void DeleteQuestion(Question question);
     }
 }

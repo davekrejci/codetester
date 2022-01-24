@@ -10,6 +10,11 @@ namespace Codetester.Data
             throw new System.NotImplementedException();
         }
 
+        public void DeleteQuestion(Question question)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IEnumerable<Question> GetAllQuestions()
         {
             var questions = new List<Question>

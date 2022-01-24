@@ -91,5 +91,20 @@ namespace Codetester.Controllers
             return NoContent();
         }
 
+        //DELETE api/questions/{id}
+        [HttpDelete("{id}")]
+        public ActionResult DeleteQuestion(int id)
+        {
+            var question = _repository.GetQuestionById(id);
+            if(question == null)
+            {
+                return NotFound();
+            }
+            _repository.DeleteQuestion(question);
+            _repository.SaveChanges();
+            return NoContent();
+        }
+        
+
     }
 }
