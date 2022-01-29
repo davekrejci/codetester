@@ -15,7 +15,7 @@
     <v-toolbar dense outlined elevation="0">
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" @click="autoFormatSelectionAll">
+          <v-btn icon v-bind="attrs" v-on="on" @click="autoFormatSelectionAll()">
             <v-icon>mdi-format-align-left</v-icon>
           </v-btn>
         </template>
@@ -23,11 +23,19 @@
       </v-tooltip>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" @click="setRangeFillable">
+          <v-btn icon v-bind="attrs" v-on="on" @click="setRangeFillable()">
             <v-icon>mdi-code-tags</v-icon>
           </v-btn>
         </template>
-        <span>Nastavit vyplnitelné (alt-s)</span>
+        <span>Vybrat označené (alt-s)</span>
+      </v-tooltip>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" @click="setRandomFillable()">
+            <v-icon>mdi-restore</v-icon>
+          </v-btn>
+        </template>
+        <span>Vybrat náhodně</span>
       </v-tooltip>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
@@ -76,13 +84,13 @@
       transition="scale-transition"
     >
       <v-list dense class="pa-0">
-        <v-list-item class="contextMenuItem" @click="setRangeFillable">
+        <v-list-item class="contextMenuItem" @click="setRangeFillable()">
           <v-list-item-icon class="mr-1">
             <v-icon small>mdi-code-tags</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Nastavit vyplnitelné</v-list-item-title>
+          <v-list-item-title>Vybrat označené</v-list-item-title>
         </v-list-item>
-        <v-list-item class="contextMenuItem" @click="autoFormatSelectionAll">
+        <v-list-item class="contextMenuItem" @click="autoFormatSelectionAll()">
           <v-list-item-icon class="mr-1">
             <v-icon small>mdi-format-align-left</v-icon>
           </v-list-item-icon>
@@ -94,12 +102,13 @@
 </template>
 
 <script>
-import * as CodeMirror from "codemirror";
-import "codemirror-formatting";
 import Vue from "vue";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
 import JavaLexer from 'java-parser/src/lexer';
+import { shuffleArray } from '@/util/util.js';
+import * as CodeMirror from "codemirror";
+import "codemirror-formatting";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/dracula.css";
 import "codemirror/theme/duotone-light.css";
@@ -179,52 +188,58 @@ export default {
   },
   methods: {
     /** 
-     * Switches the currently selected range in the editor with a FillableWidget component  
+     * Switches the range in the editor with a FillableWidget component
+     * @param {Object} range - the range to set fillable {from: Pos, to: Pos}, defaults to currently selected range
      * */
-    setRangeFillable() {
-      const range = this.getSelectedRange();
+    setRangeFillable(range = this.getSelectedRange()) {
+      //get range info
       const doc = this.cm.getDoc();
-      const selectionLength = doc.getSelection().length;
+      const content = doc.getRange(range.from, range.to);
+      const rangeLength = content.length;
 
       // Exit if nothing was selected
-      if (selectionLength == 0) { return;}
+      if (rangeLength == 0) { return;}
 
+      //add widget to data model
       const widget = {
         id: this.widgetIdCounter,
-        content: doc.getSelection(),
-        length: selectionLength,
+        content: content,
+        length: rangeLength,
       };
       this.widgets.push(widget);
+      this.widgetIdCounter++;
 
+      //create widget component
       const widgetComponent = new WidgetComponentClass({
         propsData: {
           id: this.widgetIdCounter,
-          length: selectionLength,
-          content: doc.getSelection(),
+          length: rangeLength,
+          content: content,
         },
         vuetify,
       });
       widgetComponent.$mount();
-
       const textMarker = this.cm.markText(range.from, range.to, {
         replacedWith: widgetComponent.$el,
       });
 
+      // add markerInstance to widget so it can reference it to clear it when removing widget
       // WARNING: adding markerInstance to widgets causes a ' Converting circular structure to JSON' error when trying to stringify
       let lastWidget = this.widgets[this.widgets.length - 1];
       lastWidget.markerInstance = textMarker;
 
+      //add listener for when widget emits remove event
       widgetComponent.$on("removeWidget", (id) => {
         this.widgets = this.widgets.filter((widget) => widget.id !== id);
         textMarker.clear();
       });
+
       this.cm.refresh;
       this.cm.setCursor(range.to);
-      this.widgetIdCounter++;
     },
     /** 
      * Retrieves the currently selected content in the editor 
-     * @returns {Object} returns range object {from, to}
+     * @returns {Object} {from: Pos, to: Pos}
      * */
     getSelectedRange() {
       return { from: this.cm.getCursor(true), to: this.cm.getCursor(false) };
@@ -239,7 +254,18 @@ export default {
       this.cm.autoFormatRange(range.from, range.to);
       this.cm.setCursor(cursorPos);
 
-      // since autoformat removes the widgets, remove them from the data model
+      // since autoformat removes the widgets, remove them from the data model as well
+      this.removeAllWidgets();
+    },
+    /**
+     * Removes all widgets from the code editor and data model
+     */
+    removeAllWidgets() {
+      let doc = this.cm.getDoc();
+      let widgets = doc.getAllMarks();
+      widgets.forEach(widget => {
+        widget.clear();
+      });
       this.widgets = [];
       this.widgetIdCounter = 0;
       this.fillInCount = 1;
@@ -280,11 +306,50 @@ export default {
     },
     /** 
      * Tokenizes the code editor input
+     * @returns {Object} {errors: [], groups: {}, tokens: []}
      */
     getTokenizedContent() {
       let content = this.cm.getValue("\n");
       const lexResult = JavaLexer.tokenize(content);
-      console.log(lexResult);
+      return lexResult;
+    },
+    /**
+     * Sets random tokens from the code editor content to be fillable
+     */
+    setRandomFillable(n = 1) {
+      // reset current widgets
+      this.removeAllWidgets();
+
+      // get tokenized content
+      let tokenizedContent = this.getTokenizedContent();
+      if(tokenizedContent.errors.length != 0){
+        tokenizedContent.errors.forEach(error => console.log(error));
+      }
+      let tokens = tokenizedContent.tokens;
+      console.log(tokens);
+
+      // TODO: allow filtering by token type
+      // implement
+
+      // pick random tokens
+      let shuffledTokens = shuffleArray(tokens);
+      let selectedTokens = shuffledTokens.slice(0, n);
+
+      selectedTokens.forEach(token => {
+        // map token positions to codemirror positions       
+        let range = {
+          from: {
+            line: token.startLine - 1,
+            ch: token.startColumn - 1
+          },
+          to: {
+            line: token.endLine - 1, 
+            ch: token.endColumn
+          }
+        }
+        // set the token range to be a FillableWidget
+        this.setRangeFillable(range);
+      });
     }
   },
 };
