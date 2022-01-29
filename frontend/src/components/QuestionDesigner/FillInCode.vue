@@ -64,6 +64,7 @@
     </v-card>
 
     <v-btn @click="getTransformedValue">Get value</v-btn>
+    <v-btn @click="getTokenizedContent">Get tokens value</v-btn>
 
     <v-menu
       v-model="showMenu"
@@ -98,6 +99,7 @@ import "codemirror-formatting";
 import Vue from "vue";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
+import JavaLexer from 'java-parser/src/lexer';
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/dracula.css";
 import "codemirror/theme/duotone-light.css";
@@ -136,13 +138,13 @@ export default {
       languageOptions: [
         {
           name: "Java",
-          lexer: "JavaLexer",
+          lexer: JavaLexer,
           mode: "text/x-java"
         }
       ],
       selectedLanguage: {
           name: "Java",
-          lexer: "JavaLexer",
+          lexer: JavaLexer,
           mode: "text/x-java"
         }
     };
@@ -276,6 +278,14 @@ export default {
         );
       }
     },
+    /** 
+     * Tokenizes the code editor input
+     */
+    getTokenizedContent() {
+      let content = this.cm.getValue("\n");
+      const lexResult = JavaLexer.tokenize(content);
+      console.log(lexResult);
+    }
   },
 };
 </script>
