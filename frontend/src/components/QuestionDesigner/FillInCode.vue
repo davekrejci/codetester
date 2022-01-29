@@ -15,7 +15,12 @@
     <v-toolbar dense outlined elevation="0">
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" @click="autoFormatSelectionAll()">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+            @click="autoFormatSelectionAll()"
+          >
             <v-icon>mdi-format-align-left</v-icon>
           </v-btn>
         </template>
@@ -36,6 +41,22 @@
           </v-btn>
         </template>
         <span>Vybrat náhodně</span>
+      </v-tooltip>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-bind="attrs" v-on="on"
+            v-model="numberToRandomize"
+            hide-details
+            single-line
+            type="number"
+            solo
+            flat
+            dense
+            class="numberToRandomize"
+          />
+        </template>
+        <span>Počet náhodných výběrů</span>
       </v-tooltip>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
@@ -105,8 +126,8 @@
 import Vue from "vue";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
-import JavaLexer from 'java-parser/src/lexer';
-import { shuffleArray } from '@/util/util.js';
+import JavaLexer from "java-parser/src/lexer";
+import { shuffleArray } from "@/util/util.js";
 import * as CodeMirror from "codemirror";
 import "codemirror-formatting";
 import "codemirror/lib/codemirror.css";
@@ -122,8 +143,6 @@ import "codemirror/addon/edit/matchbrackets.js";
 import "codemirror/addon/hint/show-hint.js";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/anyword-hint.js";
-
-
 
 const WidgetComponentClass = Vue.extend(FillableWidget);
 
@@ -148,25 +167,29 @@ export default {
         {
           name: "Java",
           lexer: JavaLexer,
-          mode: "text/x-java"
-        }
+          mode: "text/x-java",
+        },
       ],
       selectedLanguage: {
-          name: "Java",
-          lexer: JavaLexer,
-          mode: "text/x-java"
-        }
+        name: "Java",
+        lexer: JavaLexer,
+        mode: "text/x-java",
+      },
+      numberToRandomize: 1,
     };
   },
   mounted() {
-    CodeMirror.commands.autocomplete = function(cm) {
-        cm.showHint({hint: CodeMirror.hint.anyword});
-    }
+    CodeMirror.commands.autocomplete = function (cm) {
+      cm.showHint({ hint: CodeMirror.hint.anyword });
+    };
     this.cm = CodeMirror.fromTextArea(document.getElementById("editor"), {
       lineNumbers: true,
       theme: this.$vuetify.theme.dark ? "material-palenight" : "duotone-light",
       mode: "text/x-java",
-      extraKeys: {"Ctrl-Space": "autocomplete", "Alt-S" : this.setRangeFillable},
+      extraKeys: {
+        "Ctrl-Space": "autocomplete",
+        "Alt-S": this.setRangeFillable,
+      },
       autoCloseTags: true,
       lineWrapping: true,
       defaultTextHeight: 32,
@@ -187,18 +210,20 @@ export default {
     );
   },
   methods: {
-    /** 
+    /**
      * Switches the range in the editor with a FillableWidget component
      * @param {Object} range - the range to set fillable {from: Pos, to: Pos}, defaults to currently selected range
      * */
-    setRangeFillable(range = this.getSelectedRange()) {
+    setRangeFillable(event, range = this.getSelectedRange()) {
       //get range info
       const doc = this.cm.getDoc();
       const content = doc.getRange(range.from, range.to);
       const rangeLength = content.length;
 
       // Exit if nothing was selected
-      if (rangeLength == 0) { return;}
+      if (rangeLength == 0) {
+        return;
+      }
 
       //add widget to data model
       const widget = {
@@ -237,15 +262,15 @@ export default {
       this.cm.refresh;
       this.cm.setCursor(range.to);
     },
-    /** 
-     * Retrieves the currently selected content in the editor 
+    /**
+     * Retrieves the currently selected content in the editor
      * @returns {Object} {from: Pos, to: Pos}
      * */
     getSelectedRange() {
       return { from: this.cm.getCursor(true), to: this.cm.getCursor(false) };
     },
-    /** 
-     * Function to autoformat the editor content 
+    /**
+     * Function to autoformat the editor content
      * */
     autoFormatSelectionAll() {
       var cursorPos = this.cm.getCursor();
@@ -263,15 +288,15 @@ export default {
     removeAllWidgets() {
       let doc = this.cm.getDoc();
       let widgets = doc.getAllMarks();
-      widgets.forEach(widget => {
+      widgets.forEach((widget) => {
         widget.clear();
       });
       this.widgets = [];
       this.widgetIdCounter = 0;
       this.fillInCount = 1;
     },
-    /** 
-     * Test function to get editor content with '{{widget}}' value instead of the widget contents 
+    /**
+     * Test function to get editor content with '{{widget}}' value instead of the widget contents
      * */
     getTransformedValue() {
       let content = this.cm.getValue("\n");
@@ -283,7 +308,13 @@ export default {
       let widgets = doc.getAllMarks();
 
       let charDiff = 0;
-      let sortedWidgets = widgets.sort((a,b) => (doc.indexFromPos(a.find().from) > doc.indexFromPos(b.find().from) ? 1 : (doc.indexFromPos(b.find().from) > doc.indexFromPos(a.find().from) ? -1 : 0)));
+      let sortedWidgets = widgets.sort((a, b) =>
+        doc.indexFromPos(a.find().from) > doc.indexFromPos(b.find().from)
+          ? 1
+          : doc.indexFromPos(b.find().from) > doc.indexFromPos(a.find().from)
+          ? -1
+          : 0
+      );
       sortedWidgets.forEach((widget) => {
         let range = widget.find();
         let fromIndex = doc.indexFromPos(range.from);
@@ -300,11 +331,13 @@ export default {
 
       function replaceStringRange(string, from, to, replacement) {
         return (
-          string.substr(0, from) + replacement + string.substr(to, string.length)
+          string.substr(0, from) +
+          replacement +
+          string.substr(to, string.length)
         );
       }
     },
-    /** 
+    /**
      * Tokenizes the code editor input
      * @returns {Object} {errors: [], groups: {}, tokens: []}
      */
@@ -316,14 +349,14 @@ export default {
     /**
      * Sets random tokens from the code editor content to be fillable
      */
-    setRandomFillable(n = 1) {
+    setRandomFillable() {
       // reset current widgets
       this.removeAllWidgets();
 
       // get tokenized content
       let tokenizedContent = this.getTokenizedContent();
-      if(tokenizedContent.errors.length != 0){
-        tokenizedContent.errors.forEach(error => console.log(error));
+      if (tokenizedContent.errors.length != 0) {
+        tokenizedContent.errors.forEach((error) => console.log(error));
       }
       let tokens = tokenizedContent.tokens;
       console.log(tokens);
@@ -333,24 +366,28 @@ export default {
 
       // pick random tokens
       let shuffledTokens = shuffleArray(tokens);
+      let n = this.numberToRandomize;
+      if (n > shuffledTokens.length) {
+        n = shuffledTokens.length;
+      }
       let selectedTokens = shuffledTokens.slice(0, n);
 
-      selectedTokens.forEach(token => {
-        // map token positions to codemirror positions       
+      selectedTokens.forEach((token) => {
+        // map token positions to codemirror positions
         let range = {
           from: {
             line: token.startLine - 1,
-            ch: token.startColumn - 1
+            ch: token.startColumn - 1,
           },
           to: {
-            line: token.endLine - 1, 
-            ch: token.endColumn
-          }
-        }
+            line: token.endLine - 1,
+            ch: token.endColumn,
+          },
+        };
         // set the token range to be a FillableWidget
-        this.setRangeFillable(range);
+        this.setRangeFillable(event, range);
       });
-    }
+    },
   },
 };
 </script>
@@ -367,7 +404,10 @@ export default {
   background-color: var(--v-primary-lighten1);
 }
 
-.languageSelect{
+.languageSelect {
   max-width: 150px;
+}
+.numberToRandomize {
+  max-width: 60px;
 }
 </style>
