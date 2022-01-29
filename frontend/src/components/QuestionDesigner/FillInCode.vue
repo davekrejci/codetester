@@ -29,6 +29,18 @@
         </template>
         <span>Nastavit vyplnitelné (alt-s)</span>
       </v-tooltip>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-select
+        v-model="selectedLanguage"
+        :items="languageOptions"
+        item-text="name"
+        solo
+        flat
+        dense
+        disabled
+        class="mt-6 languageSelect"
+      ></v-select>
     </v-toolbar>
     <textarea v-model="content" id="editor"></textarea>
 
@@ -121,6 +133,18 @@ export default {
       widgets: [],
       widgetIdCounter: 0,
       fillInCount: 1,
+      languageOptions: [
+        {
+          name: "Java",
+          lexer: "JavaLexer",
+          mode: "text/x-java"
+        }
+      ],
+      selectedLanguage: {
+          name: "Java",
+          lexer: "JavaLexer",
+          mode: "text/x-java"
+        }
     };
   },
   mounted() {
@@ -152,7 +176,9 @@ export default {
     );
   },
   methods: {
-    /** Switches the currently selected range in the editor with a FillableWidget component  */
+    /** 
+     * Switches the currently selected range in the editor with a FillableWidget component  
+     * */
     setRangeFillable() {
       const range = this.getSelectedRange();
       const doc = this.cm.getDoc();
@@ -201,7 +227,9 @@ export default {
     getSelectedRange() {
       return { from: this.cm.getCursor(true), to: this.cm.getCursor(false) };
     },
-    /** Function to autoformat the editor content */
+    /** 
+     * Function to autoformat the editor content 
+     * */
     autoFormatSelectionAll() {
       var cursorPos = this.cm.getCursor();
       this.cm.execCommand("selectAll");
@@ -214,7 +242,9 @@ export default {
       this.widgetIdCounter = 0;
       this.fillInCount = 1;
     },
-    /** Test function to get editor content with '{{widget}}' value instead of the widget contents */
+    /** 
+     * Test function to get editor content with '{{widget}}' value instead of the widget contents 
+     * */
     getTransformedValue() {
       let content = this.cm.getValue("\n");
       console.log(content);
@@ -260,5 +290,9 @@ export default {
 .contextMenuItem:hover {
   cursor: pointer;
   background-color: var(--v-primary-lighten1);
+}
+
+.languageSelect{
+  max-width: 150px;
 }
 </style>
