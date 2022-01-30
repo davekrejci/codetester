@@ -145,6 +145,12 @@ const Keyword = createToken({
   pattern: Lexer.NA
 });
 
+
+const Operator = createToken({
+  name: "Operator",
+  pattern: Lexer.NA
+});
+
 const AssignmentOperator = createToken({
   name: "AssignmentOperator",
   pattern: Lexer.NA
@@ -166,6 +172,11 @@ const UnaryPrefixOperatorNotPlusMinus = createToken({
 
 const UnarySuffixOperator = createToken({
   name: "UnarySuffixOperator",
+  pattern: Lexer.NA
+});
+
+const Literal = createToken({
+  name: "Literal",
   pattern: Lexer.NA
 });
 
@@ -193,7 +204,7 @@ createToken({
   pattern: /\/\*([^*]|\*(?!\/))*\*\//,
   group: "comments"
 });
-createToken({ name: "BinaryLiteral", pattern: /0[bB][01]([01_]*[01])?[lL]?/ });
+createToken({ name: "BinaryLiteral", pattern: /0[bB][01]([01_]*[01])?[lL]?/, categories: [Literal] });
 createToken({
   name: "FloatLiteral",
   pattern: MAKE_PATTERN(
@@ -201,22 +212,26 @@ createToken({
       "\\.{{Digits}}({{ExponentPart}})?({{FloatTypeSuffix}})?|" +
       "{{Digits}}{{ExponentPart}}({{FloatTypeSuffix}})?|" +
       "{{Digits}}({{ExponentPart}})?{{FloatTypeSuffix}}"
-  )
+  ),
+  categories: [Literal]
 });
-createToken({ name: "OctalLiteral", pattern: /0_*[0-7]([0-7_]*[0-7])?[lL]?/ });
+createToken({ name: "OctalLiteral", pattern: /0_*[0-7]([0-7_]*[0-7])?[lL]?/, categories: [Literal] });
 createToken({
   name: "HexFloatLiteral",
   pattern: MAKE_PATTERN(
     "0[xX]({{HexDigits}}\\.?|({{HexDigits}})?\\.{{HexDigits}})[pP][+-]?{{Digits}}[fFdD]?"
-  )
+  ),
+  categories: [Literal]
 });
 createToken({
   name: "HexLiteral",
-  pattern: /0[xX][0-9a-fA-F]([0-9a-fA-F_]*[0-9a-fA-F])?[lL]?/
+  pattern: /0[xX][0-9a-fA-F]([0-9a-fA-F_]*[0-9a-fA-F])?[lL]?/,
+  categories: [Literal]
 });
 createToken({
   name: "DecimalLiteral",
-  pattern: MAKE_PATTERN("(0|[1-9](_+{{Digits}}|({{Digits}})?))[lL]?")
+  pattern: MAKE_PATTERN("(0|[1-9](_+{{Digits}}|({{Digits}})?))[lL]?"),
+  categories: [Literal]
 });
 // https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.10.4
 createToken({
@@ -224,17 +239,19 @@ createToken({
   // Not using SingleCharacter Terminology because ' and \ are captured in EscapeSequence
   pattern: MAKE_PATTERN(
     "'(?:[^\\\\']|(?:(?:{{EscapeSequence}})|{{UnicodeInputCharacter}}))'"
-  )
+  ),
+  categories: [Literal]
 });
 
 createToken({
   name: "TextBlock",
-  pattern: /"""\s*\n(\\"|\s|.)*?"""/
+  pattern: /"""\s*\n(\\"|\s|.)*?"""/,
 });
 
 createToken({
   name: "StringLiteral",
-  pattern: MAKE_PATTERN('"(?:[^\\\\"]|{{StringCharacter}})*"')
+  pattern: MAKE_PATTERN('"(?:[^\\\\"]|{{StringCharacter}})*"'),
+  categories: [Literal]
 });
 
 // https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.9
@@ -367,7 +384,7 @@ createKeywordLikeToken({
   // "record is not a keyword, but rather an identifier with special meaning as the type of a local variable declaration"
   categories: Identifier
 });
-createKeywordLikeToken({ name: "True", pattern: "true" });
+createKeywordLikeToken({ name: "True", pattern: "true", });
 createKeywordLikeToken({ name: "False", pattern: "false" });
 createKeywordLikeToken({ name: "Null", pattern: "null" });
 
@@ -394,6 +411,7 @@ createToken({
   name: "MinusMinus",
   pattern: "--",
   categories: [
+    Operator,
     UnaryPrefixOperator,
     UnarySuffixOperator,
     UnaryPrefixOperatorNotPlusMinus
@@ -404,6 +422,7 @@ createToken({
   name: "PlusPlus",
   pattern: "++",
   categories: [
+    Operator,
     UnaryPrefixOperator,
     UnarySuffixOperator,
     UnaryPrefixOperatorNotPlusMinus
@@ -412,111 +431,111 @@ createToken({
 createToken({
   name: "Complement",
   pattern: "~",
-  categories: [UnaryPrefixOperator, UnaryPrefixOperatorNotPlusMinus]
+  categories: [Operator, UnaryPrefixOperator, UnaryPrefixOperatorNotPlusMinus]
 });
 
 createToken({
   name: "LessEquals",
   pattern: "<=",
-  categories: [BinaryOperator]
+  categories: [Operator, BinaryOperator]
 });
 createToken({
   name: "LessLessEquals",
   pattern: "<<=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
-createToken({ name: "Less", pattern: "<", categories: [BinaryOperator] });
+createToken({ name: "Less", pattern: "<", categories: [Operator, BinaryOperator] });
 createToken({
   name: "GreaterEquals",
   pattern: ">=",
-  categories: [BinaryOperator]
+  categories: [Operator, BinaryOperator]
 });
 createToken({
   name: "GreaterGreaterEquals",
   pattern: ">>=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
 createToken({
   name: "GreaterGreaterGreaterEquals",
   pattern: ">>>=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
-createToken({ name: "Greater", pattern: ">", categories: [BinaryOperator] });
+createToken({ name: "Greater", pattern: ">", categories: [Operator, BinaryOperator] });
 createToken({
   name: "EqualsEquals",
   pattern: "==",
-  categories: [BinaryOperator]
+  categories: [Operator, BinaryOperator]
 });
 createToken({
   name: "Equals",
   pattern: "=",
-  categories: [BinaryOperator, AssignmentOperator]
+  categories: [Operator, BinaryOperator, AssignmentOperator]
 });
 createToken({
   name: "MinusEquals",
   pattern: "-=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
 createToken({
   name: "Minus",
   pattern: "-",
-  categories: [BinaryOperator, UnaryPrefixOperator]
+  categories: [Operator, BinaryOperator, UnaryPrefixOperator]
 });
 createToken({
   name: "PlusEquals",
   pattern: "+=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
 createToken({
   name: "Plus",
   pattern: "+",
-  categories: [BinaryOperator, UnaryPrefixOperator]
+  categories: [Operator, BinaryOperator, UnaryPrefixOperator]
 });
-createToken({ name: "AndAnd", pattern: "&&", categories: [BinaryOperator] });
+createToken({ name: "AndAnd", pattern: "&&", categories: [Operator, BinaryOperator] });
 createToken({
   name: "AndEquals",
   pattern: "&=",
   categories: [AssignmentOperator]
 });
-createToken({ name: "And", pattern: "&", categories: [BinaryOperator] });
+createToken({ name: "And", pattern: "&", categories: [Operator, BinaryOperator] });
 createToken({
   name: "XorEquals",
   pattern: "^=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
-createToken({ name: "Xor", pattern: "^", categories: [BinaryOperator] });
-createToken({ name: "NotEquals", pattern: "!=", categories: [BinaryOperator] });
-createToken({ name: "OrOr", pattern: "||", categories: [BinaryOperator] });
+createToken({ name: "Xor", pattern: "^", categories: [Operator, BinaryOperator] });
+createToken({ name: "NotEquals", pattern: "!=", categories: [Operator, BinaryOperator] });
+createToken({ name: "OrOr", pattern: "||", categories: [Operator, BinaryOperator] });
 createToken({
   name: "OrEquals",
   pattern: "|=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
-createToken({ name: "Or", pattern: "|", categories: [BinaryOperator] });
+createToken({ name: "Or", pattern: "|", categories: [Operator, BinaryOperator] });
 createToken({
   name: "MultiplyEquals",
   pattern: "*=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
-createToken({ name: "Star", pattern: "*", categories: [BinaryOperator] });
+createToken({ name: "Star", pattern: "*", categories: [Operator, BinaryOperator] });
 createToken({
   name: "DivideEquals",
   pattern: "/=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
-createToken({ name: "Divide", pattern: "/", categories: [BinaryOperator] });
+createToken({ name: "Divide", pattern: "/", categories: [Operator, BinaryOperator] });
 createToken({
   name: "ModuloEquals",
   pattern: "%=",
-  categories: [AssignmentOperator]
+  categories: [Operator, AssignmentOperator]
 });
-createToken({ name: "Modulo", pattern: "%", categories: [BinaryOperator] });
+createToken({ name: "Modulo", pattern: "%", categories: [Operator, BinaryOperator] });
 
 // must be defined after "!="
 createToken({
   name: "Not",
   pattern: "!",
-  categories: [UnaryPrefixOperator, UnaryPrefixOperatorNotPlusMinus]
+  categories: [Operator, UnaryPrefixOperator, UnaryPrefixOperatorNotPlusMinus]
 });
 
 // Identifier must appear AFTER all the keywords to avoid ambiguities.
