@@ -29,15 +29,23 @@
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on" @click="setRangeFillable()">
-            <v-icon>mdi-code-tags</v-icon>
+            <v-icon>mdi-pencil-box-multiple-outline</v-icon>
           </v-btn>
         </template>
         <span>Vybrat označené (alt-s)</span>
       </v-tooltip>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" @click="setAllFillable()">
+            <v-icon>mdi-plus-box-multiple-outline</v-icon>
+          </v-btn>
+        </template>
+        <span>Vybrat vše</span>
+      </v-tooltip>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on" @click="setRandomFillable()">
-            <v-icon>mdi-restore</v-icon>
+            <v-icon>mdi-star-box-multiple-outline</v-icon>
           </v-btn>
         </template>
         <span>Vybrat náhodně</span>
@@ -80,10 +88,11 @@
      class="rounded-t-0"
     >
       <textarea v-model="content" id="editor"></textarea>
-      <v-overlay :value="overlay" absolute>
+      <v-overlay :value="loading" absolute>
         <v-progress-circular
           indeterminate
           size="64"
+          width="7"
         ></v-progress-circular>
       </v-overlay>
     </v-card>
@@ -190,7 +199,7 @@ export default {
         mode: "text/x-java",
       },
       numberToRandomize: 1,
-      overlay:false,
+      loading:false,
     };
   },
   mounted() {
@@ -361,15 +370,15 @@ export default {
       const lexResult = JavaLexer.tokenize(content);
       return lexResult;
     },
-    switchOverlay(){
-      this.overlay = !this.overlay;
+    switchLoading(){
+      this.loading = !this.loading;
     },
     /**
      * Sets random tokens from the code editor content to be fillable
      */
     setRandomFillable() {
       // since method can take some time, add loading overlay
-      this.switchOverlay();
+      this.switchLoading();
       // need quick timeout for overlay to render
       setTimeout(() => {
         // reset current widgets
@@ -406,7 +415,7 @@ export default {
           // set the token range to be a FillableWidget
           this.setRangeFillable(event, range);
         });
-        this.switchOverlay();
+        this.switchLoading();
       }, 100);
     },
   },
