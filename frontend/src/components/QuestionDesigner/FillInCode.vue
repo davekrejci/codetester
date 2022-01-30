@@ -50,6 +50,82 @@
         </template>
         <span>Vybrat náhodně</span>
       </v-tooltip>
+      <v-menu
+      :close-on-content-click="false"
+      :nudge-width="200"
+      offset-x
+    >
+      <template v-slot:activator="{ on: onMenu }">
+        <v-tooltip top>
+        <template v-slot:activator="{ on: onTooltip }">
+          <v-btn icon v-on="{...onMenu, ...onTooltip}">
+            <v-icon>mdi-cog</v-icon>
+          </v-btn>
+        </template>
+        <span>Nastavení</span>
+      </v-tooltip>
+      </template>
+
+      <v-card>
+        <v-list>
+          <v-list-item>
+            <v-list-item-action>
+              <v-switch
+                v-model="allowedTokenTypes.separators.allowed"
+                color="primary"
+              ></v-switch>
+            </v-list-item-action>
+            <v-list-item-title>Separátory</v-list-item-title>
+            <v-list-item-subtitle>{ } ( ) [ ] ; , ...</v-list-item-subtitle>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-action>
+              <v-switch
+                v-model="allowedTokenTypes.operators.allowed"
+                color="primary"
+              ></v-switch>
+            </v-list-item-action>
+            <v-list-item-title>Operátory</v-list-item-title>
+            <v-list-item-subtitle>+ - = > ...</v-list-item-subtitle>
+
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-switch
+                v-model="allowedTokenTypes.literals.allowed"
+                color="primary"
+              ></v-switch>
+            </v-list-item-action>
+            <v-list-item-title>Literály</v-list-item-title>
+            <v-list-item-subtitle>"Joe", 9.53 ...</v-list-item-subtitle>
+
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-switch
+                v-model="allowedTokenTypes.identifiers.allowed"
+                color="primary"
+              ></v-switch>
+            </v-list-item-action>
+            <v-list-item-title>Identifikátory</v-list-item-title>
+            <v-list-item-subtitle>a, b, jmeno ...</v-list-item-subtitle>
+
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-switch
+                v-model="allowedTokenTypes.keywords.allowed"
+                color="primary"
+              ></v-switch>
+            </v-list-item-action>
+            <v-list-item-title>Klíčové slova</v-list-item-title>
+            <v-list-item-subtitle>abstract, if, for ...</v-list-item-subtitle>
+
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-menu>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
@@ -149,7 +225,7 @@
 import Vue from "vue";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
-import JavaLexer from "java-parser/src/lexer";
+import JavaLexer from "./Lexers/javalexer.js";
 import { shuffleArray } from "@/util/util.js";
 import * as CodeMirror from "codemirror";
 import "codemirror-formatting";
@@ -200,6 +276,28 @@ export default {
       },
       numberToRandomize: 1,
       loading:false,
+      allowedTokenTypes: {
+        separators: {
+          allowed: false,
+          names: ["Separators"]
+        },
+        operators: {
+          allowed: true,
+          names: ["Operator"]
+        },
+        literals: {
+          allowed: true,
+          names: ["Literal"]
+        },
+        identifiers: {
+          allowed: true,
+          names: ["Identifier"]
+        },
+        keywords: {
+          allowed: true,
+          names: ["Keyword"]
+        },
+      }
     };
   },
   mounted() {
@@ -376,10 +474,23 @@ export default {
      * @returns {Array} filtered tokens
      */
     filterTokenTypes(tokens) {
-      let toFilter = ["Separators"];
+      console.log(tokens);
+      let toFilter = [];
+      for (const [key, value] of Object.entries(this.allowedTokenTypes)) {
+        console.log(key);
+        if(value.allowed == false){
+          toFilter.push(...value.names)
+        }
+      }
+      console.log(toFilter);
       let filteredTokens = [];
       tokens.forEach(token => {
         let hasFilteredCategory = false;
+        // check specific token type name
+        if(toFilter.includes(token.tokenType.name)){
+          hasFilteredCategory = true;
+        }
+        // check any general token category names
         token.tokenType.CATEGORIES.forEach(category => {
           if(toFilter.includes(category.name)){
             hasFilteredCategory = true;
@@ -389,6 +500,7 @@ export default {
           filteredTokens.push(token);
         }
       });
+      console.log(filteredTokens);
       return filteredTokens;
     },
     switchLoading(){
