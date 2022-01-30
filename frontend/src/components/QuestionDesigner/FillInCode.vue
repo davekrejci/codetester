@@ -24,7 +24,7 @@
             <v-icon>mdi-format-align-left</v-icon>
           </v-btn>
         </template>
-        <span>Formátovat</span>
+        <span>Formátovat (alt-f)</span>
       </v-tooltip>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
@@ -40,7 +40,7 @@
             <v-icon>mdi-plus-box-multiple-outline</v-icon>
           </v-btn>
         </template>
-        <span>Vybrat vše</span>
+        <span>Vybrat vše (alt-a)</span>
       </v-tooltip>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
@@ -48,7 +48,7 @@
             <v-icon>mdi-star-box-multiple-outline</v-icon>
           </v-btn>
         </template>
-        <span>Vybrat náhodně</span>
+        <span>Vybrat náhodně (alt-r)</span>
       </v-tooltip>
       <v-menu
       :close-on-content-click="false"
@@ -311,6 +311,9 @@ export default {
       extraKeys: {
         "Ctrl-Space": "autocomplete",
         "Alt-S": this.setRangeFillable,
+        "Alt-R": this.setRandomFillable,
+        "Alt-A": this.setAllFillable,
+        "Alt-F": this.autoFormatSelectionAll,
       },
       autoCloseTags: true,
       lineWrapping: true,
