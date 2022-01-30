@@ -12,7 +12,7 @@
       :rules="[rules.required]"
     ></v-textarea>
 
-    <v-toolbar dense outlined elevation="0">
+    <v-toolbar dense outlined elevation="0" class="rounded rounded-b-0">
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -54,6 +54,9 @@
             flat
             dense
             class="numberToRandomize"
+            min="1"
+            max="99"
+            onkeydown="return false"
           />
         </template>
         <span>Počet náhodných výběrů</span>
@@ -71,8 +74,19 @@
         class="mt-6 languageSelect"
       ></v-select>
     </v-toolbar>
-    <textarea v-model="content" id="editor"></textarea>
-
+    <v-card
+     flat
+     outlined
+     class="rounded-t-0"
+    >
+      <textarea v-model="content" id="editor"></textarea>
+      <v-overlay :value="overlay" absolute>
+        <v-progress-circular
+          indeterminate
+          size="64"
+        ></v-progress-circular>
+      </v-overlay>
+    </v-card>
     <v-card flat class="mt-2 pa-8">
       <v-slider
         hint="Nastavte počet bloků, které student bude muset doplnit(náhodný výběr)"
@@ -176,6 +190,7 @@ export default {
         mode: "text/x-java",
       },
       numberToRandomize: 1,
+      overlay:false,
     };
   },
   mounted() {
@@ -346,47 +361,53 @@ export default {
       const lexResult = JavaLexer.tokenize(content);
       return lexResult;
     },
+    switchOverlay(){
+      this.overlay = !this.overlay;
+    },
     /**
      * Sets random tokens from the code editor content to be fillable
      */
     setRandomFillable() {
-      // reset current widgets
-      this.removeAllWidgets();
+      // since method can take some time, add loading overlay
+      this.switchOverlay();
+      // need quick timeout for overlay to render
+      setTimeout(() => {
+        // reset current widgets
+        this.removeAllWidgets();
+        // get tokenized content
+        let tokenizedContent = this.getTokenizedContent();
+        if (tokenizedContent.errors.length != 0) {
+          tokenizedContent.errors.forEach((error) => console.log(error));
+        }
+        let tokens = tokenizedContent.tokens;
+        
+        // TODO: allow filtering by token type
+        // implement
 
-      // get tokenized content
-      let tokenizedContent = this.getTokenizedContent();
-      if (tokenizedContent.errors.length != 0) {
-        tokenizedContent.errors.forEach((error) => console.log(error));
-      }
-      let tokens = tokenizedContent.tokens;
-      console.log(tokens);
-
-      // TODO: allow filtering by token type
-      // implement
-
-      // pick random tokens
-      let shuffledTokens = shuffleArray(tokens);
-      let n = this.numberToRandomize;
-      if (n > shuffledTokens.length) {
-        n = shuffledTokens.length;
-      }
-      let selectedTokens = shuffledTokens.slice(0, n);
-
-      selectedTokens.forEach((token) => {
-        // map token positions to codemirror positions
-        let range = {
-          from: {
-            line: token.startLine - 1,
-            ch: token.startColumn - 1,
-          },
-          to: {
-            line: token.endLine - 1,
-            ch: token.endColumn,
-          },
-        };
-        // set the token range to be a FillableWidget
-        this.setRangeFillable(event, range);
-      });
+        // pick random tokens
+        let shuffledTokens = shuffleArray(tokens);
+        let n = this.numberToRandomize;
+        if (n > shuffledTokens.length) {
+          n = shuffledTokens.length;
+        }
+        let selectedTokens = shuffledTokens.slice(0, n);
+        selectedTokens.forEach((token) => {
+          // map token positions to codemirror positions
+          let range = {
+            from: {
+              line: token.startLine - 1,
+              ch: token.startColumn - 1,
+            },
+            to: {
+              line: token.endLine - 1,
+              ch: token.endColumn,
+            },
+          };
+          // set the token range to be a FillableWidget
+          this.setRangeFillable(event, range);
+        });
+        this.switchOverlay();
+      }, 100);
     },
   },
 };
@@ -403,9 +424,8 @@ export default {
   cursor: pointer;
   background-color: var(--v-primary-lighten1);
 }
-
 .languageSelect {
-  max-width: 150px;
+  max-width: 100px;
 }
 .numberToRandomize {
   max-width: 60px;
