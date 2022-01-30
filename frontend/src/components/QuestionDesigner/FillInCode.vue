@@ -370,8 +370,67 @@ export default {
       const lexResult = JavaLexer.tokenize(content);
       return lexResult;
     },
+    /**
+     * Filters a Token array to not include unwanted token types
+     * @param {Array} tokens
+     * @returns {Array} filtered tokens
+     */
+    filterTokenTypes(tokens) {
+      let toFilter = ["Separators"];
+      let filteredTokens = [];
+      tokens.forEach(token => {
+        let hasFilteredCategory = false;
+        token.tokenType.CATEGORIES.forEach(category => {
+          if(toFilter.includes(category.name)){
+            hasFilteredCategory = true;
+          }
+        })
+        if(!hasFilteredCategory){
+          filteredTokens.push(token);
+        }
+      });
+      return filteredTokens;
+    },
     switchLoading(){
       this.loading = !this.loading;
+    },
+    /**
+     * Sets all tokens from the code editor content to be fillable
+     */
+    setAllFillable() {
+      // since method can take some time, add loading overlay
+      this.switchLoading();
+      // need quick timeout for overlay to render
+      setTimeout(() => {
+        // reset current widgets
+        this.removeAllWidgets();
+        // get tokenized content
+        let tokenizedContent = this.getTokenizedContent();
+        if (tokenizedContent.errors.length != 0) {
+          tokenizedContent.errors.forEach((error) => console.log(error));
+        }
+        let tokens = tokenizedContent.tokens;
+        
+        //filter unwanted token types
+        tokens = this.filterTokenTypes(tokens);
+
+        tokens.forEach((token) => {
+          // map token positions to codemirror positions
+          let range = {
+            from: {
+              line: token.startLine - 1,
+              ch: token.startColumn - 1,
+            },
+            to: {
+              line: token.endLine - 1,
+              ch: token.endColumn,
+            },
+          };
+          // set the token range to be a FillableWidget
+          this.setRangeFillable(event, range);
+        });
+        this.switchLoading();
+      }, 100);
     },
     /**
      * Sets random tokens from the code editor content to be fillable
@@ -390,8 +449,8 @@ export default {
         }
         let tokens = tokenizedContent.tokens;
         
-        // TODO: allow filtering by token type
-        // implement
+        //filter unwanted token types
+        tokens = this.filterTokenTypes(tokens);
 
         // pick random tokens
         let shuffledTokens = shuffleArray(tokens);
