@@ -20,7 +20,7 @@ function getSkipValidations() {
     return (
       (process && // (not every runtime has a global `process` object
         process.env &&
-        process.env["prettier-java-development-mode"] === "enabled") === false
+        process.env["development"] === "enabled") === false
     );
   }
 
