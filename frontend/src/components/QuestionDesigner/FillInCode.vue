@@ -172,7 +172,7 @@
         ></v-progress-circular>
       </v-overlay>
     </v-card>
-    <v-card flat class="mt-2 pa-8">
+    <v-card v-show="widgets.length > 1" flat outlined class="mt-2 px-8 py-2">
       <v-slider
         hint="Nastavte počet bloků, které student bude muset doplnit(náhodný výběr)"
         v-model="fillInCount"
@@ -190,9 +190,6 @@
         </template>
       </v-slider>
     </v-card>
-
-    <v-btn @click="getTransformedValue">Get value</v-btn>
-    <v-btn @click="getTokenizedContent">Get tokens value</v-btn>
 
     <v-menu
       v-model="showMenu"
@@ -357,7 +354,6 @@ export default {
         length: rangeLength,
       };
       this.widgets.push(widget);
-      this.widgetIdCounter++;
 
       //create widget component
       const widgetComponent = new WidgetComponentClass({
@@ -380,12 +376,14 @@ export default {
 
       //add listener for when widget emits remove event
       widgetComponent.$on("removeWidget", (id) => {
+        console.log("removing widget with id: " + id);
         this.widgets = this.widgets.filter((widget) => widget.id !== id);
         textMarker.clear();
       });
 
       this.cm.refresh;
       this.cm.setCursor(range.to);
+      this.widgetIdCounter++;
     },
     /**
      * Retrieves the currently selected content in the editor
