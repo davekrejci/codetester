@@ -190,6 +190,7 @@
         </template>
       </v-slider>
     </v-card>
+    <v-btn @click="getTransformedValue">test</v-btn>
 
     <v-menu
       v-model="showMenu"
@@ -442,13 +443,15 @@ export default {
         let range = widget.find();
         let fromIndex = doc.indexFromPos(range.from);
         let toIndex = doc.indexFromPos(range.to);
+        let length = toIndex - fromIndex;
+        let widgetString = `{"widget_id":"${widget.id}", "length":${length}}`;
         transformedContent = replaceStringRange(
           transformedContent,
           fromIndex + charDiff,
           toIndex + charDiff,
-          "{{widget}}"
+          widgetString
         );
-        charDiff += "{{widget}}".length - (toIndex - fromIndex);
+        charDiff += widgetString.length - (toIndex - fromIndex);
       });
       console.log(transformedContent);
 

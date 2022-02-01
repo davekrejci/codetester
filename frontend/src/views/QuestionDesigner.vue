@@ -57,7 +57,7 @@
       <v-btn color="error" outlined class="mr-4 mb-2" @click="reset">
         Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
       </v-btn>
-      <v-btn color="primary" depressed outlined class="mr-4 mb-2">
+      <v-btn color="primary" @click.stop="showPreview = true" depressed outlined class="mr-4 mb-2">
         Náhled
         <v-icon right dark> mdi-magnify </v-icon>
       </v-btn>
@@ -65,18 +65,24 @@
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
     </v-form>
+    <question-preview
+      :showPreview="this.showPreview"
+      @closePreview="showPreview = false"
+      ></question-preview>
   </v-container>
 </template>
 
 <script>
 import MultiChoice from "@/components/QuestionDesigner/MultiChoice.vue";
 import FillInCode from "@/components/QuestionDesigner/FillInCode.vue";
+import QuestionPreview from '@/components/QuestionDesigner/QuestionPreview.vue';
 
 export default {
   name: "QuestionDesigner",
   components: {
     MultiChoice,
     FillInCode,
+    QuestionPreview
   },
   data() {
     return {
@@ -101,6 +107,7 @@ export default {
           to: "QuestionDesigner",
         },
       ],
+      showPreview: false,
     };
   },
   methods: {
