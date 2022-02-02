@@ -6,7 +6,7 @@
       <!-- Question type selector   -->
       <v-select
         :items="questionTypes"
-        v-model="selectedType"
+        v-model="selectedQuestionType"
         label="Typ Otázky"
         outlined
         class="shrink"
@@ -17,12 +17,12 @@
       <!-- Question component based on type -->
       <transition name="slide-fade">
         <multi-choice
-          v-if="selectedType == 'Multi-Choice'"
+          v-if="selectedQuestionType == 'Multi-Choice'"
           class="mb-8"
           :rules="[rules.required]"
         ></multi-choice>
         <fill-in-code
-          v-if="selectedType == 'Fill-In-Code'"
+          v-if="selectedQuestionType == 'Fill-In-Code'"
           class="mb-8"
         ></fill-in-code>
       </transition>
@@ -87,7 +87,7 @@ export default {
   data() {
     return {
       search: "",
-      selectedType: "",
+      //selectedType: "",
       selectedTags: [],
       selectedDifficulty: "",
       difficultyLabels: ["Lehká", "Střední", "Těžká"],
@@ -122,6 +122,14 @@ export default {
     tags() {
       return this.$store.state.tags;
     },
+    selectedQuestionType: {
+      get () {
+        return this.$store.state.questionDesigner.selectedQuestionType;
+      },
+      set (value) {
+        this.$store.commit('questionDesigner/setSelectedQuestionType', value);
+      }
+    }
   },
   created() {
     this.$store.dispatch("fetchTags");

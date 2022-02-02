@@ -50,86 +50,79 @@
         </template>
         <span>Vybrat náhodně (alt-r)</span>
       </v-tooltip>
-      <v-menu
-      :close-on-content-click="false"
-      :nudge-width="200"
-      offset-x
-    >
-      <template v-slot:activator="{ on: onMenu }">
-        <v-tooltip top>
-        <template v-slot:activator="{ on: onTooltip }">
-          <v-btn icon v-on="{...onMenu, ...onTooltip}">
-            <v-icon>mdi-cog</v-icon>
-          </v-btn>
+      <v-menu :close-on-content-click="false" :nudge-width="200" offset-x>
+        <template v-slot:activator="{ on: onMenu }">
+          <v-tooltip top>
+            <template v-slot:activator="{ on: onTooltip }">
+              <v-btn icon v-on="{ ...onMenu, ...onTooltip }">
+                <v-icon>mdi-cog</v-icon>
+              </v-btn>
+            </template>
+            <span>Nastavení</span>
+          </v-tooltip>
         </template>
-        <span>Nastavení</span>
-      </v-tooltip>
-      </template>
 
-      <v-card>
-        <v-list>
-          <v-list-item>
-            <v-list-item-action>
-              <v-switch
-                v-model="allowedTokenTypes.separators.allowed"
-                color="primary"
-              ></v-switch>
-            </v-list-item-action>
-            <v-list-item-title>Separátory</v-list-item-title>
-            <v-list-item-subtitle>{ } ( ) [ ] ; , ...</v-list-item-subtitle>
-          </v-list-item>
+        <v-card>
+          <v-list>
+            <v-list-item>
+              <v-list-item-action>
+                <v-switch
+                  v-model="allowedTokenTypes.separators.allowed"
+                  color="primary"
+                ></v-switch>
+              </v-list-item-action>
+              <v-list-item-title>Separátory</v-list-item-title>
+              <v-list-item-subtitle>{ } ( ) [ ] ; , ...</v-list-item-subtitle>
+            </v-list-item>
 
-          <v-list-item>
-            <v-list-item-action>
-              <v-switch
-                v-model="allowedTokenTypes.operators.allowed"
-                color="primary"
-              ></v-switch>
-            </v-list-item-action>
-            <v-list-item-title>Operátory</v-list-item-title>
-            <v-list-item-subtitle>+ - = > ...</v-list-item-subtitle>
-
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-action>
-              <v-switch
-                v-model="allowedTokenTypes.literals.allowed"
-                color="primary"
-              ></v-switch>
-            </v-list-item-action>
-            <v-list-item-title>Literály</v-list-item-title>
-            <v-list-item-subtitle>"Joe", 9.53 ...</v-list-item-subtitle>
-
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-action>
-              <v-switch
-                v-model="allowedTokenTypes.identifiers.allowed"
-                color="primary"
-              ></v-switch>
-            </v-list-item-action>
-            <v-list-item-title>Identifikátory</v-list-item-title>
-            <v-list-item-subtitle>a, b, jmeno ...</v-list-item-subtitle>
-
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-action>
-              <v-switch
-                v-model="allowedTokenTypes.keywords.allowed"
-                color="primary"
-              ></v-switch>
-            </v-list-item-action>
-            <v-list-item-title>Klíčové slova</v-list-item-title>
-            <v-list-item-subtitle>abstract, if, for ...</v-list-item-subtitle>
-
-          </v-list-item>
-        </v-list>
-      </v-card>
-    </v-menu>
+            <v-list-item>
+              <v-list-item-action>
+                <v-switch
+                  v-model="allowedTokenTypes.operators.allowed"
+                  color="primary"
+                ></v-switch>
+              </v-list-item-action>
+              <v-list-item-title>Operátory</v-list-item-title>
+              <v-list-item-subtitle>+ - = > ...</v-list-item-subtitle>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-action>
+                <v-switch
+                  v-model="allowedTokenTypes.literals.allowed"
+                  color="primary"
+                ></v-switch>
+              </v-list-item-action>
+              <v-list-item-title>Literály</v-list-item-title>
+              <v-list-item-subtitle>"Joe", 9.53 ...</v-list-item-subtitle>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-action>
+                <v-switch
+                  v-model="allowedTokenTypes.identifiers.allowed"
+                  color="primary"
+                ></v-switch>
+              </v-list-item-action>
+              <v-list-item-title>Identifikátory</v-list-item-title>
+              <v-list-item-subtitle>a, b, jmeno ...</v-list-item-subtitle>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-action>
+                <v-switch
+                  v-model="allowedTokenTypes.keywords.allowed"
+                  color="primary"
+                ></v-switch>
+              </v-list-item-action>
+              <v-list-item-title>Klíčové slova</v-list-item-title>
+              <v-list-item-subtitle>abstract, if, for ...</v-list-item-subtitle>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
-            v-bind="attrs" v-on="on"
+            v-bind="attrs"
+            v-on="on"
             v-model="numberToRandomize"
             hide-details
             single-line
@@ -158,11 +151,7 @@
         class="mt-6 languageSelect"
       ></v-select>
     </v-toolbar>
-    <v-card
-     flat
-     outlined
-     class="rounded-t-0"
-    >
+    <v-card flat outlined class="rounded-t-0">
       <textarea v-model="content" id="editor"></textarea>
       <v-overlay :value="loading" absolute>
         <v-progress-circular
@@ -240,26 +229,27 @@ import "codemirror/addon/edit/matchbrackets.js";
 import "codemirror/addon/hint/show-hint.js";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/anyword-hint.js";
+import { createHelpers } from "vuex-map-fields";
+import { mapMutations } from "vuex";
 
 const WidgetComponentClass = Vue.extend(FillableWidget);
+
+const { mapFields, mapMultiRowFields } = createHelpers({
+  getterType: "questionDesigner/getField",
+  mutationType: "questionDesigner/updateField",
+});
 
 export default {
   name: "FillInCode",
   data() {
     return {
-      codeDescription: "",
-      content: `public class HelloWorld{ \n\tpublic static void main(String[] args){\n\t\tSystem.out.println("Hello, World!"); \n\t}\n}`,
-      //content: '',
       rules: {
         required: (value) => !!value || "Povinné.",
       },
       showMenu: false,
       x: 0,
       y: 0,
-      markerInstances: [],
-      widgets: [],
       widgetIdCounter: 0,
-      fillInCount: 1,
       languageOptions: [
         {
           name: "Java",
@@ -273,32 +263,45 @@ export default {
         mode: "text/x-java",
       },
       numberToRandomize: 1,
-      loading:false,
+      loading: false,
       allowedTokenTypes: {
         separators: {
           allowed: false,
-          names: ["Separators"]
+          names: ["Separators"],
         },
         operators: {
           allowed: true,
-          names: ["Operator"]
+          names: ["Operator"],
         },
         literals: {
           allowed: true,
-          names: ["Literal"]
+          names: ["Literal"],
         },
         identifiers: {
           allowed: true,
-          names: ["Identifier"]
+          names: ["Identifier"],
         },
         keywords: {
           allowed: true,
-          names: ["Keyword"]
+          names: ["Keyword"],
         },
-      }
+      },
     };
   },
+  computed: {
+    ...mapFields([
+      "fillInCode.codeDescription", 
+      "fillInCode.content", 
+      "fillInCode.cm",
+      "fillInCode.fillInCount"
+      ]),
+    ...mapMultiRowFields(["fillInCode.widgets"])
+  },
   mounted() {
+    // reset store widget data that might be left over after leaving and coming back 
+    this.removeAllFillInCodeWidgets();
+
+    // create codemirror instance
     CodeMirror.commands.autocomplete = function (cm) {
       cm.showHint({ hint: CodeMirror.hint.anyword });
     };
@@ -319,6 +322,7 @@ export default {
       placeholder: "// Zadejte kod",
     });
 
+    // setup codemirror event listeners
     this.cm.on(
       "contextmenu",
       function (instance, event) {
@@ -331,8 +335,12 @@ export default {
         event.preventDefault();
       }.bind(this)
     );
+    this.cm.on("change", (cm) => {
+      this.content = cm.getValue();
+    });
   },
   methods: {
+    ...mapMutations('questionDesigner',["addFillInCodeWidget", "removeFillInCodeWidget", "removeAllFillInCodeWidgets"]),
     /**
      * Switches the range in the editor with a FillableWidget component
      * @param {Object} range - the range to set fillable {from: Pos, to: Pos}, defaults to currently selected range
@@ -348,14 +356,6 @@ export default {
         return;
       }
 
-      //add widget to data model
-      const widget = {
-        id: this.widgetIdCounter,
-        content: content,
-        length: rangeLength,
-      };
-      this.widgets.push(widget);
-
       //create widget component
       const widgetComponent = new WidgetComponentClass({
         propsData: {
@@ -370,15 +370,19 @@ export default {
         replacedWith: widgetComponent.$el,
       });
 
-      // add markerInstance to widget so it can reference it to clear it when removing widget
-      // WARNING: adding markerInstance to widgets causes a ' Converting circular structure to JSON' error when trying to stringify
-      let lastWidget = this.widgets[this.widgets.length - 1];
-      lastWidget.markerInstance = textMarker;
+      //add widget to data model
+      const widget = {
+        id: this.widgetIdCounter,
+        content: content,
+        length: rangeLength,
+        markerInstance: textMarker
+      };
+      this.addFillInCodeWidget(widget);
 
       //add listener for when widget emits remove event
       widgetComponent.$on("removeWidget", (id) => {
         console.log("removing widget with id: " + id);
-        this.widgets = this.widgets.filter((widget) => widget.id !== id);
+        this.removeFillInCodeWidget(id);
         textMarker.clear();
       });
 
@@ -415,7 +419,7 @@ export default {
       widgets.forEach((widget) => {
         widget.clear();
       });
-      this.widgets = [];
+      this.removeAllFillInCodeWidgets();
       this.widgetIdCounter = 0;
       this.fillInCount = 1;
     },
@@ -482,32 +486,32 @@ export default {
       let toFilter = [];
       for (const [key, value] of Object.entries(this.allowedTokenTypes)) {
         console.log(key);
-        if(value.allowed == false){
-          toFilter.push(...value.names)
+        if (value.allowed == false) {
+          toFilter.push(...value.names);
         }
       }
       console.log(toFilter);
       let filteredTokens = [];
-      tokens.forEach(token => {
+      tokens.forEach((token) => {
         let hasFilteredCategory = false;
         // check specific token type name
-        if(toFilter.includes(token.tokenType.name)){
+        if (toFilter.includes(token.tokenType.name)) {
           hasFilteredCategory = true;
         }
         // check any general token category names
-        token.tokenType.CATEGORIES.forEach(category => {
-          if(toFilter.includes(category.name)){
+        token.tokenType.CATEGORIES.forEach((category) => {
+          if (toFilter.includes(category.name)) {
             hasFilteredCategory = true;
           }
-        })
-        if(!hasFilteredCategory){
+        });
+        if (!hasFilteredCategory) {
           filteredTokens.push(token);
         }
       });
       console.log(filteredTokens);
       return filteredTokens;
     },
-    switchLoading(){
+    switchLoading() {
       this.loading = !this.loading;
     },
     /**
@@ -526,7 +530,7 @@ export default {
           tokenizedContent.errors.forEach((error) => console.log(error));
         }
         let tokens = tokenizedContent.tokens;
-        
+
         //filter unwanted token types
         tokens = this.filterTokenTypes(tokens);
 
@@ -564,7 +568,7 @@ export default {
           tokenizedContent.errors.forEach((error) => console.log(error));
         }
         let tokens = tokenizedContent.tokens;
-        
+
         //filter unwanted token types
         tokens = this.filterTokenTypes(tokens);
 

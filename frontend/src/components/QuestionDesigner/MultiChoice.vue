@@ -19,11 +19,12 @@
         :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
         :success="answer.isCorrect"
         class="answerField"
-        :label="'Odpověď ' + (index+1)"
+        :label="'Odpověď ' + (index + 1)"
         dense
         prepend-icon="mdi-drag"
         hide-details
-        v-model="answer.text"
+        :value="answer.text"
+        @input="setMultiChoiceAnswerText({index: index, value: $event})"
         :rules="[rules.required]"
       >
         <template v-slot:append>
@@ -33,7 +34,7 @@
                 outlined
                 small
                 :disabled="answers.length < 2"
-                @click="removeAnswer(index)"
+                @click="removeMultiChoiceAnswer(index)"
                 v-bind="attrs"
                 v-on="on"
                 height="40px"
@@ -51,7 +52,7 @@
               <v-btn
                 outlined
                 small
-                @click="toggleCorrect(index)"
+                @click="toggleMultiChoiceAnswerCorrect(index)"
                 :color="answer.isCorrect ? 'green' : ''"
                 v-bind="attrs"
                 v-on="on"
@@ -72,7 +73,7 @@
         outlined
         color="primary"
         class="mr-8"
-        @click="addAnswer()"
+        @click="addMultiChoiceAnswer()"
         :disabled="answers.length >= 5"
       >
         <span>Přidat odpověď </span>
@@ -83,66 +84,54 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   name: "MultiChoice",
   data() {
     return {
-      questionText: "",
-      answers: [
-        {
-          text: "",
-          isCorrect: true,
-        },
-        {
-          text: "",
-          isCorrect: false,
-        },
-        {
-          text: "",
-          isCorrect: false,
-        },
-        {
-          text: "",
-          isCorrect: false,
-        },
-      ],
       rules: {
         required: (value) => !!value || "Povinné.",
       },
     };
   },
+  computed: {
+    questionText: {
+      get() {
+        return this.$store.state.questionDesigner.multiChoice.questionText;
+      },
+      set(value) {
+        this.$store.commit(
+          "questionDesigner/setMultiChoiceQuestionText",
+          value
+        );
+      },
+    },
+    answers: {
+      get() {
+        return this.$store.state.questionDesigner.multiChoice.answers;
+      },
+    },
+  },
   methods: {
-    addAnswer() {
-      this.answers.push({
-        text: "",
-        isCorrect: false,
-      });
-    },
-    removeAnswer(index) {
-      this.answer = this.answers.splice(index, 1);
-
-      //if only one answer remaining, it must be the correct answer
-      if (this.answers.length < 2) {
-        this.answers[0].isCorrect = true;
-      }
-    },
-    toggleCorrect(index) {
-      this.answers[index].isCorrect = !this.answers[index].isCorrect;
-    },
+    ...mapMutations("questionDesigner", [
+      "addMultiChoiceAnswer",
+      "removeMultiChoiceAnswer",
+      "toggleMultiChoiceAnswerCorrect",
+      "setMultiChoiceAnswerText"
+    ]),
   },
 };
 </script>
 
 <style>
 .answerButton {
-    margin-top: -8px;
-    border-color: #9E9E9E;
+  margin-top: -8px;
+  border-color: #9e9e9e;
 }
 .leftButton {
-    border-right: none;
+  border-right: none;
 }
 .answerField > .v-input__control > .v-input__slot {
-    padding-right: 0px !important;
+  padding-right: 0px !important;
 }
-
 </style>

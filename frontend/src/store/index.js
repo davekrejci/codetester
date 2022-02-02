@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import client from 'api-client'
+import questionDesigner from './modules/questionDesigner';
 
 Vue.use(Vuex)
 
@@ -9,7 +10,7 @@ export default new Vuex.Store({
     courses : [],
     users: [],
     questions: [],
-    tags: []
+    tags: [],
   },
   mutations: {
     setCourses (state, courses) {
@@ -23,7 +24,8 @@ export default new Vuex.Store({
     },
     setTags (state, tags) {
       state.tags = tags
-    }
+    },
+    
   },
   actions: {
     fetchCourses ({ commit }) {
@@ -48,5 +50,6 @@ export default new Vuex.Store({
     },
   },
   modules: {
+    questionDesigner,
   }
 })
