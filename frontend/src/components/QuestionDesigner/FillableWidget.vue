@@ -1,9 +1,9 @@
 <template>
   <!-- <input :value="content" placeholder=" " type="text" class="editablesection" :style="{width:width + 'px'}" :maxlength="length" :data-wid="id" spellcheck="false"> -->
     <v-chip
-      color="orange"
+      color="primary"
+      text-color="white"
       close
-      outlined
       label
       small
       class="unselectable"
