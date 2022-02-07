@@ -33,6 +33,7 @@ export default {
         }
     },
     mounted(){
+        console.log("mounting editor");
         this.cm = CodeMirror.fromTextArea(document.getElementById('editor_'+this.id), {
             //lineNumbers: true,
             theme: 'duotone-light',
@@ -44,6 +45,10 @@ export default {
         this.widgetREGEX = /\{"widget_id":"(\w+)", "length":(\w+)\}/;
         this.replaceShortcode(this.widgetREGEX, this.cm,{line: 0, ch: 0});
         
+    },
+    unmounted() {
+        console.log("unmounting editor");
+        this.cm.toTextArea();
     },
     methods: {
         replaceShortcode(widgetREGEX, editor, loc) {
@@ -70,7 +75,7 @@ export default {
                 }
             }
         },
-    }
+    },
 }
 </script>
 

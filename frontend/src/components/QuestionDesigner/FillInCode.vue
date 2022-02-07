@@ -161,7 +161,7 @@
         ></v-progress-circular>
       </v-overlay>
     </v-card>
-    <v-card v-show="widgets.length > 1" flat outlined class="mt-2 px-8 py-2">
+    <v-card v-show="widgets.length > 1" flat outlined class="mt-2 px-12 py-4">
       <v-slider
         hint="Nastavte počet bloků, které student bude muset doplnit(náhodný výběr)"
         v-model="fillInCount"
@@ -179,7 +179,6 @@
         </template>
       </v-slider>
     </v-card>
-    <v-btn @click="getTransformedValue">test</v-btn>
 
     <v-menu
       v-model="showMenu"
@@ -422,50 +421,6 @@ export default {
       this.removeAllFillInCodeWidgets();
       this.widgetIdCounter = 0;
       this.fillInCount = 1;
-    },
-    /**
-     * Test function to get editor content with '{{widget}}' value instead of the widget contents
-     * */
-    getTransformedValue() {
-      let content = this.cm.getValue("\n");
-      console.log(content);
-
-      let transformedContent = content;
-
-      let doc = this.cm.getDoc();
-      let widgets = doc.getAllMarks();
-
-      let charDiff = 0;
-      let sortedWidgets = widgets.sort((a, b) =>
-        doc.indexFromPos(a.find().from) > doc.indexFromPos(b.find().from)
-          ? 1
-          : doc.indexFromPos(b.find().from) > doc.indexFromPos(a.find().from)
-          ? -1
-          : 0
-      );
-      sortedWidgets.forEach((widget) => {
-        let range = widget.find();
-        let fromIndex = doc.indexFromPos(range.from);
-        let toIndex = doc.indexFromPos(range.to);
-        let length = toIndex - fromIndex;
-        let widgetString = `{"widget_id":"${widget.id}", "length":${length}}`;
-        transformedContent = replaceStringRange(
-          transformedContent,
-          fromIndex + charDiff,
-          toIndex + charDiff,
-          widgetString
-        );
-        charDiff += widgetString.length - (toIndex - fromIndex);
-      });
-      console.log(transformedContent);
-
-      function replaceStringRange(string, from, to, replacement) {
-        return (
-          string.substr(0, from) +
-          replacement +
-          string.substr(to, string.length)
-        );
-      }
     },
     /**
      * Tokenizes the code editor input

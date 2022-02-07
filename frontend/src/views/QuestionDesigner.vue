@@ -57,18 +57,11 @@
       <v-btn color="error" outlined class="mr-4 mb-2" @click="reset">
         Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
       </v-btn>
-      <v-btn color="primary" @click.stop="showPreview = true" depressed outlined class="mr-4 mb-2">
-        Náhled
-        <v-icon right dark> mdi-magnify </v-icon>
-      </v-btn>
+      <question-preview></question-preview>
       <v-btn color="primary" depressed class="mr-4 mb-2">
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
     </v-form>
-    <question-preview
-      :showPreview="this.showPreview"
-      @closePreview="showPreview = false"
-      ></question-preview>
   </v-container>
 </template>
 
@@ -107,7 +100,7 @@ export default {
           to: "QuestionDesigner",
         },
       ],
-      showPreview: false,
+      
     };
   },
   methods: {

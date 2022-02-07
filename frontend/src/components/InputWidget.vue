@@ -1,5 +1,5 @@
 <template>
-  <input placeholder=" " type="text" class="editablesection" :style="{width:width + 'px'}" :maxlength="length" :data-wid="id" spellcheck="false">
+  <input placeholder=" " type="text" :class="['editablesection', colorClass ]" :style="{width:width + 'px'}" :maxlength="length" :data-wid="id" spellcheck="false">
 </template>
 
 <script>
@@ -14,9 +14,10 @@ export default {
         }
     },
     mounted() {
-        console.log(this.length);
         this.width = this.getTextWidth(this.length);
-        console.log(this.width);
+    },
+    computed: {
+        colorClass: function() { return this.$vuetify.theme.dark ? "dark" : "light" }
     },
     methods: {
         getTextWidth(textlength) {
@@ -24,7 +25,6 @@ export default {
             const canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
             const context = canvas.getContext("2d");
             context.font = this.getCanvasFontSize();
-            console.log(this.getCanvasFontSize());
             const dummyText = '#'.repeat(textlength);
             const metrics = context.measureText(dummyText);
             return metrics.width;
@@ -47,11 +47,16 @@ export default {
 <style>
 .editablesection{
     height: 26px;
-    background: rgb(235,235,235);
     border-radius: 5px;
     padding-left: 5px;
     padding-right: 5px;
-    
+}
+.light{
+    background: rgb(235,235,235);
+}
+.dark{
+    background: rgb(95, 93, 93);
+    color: white;
 }
 .editablesection:placeholder-shown {
     border: 2px dashed #333;
