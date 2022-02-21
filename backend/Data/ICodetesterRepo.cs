@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Codetester.Dtos;
 using Codetester.Models;
 
 namespace Codetester.Data

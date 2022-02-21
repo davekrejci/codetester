@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AutoMapper;
 using Codetester.Data;
@@ -23,18 +24,18 @@ namespace Codetester.Controllers
 
         //GET api/questions
         [HttpGet]
-        public ActionResult <IEnumerable<Question>> GetAllQuestions()
+        public ActionResult<IEnumerable<Question>> GetAllQuestions()
         {
             var questions = _repository.GetAllQuestions();
             return Ok(_mapper.Map<IEnumerable<QuestionReadDto>>(questions));
         }
 
         //GET api/questions/{id}
-        [HttpGet("{id}", Name="GetQuestionById")]
-        public ActionResult <QuestionReadDto> GetQuestionById(int id)
+        [HttpGet("{id}", Name = "GetQuestionById")]
+        public ActionResult<QuestionReadDto> GetQuestionById(int id)
         {
             var question = _repository.GetQuestionById(id);
-            if(question == null)
+            if (question == null)
             {
                 return NotFound();
             }
@@ -43,9 +44,23 @@ namespace Codetester.Controllers
 
         //POST api/questions
         [HttpPost]
-        public ActionResult <QuestionReadDto> CreateQuestion(QuestionCreateDto questionCreateDto)
+        public ActionResult<QuestionReadDto> CreateQuestion(QuestionCreateDto questionCreateDto)
         {
-            var questionModel = _mapper.Map<Question>(questionCreateDto);
+            Question questionModel;
+            if (questionCreateDto.QuestionType == QuestionType.MULTI_CHOICE)
+            {
+                questionModel = _mapper.Map<MultiChoiceQuestion>(questionCreateDto);
+            }
+            else if (questionCreateDto.QuestionType == QuestionType.FILL_IN_CODE)
+            {
+                questionModel = _mapper.Map<FillInCodeQuestion>(questionCreateDto);
+            }
+            else 
+            {
+                // return error message that question type not valid
+                return BadRequest("Question type " + questionCreateDto.QuestionType + " is not a valid type");
+            }
+        
             _repository.CreateQuestion(questionModel);
             _repository.SaveChanges();
 
@@ -57,15 +72,21 @@ namespace Codetester.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateQuestion(int id, QuestionUpdateDto questionUpdateDto)
         {
-            var question = _repository.GetQuestionById(id);
-            if(question == null)
+            var questionModel = _repository.GetQuestionById(id);
+            if (questionModel == null)
             {
                 return NotFound();
             }
-            _mapper.Map(questionUpdateDto, question);
-            _repository.UpdateQuestion(question);
+            if (questionUpdateDto.QuestionType != questionModel.QuestionType)
+            {
+                return BadRequest("Not possible to change the question type for existing question.");
+            }
+            _mapper.Map(questionUpdateDto, questionModel);
+            _repository.UpdateQuestion(questionModel);
+            
             _repository.SaveChanges();
-            return NoContent();
+            return Ok(questionModel);
+            //return NoContent();
         }
 
         //PATCH api/questions/{id}
@@ -73,22 +94,28 @@ namespace Codetester.Controllers
         public ActionResult PartialQuestionUpdate(int id, JsonPatchDocument<QuestionUpdateDto> patchDoc)
         {
             var question = _repository.GetQuestionById(id);
-            if(question == null)
+            if (question == null)
             {
                 return NotFound();
             }
-
+            Console.WriteLine(patchDoc);
             var questionToPatch = _mapper.Map<QuestionUpdateDto>(question);
+            Console.WriteLine(questionToPatch);
             patchDoc.ApplyTo(questionToPatch, ModelState);
-            if(!TryValidateModel(questionToPatch))
+            if (!TryValidateModel(questionToPatch))
             {
                 return ValidationProblem(ModelState);
+            }
+            if (questionToPatch.QuestionType != question.QuestionType)
+            {
+                return BadRequest("Not possible to change the question type for existing question.");
             }
 
             _mapper.Map(questionToPatch, question);
             _repository.UpdateQuestion(question);
             _repository.SaveChanges();
             return NoContent();
+            //return Ok(question);
         }
 
         //DELETE api/questions/{id}
@@ -96,7 +123,7 @@ namespace Codetester.Controllers
         public ActionResult DeleteQuestion(int id)
         {
             var question = _repository.GetQuestionById(id);
-            if(question == null)
+            if (question == null)
             {
                 return NotFound();
             }
@@ -104,7 +131,7 @@ namespace Codetester.Controllers
             _repository.SaveChanges();
             return NoContent();
         }
-        
+
 
     }
 }
