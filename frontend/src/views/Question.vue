@@ -1,0 +1,435 @@
+<template>
+  <v-container class="px-12">
+    <div v-if="this.question != null">
+      <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
+      <v-form ref="form">
+        <v-text-field
+          :value="this.formattedQuestionType"
+          label="Typ Otázky"
+          outlined
+          readonly
+        ></v-text-field>
+
+        <!-- MultiChoice -->
+        <div v-if="this.question.questionType === 'multi-choice'" class="mb-8">
+          <v-textarea
+            readonly
+            outlined
+            auto-grow
+            :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
+            rows="1"
+            clear-icon="mdi-close-circle"
+            label="Zadání otázky"
+            v-model="this.question.questionText"
+            class="mb-2"
+            :rules="[rules.required]"
+          ></v-textarea>
+
+          <div
+            v-for="(answer, index) in this.question.answers"
+            :key="index"
+            class="mb-2"
+          >
+            <v-text-field
+              readonly
+              outlined
+              :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
+              :success="answer.isCorrect"
+              class="answerField"
+              :label="'Odpověď ' + (index + 1)"
+              dense
+              prepend-icon="mdi-drag"
+              hide-details
+              v-model="answer.answerText"
+              :rules="[rules.required]"
+            >
+              <!-- <template v-slot:append>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      outlined
+                      small
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="removeMultiChoiceAnswer(index)"
+                      height="40px"
+                      width="40px"
+                      tile
+                      class="answerButton leftButton"
+                    >
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Odstranit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      outlined
+                      small
+                      :color="answer.isCorrect ? 'green' : ''"
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="toggleMultiChoiceAnswerCorrect(index)"
+                      height="40px"
+                      width="40px"
+                      class="answerButton rounded-l-0"
+                    >
+                      <v-icon>mdi-check</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Označit správně</span>
+                </v-tooltip>
+              </template> -->
+            </v-text-field>
+          </div>
+          <!-- <v-row class="justify-end mt-6">
+            <v-btn
+              outlined
+              color="primary"
+              class="mr-8"
+              @click="addMultiChoiceAnswer()"
+              :disabled="this.question.answers.length >= 5"
+            >
+              <span>Přidat odpověď </span>
+              <v-icon small>mdi-plus</v-icon>
+            </v-btn>
+          </v-row> -->
+        </div>
+
+        <!-- Tag selector -->
+        <v-combobox
+          v-model="selectedTags"
+          :items="tags"
+          item-text="tagText"
+          item-value="tagText"
+          :search-input.sync="search"
+          hide-selected
+          label="Štítky"
+          multiple
+          persistent-hint
+          small-chips
+          outlined
+          deletable-chips
+          clearable
+        >
+          <template v-slot:no-data>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Žádné výsledky pro "<strong>{{ search }}</strong
+                  >". Stiskněte <kbd>enter</kbd> pro vytvoření nového štítku
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-combobox>
+
+        <!-- Action buttons -->
+        <!-- Delete Dialog -->
+        <v-dialog v-model="showDeleteDialog" max-width="400px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              :loading="loading"
+              :disabled="loading"
+              color="error"
+              outlined
+              class="mr-4 mb-2"
+            >
+              Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
+            </v-btn>
+          </template>
+          <v-card class="text-center pa-4">
+            <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
+            <v-card-title class="text-h5">
+              <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
+            </v-card-title>
+            <v-card-text
+              >Opravdu si přejete smazat otázku? Tato akce je
+              nevratná.</v-card-text
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="grey"
+                class="mx-2"
+                outlined
+                @click="showDeleteDialog = false"
+              >
+                Ne
+              </v-btn>
+              <v-btn
+                color="error"
+                class="mx-2"
+                outlined
+                @click="deleteQuestion()"
+              >
+                Ano
+              </v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-btn
+          color="primary"
+          depressed
+          width="150px"
+          :loading="loading"
+          :disabled="loading"
+          class="mr-4 mb-2"
+          @click="editQuestion()"
+        >
+          Uložit <v-icon right dark> mdi-content-save </v-icon>
+        </v-btn>
+      </v-form>
+    </div>
+    <div class="text-center">
+      <v-snackbar
+        :timeout="snackbar.timeout"
+        :value="snackbar.show"
+        absolute
+        top
+        :color="snackbar.color"
+        middle
+        tile
+        multi-line
+      >
+        <v-layout align-center pr-4>
+          <v-icon class="pr-3" dark large>{{ snackbar.icon }}</v-icon>
+          <v-layout column>
+            <div>
+              <strong>{{ snackbar.title }}</strong>
+            </div>
+            <div>{{ snackbar.text }}</div>
+          </v-layout>
+          <v-btn v-if="snackbar.timeout === -1" icon @click="error = null">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-layout>
+        <!-- <v-icon left> {{ snackbar.icon }} </v-icon> <strong>{{ snackbar.text }}</strong> -->
+      </v-snackbar>
+    </div>
+  </v-container>
+</template>
+
+<script>
+import api from "api-client";
+
+export default {
+  name: "Question",
+  components: {},
+  data() {
+    return {
+      loading: false,
+      question: null,
+      error: null,
+      hasSaved: false,
+      showDeleteDialog: false,
+      search: "",
+      rules: {
+        required: (value) => !!value || "Povinné.",
+      },
+      breadcrumbs: [
+        {
+          text: "Otázky",
+          disabled: false,
+          to: "/questions",
+        },
+        {
+          text: "Otázka #" + this.$route.params.id,
+          disabled: true,
+          to: "/question/" + this.$route.params.id,
+        },
+      ],
+    };
+  },
+  methods: {
+    validate() {
+      this.$refs.form.validate();
+    },
+    async editQuestion() {
+      this.hasSaved = false;
+      this.loading = true;
+      try {
+        await api.editQuestion(this.$route.params.id, this.question);
+        this.hasSaved = true;
+        //setTimeout(() => { this.hasSaved = false }, 3000)
+      } catch (error) {
+        console.log(error);
+        this.error = error;
+      }
+      this.loading = false;
+      //this.hasSaved = true;
+      // this.loading = false;
+    },
+    async deleteQuestion() {
+      //todo: show modal for confirmation
+      // ....
+      // ....
+      this.error = null;
+      this.loading = true;
+      try {
+        await api.deleteQuestion(this.$route.params.id);
+        this.$router.push({ name: "Questions" });
+      } catch (error) {
+        this.error = error;
+      }
+      this.loading = false;
+    },
+    async fetchQuestion() {
+      this.error = this.question = null;
+      this.hasSaved = false;
+      this.loading = true;
+      try {
+        this.question = await api.fetchQuestion(this.$route.params.id);
+      } catch (error) {
+        if (error.response.status === 404) {
+          this.$router.replace({
+            name: "NotFound",
+            params: { 0: this.$route.path },
+          });
+        }
+        this.error = error;
+      }
+      this.loading = false;
+    },
+    removeMultiChoiceAnswer(index) {
+      this.question.answers.splice(index, 1);
+
+      //if only one answer remaining, it must be the correct answer
+      if (this.question.answers.length < 2) {
+        this.question.answers[0].isCorrect = true;
+      }
+    },
+    toggleMultiChoiceAnswerCorrect(index) {
+      this.question.answers[index].isCorrect =
+        !this.question.answers[index].isCorrect;
+    },
+    addMultiChoiceAnswer() {
+      this.question.answers.push({
+        answerText: "",
+        isCorrect: false,
+      });
+    },
+  },
+  computed: {
+    formattedQuestionType() {
+      if (this.question.questionType === "multi-choice") return "Multi-Choice";
+      if (this.question.questionType === "fill-in-code") return "Fill-In-Code";
+
+      return "";
+    },
+    tags() {
+      return this.$store.state.tags;
+    },
+    selectedTags: {
+      get() {
+        if (this.question) {
+          return this.question.tags;
+        }
+        return [];
+      },
+      set(value) {
+        if (this.question) {
+          this.question.tags = value;
+        }
+      },
+    },
+    // saveButton() {
+    //     if(this.error != null){
+    //         return {
+    //             icon: 'mdi-cancel',
+    //             color: 'error',
+    //             text: 'Chyba'
+    //         }
+    //     }
+    //     if(this.hasSaved){
+    //         return {
+    //             icon: 'mdi-check',
+    //             color: 'success',
+    //             text: 'Uloženo'
+    //         }
+    //     }
+    //     return {
+    //         icon: 'mdi-content-save',
+    //         color: 'primary',
+    //         text: 'Uložit'
+    //     }
+    // }
+    snackbar() {
+      if (this.error != null) {
+        return {
+          show: true,
+          icon: "mdi-alert-circle",
+          color: "error",
+          title: "Error",
+          text: this.error.toString(),
+          timeout: -1,
+        };
+      }
+      if (this.hasSaved) {
+        return {
+          show: true,
+          icon: "mdi-check-circle",
+          color: "success",
+          title: "Úspěch",
+          text: "Otázka byla uložena",
+          timeout: 3000,
+        };
+      }
+      return {
+        show: false,
+      };
+    },
+  },
+  watch: {
+    // Map newly entered tag string to tag object
+    selectedTags(val, prev) {
+      if (val.length === prev.length) return;
+      this.selectedTags = val.map((v) => {
+        if (typeof v === "string") {
+          v = {
+            tagText: v,
+          };
+          this.selectedTags.push(v);
+        }
+
+        return v;
+      });
+    },
+  },
+  created() {
+    this.$store.dispatch("fetchTags");
+    // watch the params of the route to fetch the data again
+    this.$watch(
+      () => this.$route.params,
+      () => {
+        this.fetchQuestion();
+      },
+      // fetch the data when the view is created and the data is
+      // already being observed
+      { immediate: true }
+    );
+  },
+};
+</script>
+
+<style>
+.answerButton {
+  margin-top: -8px;
+  border-color: #9e9e9e;
+}
+.leftButton {
+  border-right: none;
+}
+.answerField > .v-input__control > .v-input__slot {
+  padding-right: 0px !important;
+}
+.v-snack__wrapper {
+  max-width: none;
+  min-width: 100%;
+  margin: 0;
+}
+</style>

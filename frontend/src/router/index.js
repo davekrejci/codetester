@@ -50,7 +50,13 @@ const routes = [
       {
         path: 'questions',
         name: 'Questions',
-        component: () => import('../views/Questions.vue')
+        component: () => import('../views/Questions.vue'),
+    
+      },
+      {
+        path: 'question/:id',
+        name: 'Question',
+        component: () => import('../views/Question.vue'),
     
       },
       {
