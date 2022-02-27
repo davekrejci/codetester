@@ -294,7 +294,8 @@ export default {
       "fillInCode.cm",
       "fillInCode.fillInCount"
       ]),
-    ...mapMultiRowFields(["fillInCode.widgets"])
+    ...mapMultiRowFields(["fillInCode.widgets"]),
+
   },
   mounted() {
     // reset store widget data that might be left over after leaving and coming back 
@@ -368,13 +369,14 @@ export default {
       const textMarker = this.cm.markText(range.from, range.to, {
         replacedWith: widgetComponent.$el,
       });
-
+  
       //add widget to data model
       const widget = {
         id: this.widgetIdCounter,
         content: content,
         length: rangeLength,
-        markerInstance: textMarker
+        //markerInstance: textMarker
+        
       };
       this.addFillInCodeWidget(widget);
 
