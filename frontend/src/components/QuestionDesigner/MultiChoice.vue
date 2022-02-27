@@ -24,7 +24,7 @@
         prepend-icon="mdi-drag"
         hide-details
         :value="answer.text"
-        @input="setMultiChoiceAnswerText({index: index, value: $event})"
+        @input="setMultiChoiceAnswerText({ index: index, value: $event })"
         :rules="[rules.required]"
       >
         <template v-slot:append>
@@ -117,7 +117,7 @@ export default {
       "addMultiChoiceAnswer",
       "removeMultiChoiceAnswer",
       "toggleMultiChoiceAnswerCorrect",
-      "setMultiChoiceAnswerText"
+      "setMultiChoiceAnswerText",
     ]),
   },
 };
