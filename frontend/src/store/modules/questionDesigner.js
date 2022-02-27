@@ -1,4 +1,6 @@
 import { createHelpers } from 'vuex-map-fields';
+import client from 'api-client'
+import { QuestionTypes } from '@/util/questionTypes.js';
 
 const { getField, updateField } = createHelpers({
   getterType: 'getField',
@@ -9,23 +11,12 @@ export default {
   namespaced: true,
   state: {
     selectedQuestionType: "",
+    selectedTags: [],
     multiChoice: {
       questionText: "",
       answers: [{
-          text: "",
+          answerText: "",
           isCorrect: true,
-        },
-        {
-          text: "",
-          isCorrect: false,
-        },
-        {
-          text: "",
-          isCorrect: false,
-        },
-        {
-          text: "",
-          isCorrect: false,
         },
       ],
     },
@@ -40,7 +31,7 @@ export default {
   mutations: {
     updateField,
     setMultiChoiceAnswerText(state, payload) {
-      state.multiChoice.answers[payload.index].text = payload.value;
+      state.multiChoice.answers[payload.index].answerText = payload.value;
     },
     setMultiChoiceQuestionText(state, questionText) {
       state.multiChoice.questionText = questionText;
@@ -50,8 +41,16 @@ export default {
     },
     addMultiChoiceAnswer(state) {
       state.multiChoice.answers.push({
-        text: "",
+        answerText: "",
         isCorrect: false,
+      });
+    },
+    setSelectedTags(state, selectedTags) {
+      state.selectedTags = selectedTags;
+    },
+    addSelectedTag(state, tagText) {
+      state.selectedTags.push({
+        tagText: tagText
       });
     },
     removeMultiChoiceAnswer(state, index) {
@@ -75,7 +74,39 @@ export default {
       state.fillInCode.widgets = [];
     }
   },
-
+  actions: {
+    async createQuestion ({state}) {
+      let question = {};
+      question.questionType = state.selectedQuestionType;
+      question.tags = state.selectedTags;
+      if(question.questionType == QuestionTypes.MultiChoice){
+        question.questionText = state.multiChoice.questionText;
+        question.answers = state.multiChoice.answers;
+      }
+      if(question.questionType == QuestionTypes.FillInCode){
+        question.codeDescription = state.fillInCode.codeDescription;
+        question.code = state.fillInCode.content;
+        question.fillCount = state.fillInCode.fillInCount;
+        let fillInCodeBlocks = [];
+        let doc = state.fillInCode.cm.getDoc();
+        let widgets = doc.getAllMarks();
+        widgets.forEach((widget) => {
+          let range = widget.find();
+          let content = doc.getRange(range.from, range.to);
+          let fromIndex = doc.indexFromPos(range.from);
+          let toIndex = doc.indexFromPos(range.to);
+          fillInCodeBlocks.push({content: content, startPosition: fromIndex, endPosition: toIndex});
+        })
+        question.fillInCodeBlocks = fillInCodeBlocks;
+      }
+      console.log(question);
+      try{
+        await client.createQuestion(question);
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    },
+  },
   getters: {
     getField
   }
