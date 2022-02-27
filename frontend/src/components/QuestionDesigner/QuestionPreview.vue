@@ -14,7 +14,7 @@
               icon
               color="primary"
               @click="setPreviewEditorValue"
-              v-if="selectedQuestionType == 'Fill-In-Code'"
+              v-if="selectedQuestionType == 'fill-in-code'"
             >
               <v-icon>mdi-restore</v-icon>
             </v-btn>
@@ -26,11 +26,11 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
       </v-card-actions>
-      <div v-if="selectedQuestionType == 'Multi-Choice'">
+      <div v-if="selectedQuestionType == 'multi-choice'">
         <p class="mb-4">{{ questionText }}</p>
         <v-card
           class="question-card"
-          v-if="selectedQuestionType == 'Multi-Choice'"
+          v-if="selectedQuestionType == 'multi-choice'"
           color="transparent"
           outlined
         >
@@ -62,7 +62,7 @@
           </v-list>
         </v-card>
       </div>
-      <div v-if="selectedQuestionType == 'Fill-In-Code'">
+      <div v-if="selectedQuestionType == 'fill-in-code'">
         <p class="mb-4">{{ codeDescription }}</p>
         <textarea id="preview-editor"></textarea>
       </div>
@@ -216,7 +216,7 @@ export default {
   },
   watch: {
     showPreview(isVisible) {
-      if (this.selectedQuestionType != 'Fill-In-Code') { return; }
+      if (this.selectedQuestionType != 'fill-in-code') { return; }
       if (isVisible) {
         // need to wait for vue to change DOM so codemirror can find element to bind to
         this.$nextTick(() => {
