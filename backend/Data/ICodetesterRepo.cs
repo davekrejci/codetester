@@ -12,5 +12,9 @@ namespace Codetester.Data
         void CreateQuestion(Question question);
         void UpdateQuestion(Question question);
         void DeleteQuestion(Question question);
+        IEnumerable<Tag> GetAllTags();
+        Tag GetTagById(int id);
+        void CreateTag(Tag tag);
+        void AddTagToQuestion(int tagId, int questionId);
     }
 }

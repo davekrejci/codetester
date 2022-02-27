@@ -15,6 +15,8 @@ namespace Codetester.Data
         public DbSet<MultiChoiceAnswer> MultiChoiceAnswers { get; set; }
         public DbSet<FillInCodeQuestion> FillInCodeQuestions { get; set; }
         public DbSet<FillInCodeBlock> FillInCodeBlocks { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+
 
 
 

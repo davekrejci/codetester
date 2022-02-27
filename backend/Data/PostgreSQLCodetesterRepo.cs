@@ -44,6 +44,7 @@ namespace Codetester.Data
                                 .ToList();
         }
 
+
         public Question GetQuestionById(int id)
         {
             return _context.Questions
@@ -53,59 +54,50 @@ namespace Codetester.Data
                             .FirstOrDefault(q => q.Id == id);
 
         }
+        public void UpdateQuestion(Question question)
+        {
+            // Nothing, updated automatically in controller thanks to mapping from DTO to repo model
+            // Keep here for sake of Interface implementation and/or possible future implementation changes
+        }
+
+        public IEnumerable<Tag> GetAllTags()
+        {
+            return _context.Tags.ToList();
+        }
+        public Tag GetTagById(int id)
+        {
+            return _context.Tags.FirstOrDefault(t => t.Id == id);
+        }
 
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
         }
 
-        public void UpdateQuestion(Question question)
+        public void AddTagToQuestion(int tagId, int questionId)
         {
-            // Nothing, updated automatically in controller thanks to mapping from DTO to repo model
-            // Keep here for sake of Interface implementation and/or possible future implementation changes
+            Tag tag = _context.Tags.FirstOrDefault(t => t.Id == tagId);
+            Question question = _context.Questions.FirstOrDefault(q => q.Id == questionId);
 
-            // Update Tags
+            if (tag == null)
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
+            if (question == null)
+            {
+                throw new ArgumentNullException(nameof(question));
+            }
 
-            // Check question type
-
-            // Deal with Multi-Choice field
-
-            // Deal with Fill-In-Code fields
-            // foreach (var block in questionUpdateDto.FillInCodeBlocks)
-            // {
-            //     var blockModel = _context.FillInCodeBlocks.FirstOrDefault(b => b.Id == block.Id);
-            //     if(blockModel == null)
-            //     {
-            //         questionModel.
-            //     }
-            // }
-
-            
+            question.Tags.Add(tag);
         }
 
-        // public void UpdateFillInCodeQuestion(FillInCodeQuestion question, QuestionUpdateDto questionUpdateDTO)
-        // {
-        //     // Nothing, updated automatically in controller thanks to mapping from DTO to repo model
-        //     // Keep here for sake of Interface implementation and/or possible future implementation changes
-        //     _context.Entry(question).CurrentValues.SetValues(questionUpdateDTO);
-            
-        //     //remove deleted fillInCodeBlocks
-        //     question.FillInCodeBlocks
-        //     .Where(fillInCodeBlock => !questionUpdateDTO.FillInCodeBlocks.Any(fillInCodeBlockDto => fillInCodeBlockDto.Id == fillInCodeBlock.Id))
-        //     .Each(deleted => ctx.DetailSet.Remove(deleted));
-
-        //     //update or add details
-        //     questionUpdateDTO.FillInCodeBlocks.Each(FillInCodeBlockCreateDto =>
-        //     {
-        //         var detail = order.Details.FirstOrDefault(d => d.Id == detailDTO.Id);
-        //         if (detail == null)
-        //         {
-        //             detail = new Detail();
-        //             order.Details.Add(detail);
-        //         }
-        //         detail.Name = detailDTO.Name;
-        //         detail.Quantity = detailDTO.Quantity;
-        //     });
-        // }
+        public void CreateTag(Tag tag)
+        {
+            if (tag == null)
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
+            _context.Tags.Add(tag);
+        }
     }
 }

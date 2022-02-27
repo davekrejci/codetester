@@ -6,7 +6,17 @@ namespace Codetester.Data
 {
     public class MockCodetesterRepo : ICodetesterRepo
     {
+        public void AddTagToQuestion(int tagId, int questionId)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void CreateQuestion(Question question)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void CreateTag(Tag tag)
         {
             throw new System.NotImplementedException();
         }
@@ -73,6 +83,16 @@ namespace Codetester.Data
         }
 
         public void UpdateQuestion(Question question, QuestionUpdateDto questionUpdateDTO)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        IEnumerable<Tag> ICodetesterRepo.GetAllTags()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        Tag ICodetesterRepo.GetTagById(int id)
         {
             throw new System.NotImplementedException();
         }
