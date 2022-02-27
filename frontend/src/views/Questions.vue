@@ -53,20 +53,19 @@
       <v-data-table
         :headers="headers"
         :items="questions"
-        :items-per-page="5"
+        :items-per-page="15"
         :search="search"
         :loading="loading"
         loading-text="Načítání dat..."
-        show-select
         item-key="question"
         v-model="selected"
       >
         <template v-slot:item.actions="{ item }">
           <router-link
-            :to="{ name: 'QuestionDetail', params: { id: item.id } }"
+            :to="{ name: 'Question', params: { id: item.id } }"
           >
             <v-btn fab depressed x-small color="primary" class="mx-1">
-              <v-icon small @click="editItem(item)"> mdi-magnify </v-icon>
+              <v-icon small> mdi-magnify </v-icon>
             </v-btn>
           </router-link>
           <v-btn fab depressed x-small color="error" class="mx-1">
@@ -75,8 +74,8 @@
         </template>
         <template v-slot:item.tags="{ item }">
           <div class="text-truncate" style="max-width: 200px">
-            <v-chip v-for="(tag, index) in item.tags" :key="tag" class="mx-1">
-              {{ item.tags[index] }}
+            <v-chip v-for="(tag) in item.tags" :key="tag.id" class="mx-1">
+              {{ tag.tagText }}
             </v-chip>
           </div>
         </template>
@@ -93,9 +92,10 @@ export default {
       search: "",
       loading: false,
       headers: [
-        { text: "Otázka", value: "question" },
-        { text: "Typ", value: "type" },
-        { text: "Obtížnost", value: "difficulty" },
+        { text: "Id", value: "id" },
+        { text: "Otázka", value: "questionText" },
+        { text: "Typ", value: "questionType" },
+        //{ text: "Obtížnost", value: "difficulty" },
         { text: "Tagy", value: "tags" },
         { text: "Akce", value: "actions", sortable: false },
       ],
@@ -111,7 +111,13 @@ export default {
   },
   computed: {
     questions() {
-      return this.$store.state.questions;
+      let questions = this.$store.state.questions;
+      questions.forEach(question => {
+        if(question.questionType == "fill-in-code"){
+          question.questionText = question.codeDescription
+        }
+      });
+      return questions;
     },
   },
   created() {
