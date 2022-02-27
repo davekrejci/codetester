@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.26.0",
     "chevrotain": "^10.0.0",
     "codemirror": "^5.63.1",
     "codemirror-formatting": "^1.0.0",
