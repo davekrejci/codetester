@@ -16,6 +16,11 @@ namespace Codetester.Models
         [Required]
         public string QuestionType { get; set; }
 
+
+        public Question(){
+            this.Tags = new List<Tag>();
+        }
+
         
     }
 

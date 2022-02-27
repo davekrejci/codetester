@@ -6,6 +6,7 @@ using Codetester.Dtos;
 using Codetester.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Codetester.Controllers
 {
@@ -61,8 +62,22 @@ namespace Codetester.Controllers
                 return BadRequest("Question type " + questionCreateDto.QuestionType + " is not a valid type");
             }
         
+            // map the tags
+            foreach (TagCreateDto tagDto in questionCreateDto.Tags)
+            {
+                var tagModel = _repository.GetTagById(tagDto.Id);
+                if (tagModel != null)
+                {
+                    questionModel.Tags.Add(tagModel);
+                } else {
+                    var newTag = _mapper.Map<TagCreateDto, Tag>(tagDto);
+                    questionModel.Tags.Add(newTag);
+                }
+            }
+
             _repository.CreateQuestion(questionModel);
             _repository.SaveChanges();
+            
 
             var questionReadDto = _mapper.Map<QuestionReadDto>(questionModel);
             return CreatedAtRoute(nameof(GetQuestionById), new {Id = questionReadDto.Id}, questionReadDto);
@@ -85,8 +100,7 @@ namespace Codetester.Controllers
             _repository.UpdateQuestion(questionModel);
             
             _repository.SaveChanges();
-            return Ok(questionModel);
-            //return NoContent();
+            return NoContent();
         }
 
         //PATCH api/questions/{id}
@@ -98,9 +112,7 @@ namespace Codetester.Controllers
             {
                 return NotFound();
             }
-            Console.WriteLine(patchDoc);
             var questionToPatch = _mapper.Map<QuestionUpdateDto>(question);
-            Console.WriteLine(questionToPatch);
             patchDoc.ApplyTo(questionToPatch, ModelState);
             if (!TryValidateModel(questionToPatch))
             {
@@ -115,7 +127,6 @@ namespace Codetester.Controllers
             _repository.UpdateQuestion(question);
             _repository.SaveChanges();
             return NoContent();
-            //return Ok(question);
         }
 
         //DELETE api/questions/{id}
