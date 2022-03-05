@@ -7,6 +7,7 @@
           :value="this.formattedQuestionType"
           label="Typ Otázky"
           outlined
+          color="grey"
           readonly
         ></v-text-field>
 
@@ -17,6 +18,7 @@
             outlined
             auto-grow
             :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
+            color="grey"
             rows="1"
             clear-icon="mdi-close-circle"
             label="Zadání otázky"
@@ -34,6 +36,7 @@
               readonly
               outlined
               :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
+              color="grey"
               :success="answer.isCorrect"
               class="answerField"
               :label="'Odpověď ' + (index + 1)"
@@ -95,6 +98,55 @@
               <v-icon small>mdi-plus</v-icon>
             </v-btn>
           </v-row> -->
+        </div>
+
+        <!-- FillInCode -->
+        <div v-if="this.question.questionType === 'fill-in-code'" class="mb-8">
+          <v-textarea
+            outlined
+            auto-grow
+            :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
+            rows="1"
+            readonly
+            color="grey"
+            clear-icon="mdi-close-circle"
+            label="Popis kódu"
+            v-model="this.question.codeDescription"
+            :rules="[rules.required]"
+          ></v-textarea>
+
+          <v-card flat outlined class="rounded">
+            <textarea v-model="this.question.code" id="editor"></textarea>
+            <v-overlay :value="false" absolute>
+              <v-progress-circular
+                indeterminate
+                size="64"
+                width="7"
+              ></v-progress-circular>
+            </v-overlay>
+          </v-card>
+          <v-card
+            flat
+            outlined
+            class="mt-2 px-12 py-4"
+          >
+            <v-slider
+              hint="Počet bloků, které student bude muset doplnit(náhodný výběr)"
+              v-model="this.question.fillCount"
+              thumb-label
+              :max="this.question.fillInCodeBlocks.length"
+              ticks="true"
+              tick-size="4"
+              persistent-hint
+              readonly
+            >
+              <template v-slot:append>
+                <v-chip class="primary">
+                  {{ question.fillCount }}
+                </v-chip>
+              </template>
+            </v-slider>
+          </v-card>
         </div>
 
         <!-- Tag selector -->
@@ -215,7 +267,24 @@
 </template>
 
 <script>
+import Vue from "vue";
 import api from "api-client";
+import * as CodeMirror from "codemirror";
+import "codemirror-formatting";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/dracula.css";
+import "codemirror/theme/duotone-light.css";
+import "codemirror/theme/material-palenight.css";
+import "codemirror/theme/eclipse.css";
+import "codemirror/mode/clike/clike.js";
+import "codemirror/addon/search/searchcursor";
+import "codemirror/addon/display/placeholder.js";
+import "codemirror/addon/edit/closebrackets.js";
+import "codemirror/addon/edit/matchbrackets.js";
+import vuetify from "@/plugins/vuetify";
+import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
+
+const WidgetComponentClass = Vue.extend(FillableWidget);
 
 export default {
   name: "Question",
@@ -225,6 +294,7 @@ export default {
       loading: false,
       question: null,
       error: null,
+      cm: null,
       hasSaved: false,
       showDeleteDialog: false,
       search: "",
@@ -265,9 +335,6 @@ export default {
       // this.loading = false;
     },
     async deleteQuestion() {
-      //todo: show modal for confirmation
-      // ....
-      // ....
       this.error = null;
       this.loading = true;
       try {
@@ -284,6 +351,9 @@ export default {
       this.loading = true;
       try {
         this.question = await api.fetchQuestion(this.$route.params.id);
+        if(this.question && this.question.questionType === 'fill-in-code'){
+          this.initCodemirror();
+        }
       } catch (error) {
         if (error.response.status === 404) {
           this.$router.replace({
@@ -313,6 +383,42 @@ export default {
         isCorrect: false,
       });
     },
+    initCodemirror() {
+      this.$nextTick(() => {
+        this.cm = CodeMirror.fromTextArea(document.getElementById("editor"), {
+          lineNumbers: true,
+          theme: this.$vuetify.theme.dark
+            ? "material-palenight"
+            : "duotone-light",
+          mode: "text/x-java",
+          autoCloseTags: true,
+          lineWrapping: true,
+          defaultTextHeight: 32,
+          placeholder: "// Zadejte kod",
+          readOnly: "nocursor",
+        });
+
+        let doc = this.cm.getDoc();
+        this.question.fillInCodeBlocks.forEach((block) => {
+          //create widget component
+          const widgetComponent = new WidgetComponentClass({
+            propsData: {
+              id: block.id,
+              length: block.endPosition - block.startPosition,
+              content: block.content,
+              deletable: false,
+            },
+            vuetify,
+          });
+          let from = doc.posFromIndex(block.startPosition);
+          let to = doc.posFromIndex(block.endPosition);
+          widgetComponent.$mount();
+          this.cm.markText(from, to, {
+            replacedWith: widgetComponent.$el,
+          });
+        });
+      });
+    },
   },
   computed: {
     formattedQuestionType() {
@@ -337,27 +443,6 @@ export default {
         }
       },
     },
-    // saveButton() {
-    //     if(this.error != null){
-    //         return {
-    //             icon: 'mdi-cancel',
-    //             color: 'error',
-    //             text: 'Chyba'
-    //         }
-    //     }
-    //     if(this.hasSaved){
-    //         return {
-    //             icon: 'mdi-check',
-    //             color: 'success',
-    //             text: 'Uloženo'
-    //         }
-    //     }
-    //     return {
-    //         icon: 'mdi-content-save',
-    //         color: 'primary',
-    //         text: 'Uložit'
-    //     }
-    // }
     snackbar() {
       if (this.error != null) {
         return {
@@ -400,18 +485,25 @@ export default {
       });
     },
   },
-  created() {
+  mounted() {
     this.$store.dispatch("fetchTags");
-    // watch the params of the route to fetch the data again
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.fetchQuestion();
-      },
-      // fetch the data when the view is created and the data is
-      // already being observed
-      { immediate: true }
+    this.fetchQuestion();
+  },
+  created() {
+    
+    /** needed if <router-view> is not :keyed - (going for simplicity over performance atm, don't mind reloading component for each route)
+      //watch the params of the route to fetch the data again
+      this.$watch(
+        () => this.$route.params,
+        () => {
+          this.fetchQuestion();
+        },
+        // fetch the data when the view is created and the data is
+        // already being observed
+        { immediate: true }
     );
+     * */ 
+
   },
 };
 </script>
@@ -431,5 +523,11 @@ export default {
   max-width: none;
   min-width: 100%;
   margin: 0;
+}
+.CodeMirror {
+  line-height: 32px;
+  min-height: 200px;
+  padding: 10px;
+  height: auto;
 }
 </style>
