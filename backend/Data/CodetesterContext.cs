@@ -16,6 +16,11 @@ namespace Codetester.Data
         public DbSet<FillInCodeQuestion> FillInCodeQuestions { get; set; }
         public DbSet<FillInCodeBlock> FillInCodeBlocks { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Exam> Exams { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Semester> Semesters { get; set; }
+
 
 
 

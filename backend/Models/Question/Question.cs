@@ -10,6 +10,8 @@ namespace Codetester.Models
         public int Id { get; set; }
 
         public ICollection<Tag> Tags { get; set; }
+        public ICollection<Exam> Exams { get; set; }
+
 
         [Required]
         public string QuestionType { get; set; }
