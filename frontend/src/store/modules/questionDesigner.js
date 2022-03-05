@@ -100,11 +100,7 @@ export default {
         question.fillInCodeBlocks = fillInCodeBlocks;
       }
       console.log(question);
-      try{
-        await client.createQuestion(question);
-      } catch (error) {
-        return Promise.reject(error);
-      }
+      await client.createQuestion(question);
     },
   },
   getters: {
