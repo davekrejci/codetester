@@ -99,5 +99,39 @@ namespace Codetester.Data
             }
             _context.Tags.Add(tag);
         }
+
+        public IEnumerable<Course> GetAllCourses()
+        {
+            return _context.Courses
+                            .Include("Semesters")
+                            .ToList();
+        }
+
+        public Course GetCourseById(int id)
+        {
+            return _context.Courses
+                            .Include("Semesters")
+                            .FirstOrDefault(c => c.Id == id);
+
+        }
+
+        public void CreateCourse(Course course)
+        {
+            if (course == null)
+            {
+                throw new ArgumentNullException(nameof(course));
+            }
+
+            _context.Courses.Add(course);
+        }
+
+        public void DeleteCourse(Course course)
+        {
+            if (course == null)
+            {
+                throw new ArgumentNullException(nameof(course));
+            }
+            _context.Courses.Remove(course);
+        }
     }
 }

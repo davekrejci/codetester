@@ -11,6 +11,11 @@ namespace Codetester.Data
             throw new System.NotImplementedException();
         }
 
+        public void CreateCourse(Course courseModel)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void CreateQuestion(Question question)
         {
             throw new System.NotImplementedException();
@@ -21,7 +26,17 @@ namespace Codetester.Data
             throw new System.NotImplementedException();
         }
 
+        public void DeleteCourse(Course course)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void DeleteQuestion(Question question)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<Course> GetAllCourses()
         {
             throw new System.NotImplementedException();
         }
@@ -54,6 +69,11 @@ namespace Codetester.Data
                 }
             };
             return questions;
+        }
+
+        public Course GetCourseById(int id)
+        {
+            throw new System.NotImplementedException();
         }
 
         public Question GetQuestionById(int id)
