@@ -3,7 +3,7 @@
     <v-chip
       color="primary"
       text-color="white"
-      close
+      :close="deletable"
       label
       small
       class="unselectable"
@@ -16,7 +16,11 @@ export default {
     props: {
         id: Number,
         length: Number,
-        content: String
+        content: String,
+        deletable: {
+            type: Boolean,
+            default: true
+        }
     },
     data(){
         return{
