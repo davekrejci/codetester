@@ -21,7 +21,6 @@
                 depressed
                 fab
                 small
-                dark
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
@@ -34,18 +33,11 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="mx-2"
-              depressed
-              fab
-              small
-              dark
-              color="primary"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon dark> mdi-cloud-upload </v-icon>
-            </v-btn>
+            <div v-bind="attrs" v-on="on">
+              <v-btn class="mx-2" depressed fab disabled small color="primary">
+                <v-icon dark> mdi-cloud-upload </v-icon>
+              </v-btn>
+            </div>
           </template>
           <span>Nahrát Otázky</span>
         </v-tooltip>
@@ -75,7 +67,7 @@
               </v-btn>
             </router-link>
             <v-btn
-            @click="showDeleteDialogForItem(item.id)"
+              @click="showDeleteDialogForItem(item.id)"
               small
               icon
               plain
@@ -103,38 +95,38 @@
     </v-card>
 
     <!-- Delete Dialog -->
-            <v-dialog v-model="showDeleteDialog" max-width="400px">
-              <v-card class="text-center pa-4">
-                <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
-                <v-card-title class="text-h5">
-                  <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
-                </v-card-title>
-                <v-card-text
-                  >Opravdu si přejete smazat otázku #{{ toDeleteId }}? Tato akce je
-                  nevratná.</v-card-text
-                >
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="grey"
-                    class="mx-2"
-                    outlined
-                    @click="showDeleteDialog = false"
-                  >
-                    Ne
-                  </v-btn>
-                  <v-btn
-                    color="error"
-                    class="mx-2"
-                    outlined
-                    @click="deleteQuestion(toDeleteId)"
-                  >
-                    Ano
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+    <v-dialog v-model="showDeleteDialog" max-width="400px">
+      <v-card class="text-center pa-4">
+        <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
+        <v-card-title class="text-h5">
+          <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
+        </v-card-title>
+        <v-card-text
+          >Opravdu si přejete smazat otázku #{{ toDeleteId }}? Tato akce je
+          nevratná.</v-card-text
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="grey"
+            class="mx-2"
+            outlined
+            @click="showDeleteDialog = false"
+          >
+            Ne
+          </v-btn>
+          <v-btn
+            color="error"
+            class="mx-2"
+            outlined
+            @click="deleteQuestion(toDeleteId)"
+          >
+            Ano
+          </v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <div class="text-center">
       <v-snackbar
