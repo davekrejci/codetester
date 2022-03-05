@@ -6,8 +6,6 @@ namespace Codetester.Models
 {
     public class Question
     {
-
-
         [Key]
         public int Id { get; set; }
 
@@ -16,12 +14,9 @@ namespace Codetester.Models
         [Required]
         public string QuestionType { get; set; }
 
-
         public Question(){
             this.Tags = new List<Tag>();
-        }
-
-        
+        }     
     }
 
     public static class QuestionType

@@ -12,6 +12,8 @@ namespace Codetester.Models
         public string TagText { get; set; }
 
         public ICollection<Question> Questions { get; set; }
+        public ICollection<Exam> Exams { get; set; }
+
 
     }
 }
