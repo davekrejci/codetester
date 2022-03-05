@@ -58,11 +58,11 @@
       </v-combobox>
 
       <!-- Action buttons -->
-      <v-btn color="error" outlined class="mr-4 mb-2" @click="reset">
+      <v-btn color="error" :disabled="loading" outlined class="mr-4 mb-2" @click="reset">
         Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
       </v-btn>
-      <question-preview></question-preview>
-      <v-btn color="primary" depressed class="mr-4 mb-2" @click="createQuestion">
+      <question-preview :loading="loading"></question-preview>
+      <v-btn color="primary" :loading="loading" depressed class="mr-4 mb-2" @click="createQuestion">
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
     </v-form>
@@ -111,6 +111,7 @@ export default {
     return {
       search: "",
       error: null,
+      loading: false,
       hasSaved: false,
       questionTypes: [
       {
