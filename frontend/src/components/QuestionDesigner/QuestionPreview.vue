@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="showPreview" max-width="800" @click:outside="closePreview">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="primary" v-bind="attrs" v-on="on" depressed outlined class="mr-4 mb-2">
+      <v-btn :disabled="loading" color="primary" v-bind="attrs" v-on="on" depressed outlined class="mr-4 mb-2">
         Náhled
         <v-icon right dark> mdi-magnify </v-icon>
       </v-btn>
@@ -96,6 +96,9 @@ const { mapFields } = createHelpers({
 
 export default {
   name: "QuestionPreview",
+  props: {
+    loading: Boolean
+  },
   data() {
     return {
       // data
