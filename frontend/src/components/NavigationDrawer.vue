@@ -45,7 +45,7 @@ export default {
 	data: () => ({
 		items: [
 			{ title: 'Testy', path: '/exams', icon: 'mdi-pencil' },
-			{ title: 'Předměty', path: '/courses', icon: 'mdi-book-open' },
+			//{ title: 'Předměty', path: '/courses', icon: 'mdi-book-open' },
 			{ title: 'Otázky', path: '/questions', icon: 'mdi-help-circle' },
 			{ title: 'Uživatelé', path: '/users', icon: 'mdi-account-multiple' },
 			{ title: 'Nastavení', path: '/settings', icon: 'mdi-cog' },
