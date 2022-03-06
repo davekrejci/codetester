@@ -2,7 +2,19 @@ import axios from 'axios'
 
 export default {
     async fetchCourses() {
-        // to implement
+        const url = process.env.VUE_APP_CODETESTER_API_URL + "/courses";
+        const response = await axios.get(url);
+        return response.data
+    },
+    async createCourse(course) {
+        const url = process.env.VUE_APP_CODETESTER_API_URL + "/courses";
+        const response = await axios.post(url, course);
+        console.log(response);
+    },
+    async deleteCourse(id) {
+        const url = process.env.VUE_APP_CODETESTER_API_URL + "/courses/" + id;
+        const response = await axios.delete(url);
+        console.log(response);
     },
     async fetchUsers() {
         // to implement
