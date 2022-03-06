@@ -17,5 +17,14 @@ function shuffleArray(array) {
     return array;
   }
 
+// Promise timeout function
+function timeout(prom, time){
+  let timer;
+	return Promise.race([
+		prom,
+		new Promise((_r, rej) => timer = setTimeout(rej, time))
+	]).finally(() => clearTimeout(timer));
+}
 
-  export {shuffleArray}
+
+  export {shuffleArray, timeout}
