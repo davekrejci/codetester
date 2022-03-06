@@ -17,8 +17,14 @@ const routes = [
   {
     path: '/',
     component: () => import('../views/Dashboard.vue'),
-    redirect: '/exams',
+    redirect: '/myexams',
     children: [
+      {
+        path: 'myexams',
+        name: 'MyExams',
+        component: () => import('../views/MyExams.vue')
+    
+      },
       {
         path: 'exams',
         name: 'Exams',
@@ -39,13 +45,17 @@ const routes = [
         path: 'courses',
         name: 'Courses',
         component: () => import('../views/Courses.vue')
+      },
+      {
+        path: 'course/:id',
+        name: 'Course',
+        component: () => import('../views/Course.vue')
     
       },
       {
-        path: 'course-detail/:id',
-        name: 'CourseDetail',
-        component: () => import('../views/CourseDetail.vue')
-    
+        path: 'course/create',
+        name: 'CreateCourse',
+        component: () => import('../views/CreateCourse.vue')
       },
       {
         path: 'questions',
