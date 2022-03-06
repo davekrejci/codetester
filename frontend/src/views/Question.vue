@@ -237,32 +237,7 @@
         </v-btn>
       </v-form>
     </div>
-    <div class="text-center">
-      <v-snackbar
-        :timeout="snackbar.timeout"
-        :value="snackbar.show"
-        absolute
-        top
-        :color="snackbar.color"
-        middle
-        tile
-        multi-line
-      >
-        <v-layout align-center pr-4>
-          <v-icon class="pr-3" dark large>{{ snackbar.icon }}</v-icon>
-          <v-layout column>
-            <div>
-              <strong>{{ snackbar.title }}</strong>
-            </div>
-            <div>{{ snackbar.text }}</div>
-          </v-layout>
-          <v-btn v-if="snackbar.timeout === -1" icon @click="error = null">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-layout>
-        <!-- <v-icon left> {{ snackbar.icon }} </v-icon> <strong>{{ snackbar.text }}</strong> -->
-      </v-snackbar>
-    </div>
+    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
   </v-container>
 </template>
 
@@ -283,12 +258,14 @@ import "codemirror/addon/edit/closebrackets.js";
 import "codemirror/addon/edit/matchbrackets.js";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
+import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
+
 
 const WidgetComponentClass = Vue.extend(FillableWidget);
 
 export default {
   name: "Question",
-  components: {},
+  components: { DefaultSnackbar },
   data() {
     return {
       loading: false,
@@ -446,27 +423,21 @@ export default {
     snackbar() {
       if (this.error != null) {
         return {
-          show: true,
-          icon: "mdi-alert-circle",
-          color: "error",
-          title: "Error",
+          type: "error",
           text: this.error.toString(),
-          timeout: -1,
+          show: true
         };
       }
       if (this.hasSaved) {
         return {
-          show: true,
-          icon: "mdi-check-circle",
-          color: "success",
-          title: "Úspěch",
+          type: 'success',
           text: "Otázka byla uložena",
-          timeout: 3000,
+          show: true
         };
       }
       return {
-        show: false,
-      };
+        show: false
+      }
     },
   },
   watch: {

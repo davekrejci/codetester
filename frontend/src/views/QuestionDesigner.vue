@@ -66,32 +66,7 @@
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
     </v-form>
-    <div class="text-center">
-      <v-snackbar
-        :timeout="snackbar.timeout"
-        :value="snackbar.show"
-        absolute
-        top
-        :color="snackbar.color"
-        middle
-        tile
-        multi-line
-      >
-        <v-layout align-center pr-4>
-          <v-icon class="pr-3" dark large>{{ snackbar.icon }}</v-icon>
-          <v-layout column>
-            <div>
-              <strong>{{ snackbar.title }}</strong>
-            </div>
-            <div>{{ snackbar.text }}</div>
-          </v-layout>
-          <v-btn v-if="snackbar.timeout === -1" icon @click="error = null">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-layout>
-        <!-- <v-icon left> {{ snackbar.icon }} </v-icon> <strong>{{ snackbar.text }}</strong> -->
-      </v-snackbar>
-    </div>
+    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
   </v-container>
 </template>
 
@@ -99,6 +74,8 @@
 import MultiChoice from "@/components/QuestionDesigner/MultiChoice.vue";
 import FillInCode from "@/components/QuestionDesigner/FillInCode.vue";
 import QuestionPreview from "@/components/QuestionDesigner/QuestionPreview.vue";
+import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
+
 
 export default {
   name: "QuestionDesigner",
@@ -106,6 +83,7 @@ export default {
     MultiChoice,
     FillInCode,
     QuestionPreview,
+    DefaultSnackbar
   },
   data() {
     return {
@@ -185,28 +163,22 @@ export default {
     snackbar() {
       if (this.error != null) {
         return {
-          show: true,
-          icon: "mdi-alert-circle",
-          color: "error",
-          title: "Error",
+          type: "error",
           text: this.error.toString(),
-          timeout: -1,
+          show: true
         };
       }
       if (this.hasSaved) {
         return {
-          show: true,
-          icon: "mdi-check-circle",
-          color: "success",
-          title: "Úspěch",
+          type: 'success',
           text: "Otázka byla vytvořena",
-          timeout: 3000,
+          show: true
         };
       }
       return {
-        show: false,
-      };
-    }
+        show: false
+      }
+    },
   },
   watch: {
     // Map newly entered tag string to tag object

@@ -49,10 +49,11 @@
         :search="search"
         :loading="loading"
         loading-text="Načítání dat..."
+        no-data-text="Žádné data"
         item-key="question"
         v-model="selected"
       >
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-row
             align="center"
             justify="space-around"
@@ -78,7 +79,7 @@
             </v-btn>
           </v-row>
         </template>
-        <template v-slot:item.tags="{ item }">
+        <template v-slot:[`item.tags`]="{ item }">
           <div
             v-if="item.tags.length > 0"
             class="text-truncate"
@@ -127,40 +128,16 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <div class="text-center">
-      <v-snackbar
-        :timeout="snackbar.timeout"
-        :value="snackbar.show"
-        absolute
-        top
-        :color="snackbar.color"
-        middle
-        tile
-        multi-line
-      >
-        <v-layout align-center pr-4>
-          <v-icon class="pr-3" dark large>{{ snackbar.icon }}</v-icon>
-          <v-layout column>
-            <div>
-              <strong>{{ snackbar.title }}</strong>
-            </div>
-            <div>{{ snackbar.text }}</div>
-          </v-layout>
-          <v-btn v-if="snackbar.timeout === -1" icon @click="error = null">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-layout>
-        <!-- <v-icon left> {{ snackbar.icon }} </v-icon> <strong>{{ snackbar.text }}</strong> -->
-      </v-snackbar>
-    </div>
+    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
   </div>
 </template>
 
 <script>
 import api from "api-client";
+import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 export default {
+  components: { DefaultSnackbar },
   name: "Questions",
   data() {
     return {
@@ -209,10 +186,12 @@ export default {
     },
     async fetchQuestions() {
       this.loading = true;
-      await this.$store.dispatch("fetchQuestions").catch((err) => {
-        console.log(err);
-        this.loading = false;
-      });
+      try{
+        await this.$store.dispatch("fetchQuestions")
+      } catch(error){
+        console.log(error);
+        this.error = error;
+      }
       this.loading = false;
     },
   },
@@ -234,27 +213,21 @@ export default {
     snackbar() {
       if (this.error != null) {
         return {
-          show: true,
-          icon: "mdi-alert-circle",
-          color: "error",
-          title: "Error",
+          type: "error",
           text: this.error.toString(),
-          timeout: -1,
+          show: true
         };
       }
       if (this.hasBeenDeleted) {
         return {
-          show: true,
-          icon: "mdi-check-circle",
-          color: "success",
-          title: "Úspěch",
+          type: 'success',
           text: "Otázka byla smazána",
-          timeout: 3000,
+          show: true
         };
       }
       return {
-        show: false,
-      };
+        show: false
+      }
     },
   },
   created() {
@@ -264,9 +237,4 @@ export default {
 </script>
 
 <style>
-.v-snack__wrapper {
-  max-width: none;
-  min-width: 100%;
-  margin: 0;
-}
 </style>
