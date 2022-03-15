@@ -1,6 +1,6 @@
 <template>
 	<v-hover v-slot:default="{ hover }">
-		<v-card class="my-2 pa-1" :to="'/exam-detail/' + exam.id" flat :class="{ 'on-hover': hover }">
+		<v-card outlined class="my-2 pa-1" :to="'/exam-detail/' + exam.id" flat :class="{ 'on-hover': hover }">
 			<v-list-item three-line>
 				<v-list-item-content>
 					<div class="overline mb-2">{{ exam.className }}</div>
