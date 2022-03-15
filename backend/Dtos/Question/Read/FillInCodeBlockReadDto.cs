@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Codetester.Models
+namespace Codetester.Dtos
 {
     public class FillInCodeBlockReadDto
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Codetester.Dtos;
 
-namespace Codetester.Models
+namespace Codetester.Dtos
 {
     public class FillInCodeQuestionReadDto : QuestionReadDto
     {
