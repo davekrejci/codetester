@@ -1,26 +1,17 @@
 <template>
   <div>
-    <v-card flat class="pa-4">
+    <v-card  flat class="pa-4 rounded-t-0">
       <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          placeholder="Vyhledat"
-          single-line
-          hide-details
-          filled
-          rounded
-          dense
-          class="shrink mx-4"
-        ></v-text-field>
+          <span>Vytvořené Testy</span>
+          <v-spacer></v-spacer>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <router-link :to="{ name: 'CreateCourse' }">
+            <router-link :to="{ name: 'CreateExam' }">
               <v-btn
-                class="mx-2"
+                class="mx-2 text-right"
                 depressed
                 fab
-                small
+                x-small
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
@@ -29,21 +20,27 @@
               </v-btn>
             </router-link>
           </template>
-          <span>Přidat Předmět</span>
+          <span>Vytvořit test</span>
         </v-tooltip>
-        
       </v-card-title>
       <v-data-table
+        dense
         :headers="headers"
-        :items="courses"
+        :items="exams"
         :items-per-page="15"
         :search="search"
         :loading="loading"
         loading-text="Načítání dat..."
         no-data-text="Žádné data"
-        item-key="course"
+        item-key="exam"
         v-model="selected"
       >
+      <template v-slot:[`item.startDate`]="{ item }">
+        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
+      </template>
+      <template v-slot:[`item.endDate`]="{ item }">
+        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
+      </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row
             align="center"
@@ -51,7 +48,7 @@
             class="d-flex flex-nowrap"
           >
             <router-link
-              :to="{ name: 'Course', params: { id: item.id } }"
+              :to="{ name: 'Exam', params: { id: item.id } }"
               style="text-decoration: none; color: inherit"
             >
               <v-btn small plain icon color="primary" class="mx-1">
@@ -59,7 +56,7 @@
               </v-btn>
             </router-link>
             <v-btn
-              @click="showDeleteDialogForCourse(item)"
+              @click="showDeleteDialogForExam(item)"
               small
               icon
               plain
@@ -81,8 +78,8 @@
           <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
         </v-card-title>
         <v-card-text
-          >Opravdu si přejete smazat předmět {{ courseToDelete.courseCode }}? Tato akce je
-          nevratná.</v-card-text
+          >Opravdu si přejete smazat test? Tato akce je
+          nevratná. </v-card-text
         >
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -98,7 +95,7 @@
             color="error"
             class="mx-2"
             outlined
-            @click="deleteCourse(courseToDelete.id)"
+            @click="deleteExam(examToDelete.id)"
           >
             Ano
           </v-btn>
@@ -106,101 +103,52 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
-    
   </div>
 </template>
 
 <script>
-import api from "api-client";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
-
+//import api from "api-client";
 
 export default {
-  name: "Courses",
-  components: { DefaultSnackbar },
+  name: "SemesterExams",
+  props: {
+    exams: { type: Array, required: true },
+  },
   data() {
     return {
       search: "",
       loading: false,
-      error: null,
-      hasBeenDeleted: false,
-      courseToDelete: {},
+      examToDelete: {},
       showDeleteDialog: false,
       headers: [
-        { text: "Id", value: "id" },
-        { text: "Kod Předmětu", value: "courseCode" },
-        { text: "Jméno Předmětu", value: "courseName" },
+        { text: "Jméno", value: "name" },
+        { text: "Status", value: "status" },
+        { text: "Začátek", value: "startDate" },
+        { text: "Konec", value: "endDate" },
+        { text: "Tagy", value: "tags" },
         { text: "Akce", value: "actions", sortable: false, width: "15" },
       ],
       selected: [],
-      breadcrumbs: [
-        {
-          text: "Předměty",
-          disabled: true,
-          to: "Courses",
-        },
-      ],
     };
   },
   methods: {
-    showDeleteDialogForCourse(course) {
-      this.courseToDelete = course; 
+    showDeleteDialogForExam(exam) {
+      this.examToDelete = exam;
       this.showDeleteDialog = true;
     },
-    async deleteCourse(id) {
-      this.hasBeenDeleted = false;
-      this.courseToDelete = {};
-      this.showDeleteDialog = false;
-      this.error = null;
-      this.loading = true;
-      try {
-        await api.deleteCourse(id);
-        this.hasBeenDeleted = true;
-      } catch (error) {
-        this.error = error;
-      }
-      this.fetchCourses();
+    async deleteExam() {
+    //   this.userToRemove = {};
+    //   this.showRemoveDialog = false;
+    //   this.loading = true;
+    //   try {
+    //     await api.removeUserFromSemester(semesterId, userId);
+    //     this.$emit('user-remove-success');
+    //   } catch (error) {
+    //     this.$emit('user-remove-error', error);
+    //   }
+    //   this.loading = false;
+    //   // TODO: reload data
     },
-    async fetchCourses() {
-      this.loading = true;
-      try{
-        await this.$store.dispatch("fetchCourses")
-      } catch(error){
-        console.log(error);
-        this.error = error;
-      }
-      this.loading = false;
-    },
-  },
-  computed: {
-    courses() {
-      let courses = this.$store.state.courses;
-      return courses;
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true
-        };
-      }
-      if (this.hasBeenDeleted) {
-        return {
-          type: 'success',
-          text: "Předmět byl smazán",
-          show: true
-        };
-      }
-      return {
-        show: false
-      }
-    },
-  },
-  created() {
-    this.fetchCourses();
   },
 };
 </script>

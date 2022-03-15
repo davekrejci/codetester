@@ -23,8 +23,23 @@ namespace Codetester.Data
 
         // COURSES
         IEnumerable<Course> GetAllCourses();
-        Course GetCourseById(int id);
-        void CreateCourse(Course courseModel);
+        Course GetCourseByCourseCode(string coursecode);
+        void CreateCourse(Course course);
         void DeleteCourse(Course course);
+        
+        // SEMESTERS
+        IEnumerable<Semester> GetAllSemesters();
+        Semester GetSemesterById(int id);
+        void CreateSemester(Semester semester);
+        void UpdateSemester(Semester semester);
+        void DeleteSemester(Semester semester);
+
+        // EXAMS
+        IEnumerable<Exam> GetAllExams();
+        Exam GetExamById(int id);
+        void CreateExam(Exam examModel);
+        void UpdateExam(Exam examModel);
+        void DeleteExam(Exam examModel);
+
     }
 }

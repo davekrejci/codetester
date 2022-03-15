@@ -141,7 +141,7 @@
 import FillBlankCodeEditor from "@/components/FillBlankCodeEditor.vue";
 import TimeRemainingTracker from "@/components/TimeRemainingTracker.vue";
 export default {
-  name: "Exam",
+  name: "ExamInstance",
   components: {
     FillBlankCodeEditor,
     TimeRemainingTracker,

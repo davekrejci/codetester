@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AutoMapper;
 using Codetester.Data;
+using Codetester.Dtos;
 using Codetester.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,11 +28,11 @@ namespace Codetester.Controllers
             return Ok(_mapper.Map<IEnumerable<CourseReadDto>>(courses));
         }
 
-        //GET api/courses/{id}
-        [HttpGet("{id}", Name = "GetCourseById")]
-        public ActionResult<CourseReadDto> GetCourseById(int id)
+        //GET api/courses/{coursecode}
+        [HttpGet("{coursecode}", Name = "GetCourseByCourseCode")]
+        public ActionResult<CourseReadDto> GetCourseByCourseCode(string coursecode)
         {
-            var course = _repository.GetCourseById(id);
+            var course = _repository.GetCourseByCourseCode(coursecode);
             if (course == null)
             {
                 return NotFound();
@@ -43,19 +44,25 @@ namespace Codetester.Controllers
         [HttpPost]
         public ActionResult<CourseReadDto> CreateCourse(CourseCreateDto courseCreateDto)
         {
+            var course = _repository.GetCourseByCourseCode(courseCreateDto.CourseCode);
+            // Check course does not already exist
+            if (course != null)
+            {
+                return BadRequest("Course " + course.CourseName + " already exists");
+            }
             var courseModel = _mapper.Map<Course>(courseCreateDto);
             _repository.CreateCourse(courseModel);
             _repository.SaveChanges();
 
             var courseReadDto = _mapper.Map<CourseReadDto>(courseModel);
-            return CreatedAtRoute(nameof(GetCourseById), new {Id = courseReadDto.Id}, courseReadDto);
+            return CreatedAtRoute(nameof(GetCourseByCourseCode), new {CourseCode = courseReadDto.CourseCode}, courseReadDto);
         }
 
-        //DELETE api/courses/{id}
-        [HttpDelete("{id}")]
-        public ActionResult DeleteCourse(int id)
+        //DELETE api/courses/{coursecode}
+        [HttpDelete("{coursecode}")]
+        public ActionResult DeleteCourse(string coursecode)
         {
-            var course = _repository.GetCourseById(id);
+            var course = _repository.GetCourseByCourseCode(coursecode);
             if (course == null)
             {
                 return NotFound();

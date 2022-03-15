@@ -78,7 +78,7 @@ import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 
 export default {
-  name: "QuestionDesigner",
+  name: "CreateQuestion",
   components: {
     MultiChoice,
     FillInCode,
@@ -108,12 +108,14 @@ export default {
         {
           text: "Otázky",
           disabled: false,
-          to: "Questions",
+          link: true,
+          exact: true,
+          to: { name: "Questions" }
         },
         {
           text: "Nová Otázka",
           disabled: true,
-          to: "QuestionDesigner",
+          to: { name: "CreteQuestion" }
         },
       ],
     };
@@ -129,7 +131,7 @@ export default {
       this.hasSaved = false;
       this.loading = true;
       try {
-        await this.$store.dispatch('questionDesigner/createQuestion');
+        //await this.$store.dispatch('questionDesigner/createQuestion');
         this.hasSaved = true;
         this.reset();
       } catch (error) {

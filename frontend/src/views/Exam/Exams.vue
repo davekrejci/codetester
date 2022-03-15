@@ -15,7 +15,7 @@
         ></v-text-field>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <router-link :to="{ name: 'QuestionDesigner' }">
+            <router-link :to="{ name: 'CreateExam' }">
               <v-btn
                 class="mx-2"
                 depressed
@@ -29,57 +29,28 @@
               </v-btn>
             </router-link>
           </template>
-          <span>Přidat Otázku</span>
+          <span>Přidat Test</span>
         </v-tooltip>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on">
-              <v-btn class="mx-2" depressed fab disabled small color="primary">
-                <v-icon dark> mdi-cloud-upload </v-icon>
-              </v-btn>
-            </div>
-          </template>
-          <span>Nahrát Otázky</span>
-        </v-tooltip>
+        
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="questions"
+        :items="exams"
         :items-per-page="15"
         :search="search"
         :loading="loading"
         loading-text="Načítání dat..."
         no-data-text="Žádné data"
-        item-key="question"
+        item-key="exam"
         v-model="selected"
       >
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-row
-            align="center"
-            justify="space-around"
-            class="d-flex flex-nowrap"
-          >
-            <router-link
-              :to="{ name: 'Question', params: { id: item.id } }"
-              style="text-decoration: none; color: inherit"
-            >
-              <v-btn small plain icon color="primary" class="mx-1">
-                <v-icon> mdi-magnify </v-icon>
-              </v-btn>
-            </router-link>
-            <v-btn
-              @click="showDeleteDialogForItem(item.id)"
-              small
-              icon
-              plain
-              color="error"
-              class="mx-1"
-            >
-              <v-icon> mdi-delete </v-icon>
-            </v-btn>
-          </v-row>
-        </template>
-        <template v-slot:[`item.tags`]="{ item }">
+      <template v-slot:[`item.startDate`]="{ item }">
+        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
+      </template>
+      <template v-slot:[`item.endDate`]="{ item }">
+        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
+      </template>
+      <template v-slot:[`item.tags`]="{ item }">
           <div
             v-if="item.tags.length > 0"
             class="text-truncate"
@@ -92,6 +63,35 @@
             </v-slide-group>
           </div>
         </template>
+        <template v-slot:[`item.semester`]="{ item }">
+          <span>{{ item.semester.year + " " + item.semester.semesterType.displayText }}</span>
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-row
+            align="center"
+            justify="space-around"
+            class="d-flex flex-nowrap"
+          >
+            <router-link
+              :to="{ name: 'Exam', params: { id: item.id } }"
+              style="text-decoration: none; color: inherit"
+            >
+              <v-btn small plain icon color="primary" class="mx-1">
+                <v-icon> mdi-magnify </v-icon>
+              </v-btn>
+            </router-link>
+            <v-btn
+              @click="showDeleteDialogForExam(item)"
+              small
+              icon
+              plain
+              color="error"
+              class="mx-1"
+            >
+              <v-icon> mdi-delete </v-icon>
+            </v-btn>
+          </v-row>
+        </template>
       </v-data-table>
     </v-card>
 
@@ -103,7 +103,7 @@
           <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
         </v-card-title>
         <v-card-text
-          >Opravdu si přejete smazat otázku #{{ toDeleteId }}? Tato akce je
+          >Opravdu si přejete smazat test "<strong>{{ examToDelete.name }}</strong>"? Tato akce je
           nevratná.</v-card-text
         >
         <v-card-actions>
@@ -120,7 +120,7 @@
             color="error"
             class="mx-2"
             outlined
-            @click="deleteQuestion(toDeleteId)"
+            @click="deleteExam(examToDelete.id)"
           >
             Ano
           </v-btn>
@@ -128,7 +128,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
+    
   </div>
 </template>
 
@@ -136,79 +138,93 @@
 import api from "api-client";
 import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
+
 export default {
+  name: "Exams",
   components: { DefaultSnackbar },
-  name: "Questions",
   data() {
     return {
       search: "",
       loading: false,
       error: null,
       hasBeenDeleted: false,
-      toDeleteId: null,
+      examToDelete: {},
       showDeleteDialog: false,
       headers: [
-        { text: "Id", value: "id" },
-        { text: "Typ", value: "questionType" },
-        { text: "Otázka", value: "questionText" },
+        { text: "Jméno", value: "name" },
+        { text: "Status", value: "status" },
+        { text: "Předmět", value: "semester.course.courseCode" },
+        { text: "Semestr", value: "semester" },
+        { text: "Začátek", value: "startDate" },
+        { text: "Konec", value: "endDate" },
         { text: "Tagy", value: "tags" },
-        { text: "Akce", value: "actions", sortable: false },
+        { text: "Akce", value: "actions", sortable: false, width: "15" },
       ],
       selected: [],
       breadcrumbs: [
         {
-          text: "Otázky",
-          disabled: true,
-          to: "Questions",
+          text: "Testy",
+          disabled: true
         },
       ],
     };
   },
   methods: {
-    showDeleteDialogForItem(id) {
-      this.toDeleteId = id;
+    showDeleteDialogForExam(exam) {
+      this.examToDelete = exam; 
       this.showDeleteDialog = true;
     },
-    async deleteQuestion(id) {
+    async deleteExam(id) {
       this.hasBeenDeleted = false;
-      this.toDeleteId = null;
+      this.examToDelete = {};
       this.showDeleteDialog = false;
       this.error = null;
       this.loading = true;
       try {
-        await api.deleteQuestion(id);
+        await api.deleteExam(id);
         this.hasBeenDeleted = true;
-        //this.$router.push({ name: "Questions" });
       } catch (error) {
         this.error = error;
       }
-      this.fetchQuestions();
+      this.fetchExams();
     },
-    async fetchQuestions() {
+    async fetchExams() {
       this.loading = true;
       try{
-        await this.$store.dispatch("fetchQuestions")
+        await this.$store.dispatch("fetchExams")
       } catch(error){
-        console.log(error);
+        console.error(error, error.stack);
         this.error = error;
       }
       this.loading = false;
     },
   },
   computed: {
-    questions() {
-      let questions = this.$store.state.questions;
-      // change codeDescription to questionText attribute so that they can populate a single column
-      questions.forEach((question) => {
-        if (question.questionType == "fill-in-code") {
-          question.questionText = question.codeDescription;
-        }
+    exams() {
+      let exams = this.$store.state.exams;
+      exams.forEach((exam) => {
         // convert tag objects to array of strings so they are searchable in datatable
         let textOnlyTags = [];
-        question.tags.forEach((tag) => textOnlyTags.push(tag.tagText));
-        question.tags = textOnlyTags;
+        exam.tags.forEach((tag) => textOnlyTags.push(tag.tagText));
+        exam.tags = textOnlyTags;
+
+        //set semesterType displayText
+        let semesterTypeWithDisplayText = {};
+        semesterTypeWithDisplayText.value = exam.semester.semesterType;
+        if(semesterTypeWithDisplayText.value == 'winter') {
+            semesterTypeWithDisplayText.displayText = "zimní"
+        }
+        if(semesterTypeWithDisplayText.value == 'summer') {
+            semesterTypeWithDisplayText.displayText = "letní"
+        }
+        exam.semester.semesterType = semesterTypeWithDisplayText;
+
+        //set status displayText
+        if(exam.status == 'planned') {
+            exam.status = 'naplánovaný'
+        }
       });
-      return questions;
+      return exams;
     },
     snackbar() {
       if (this.error != null) {
@@ -221,7 +237,7 @@ export default {
       if (this.hasBeenDeleted) {
         return {
           type: 'success',
-          text: "Otázka byla smazána",
+          text: "Test byl smazán",
           show: true
         };
       }
@@ -231,7 +247,7 @@ export default {
     },
   },
   created() {
-    this.fetchQuestions();
+    this.fetchExams();
   },
 };
 </script>

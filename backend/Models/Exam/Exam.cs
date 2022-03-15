@@ -19,7 +19,7 @@ namespace Codetester.Models
         public DateTime StartDate { get; set; }
         
         [Required]
-        public DateTime EndDate { get; set; } 
+        public DateTime EndDate { get; set; }
         
         [Required]
         public Semester Semester { get; set; }
@@ -31,6 +31,7 @@ namespace Codetester.Models
         
         public Exam(){
             this.Tags = new List<Tag>();
+            this.Questions = new List<Question>();
         }
 
         

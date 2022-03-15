@@ -10,11 +10,15 @@ export default new Vuex.Store({
     courses : [],
     users: [],
     questions: [],
+    exams: [],
     tags: [],
   },
   mutations: {
     setCourses (state, courses) {
       state.courses = courses
+    },
+    setExams (state, exams) {
+      state.exams = exams
     },
     setUsers (state, users) {
       state.users = users
@@ -33,6 +37,11 @@ export default new Vuex.Store({
         .fetchCourses()
         .then(courses => commit('setCourses', courses))
     },
+    fetchExams ({ commit }) {
+      return client
+        .fetchExams()
+        .then(exams => commit('setExams', exams))
+    },
     fetchUsers ({ commit }) {
       return client
         .fetchUsers()
@@ -48,6 +57,22 @@ export default new Vuex.Store({
         .fetchTags()
         .then(tags => commit('setTags', tags))
     },
+  },
+  getters: {
+    getCoursesWithoutSemesters(state) {
+      // eslint-disable-next-line
+      return state.courses.map(({semesters, ...course}) => course);
+    },
+    getCourseByCourseCode: (state) => (coursecode) => {
+      // eslint-disable-next-line
+      return state.courses.find(course => course.courseCode == coursecode);
+    },
+    getSemester: (state) => (courseCode, year, semesterType) => {
+      let course =  state.courses.find(course => course.courseCode == courseCode);
+      console.log(course);
+      let semester = course.semesters.find(semester => semester.year == year && semester.semesterType == semesterType)
+      return semester;
+    }
   },
   modules: {
     questionDesigner,

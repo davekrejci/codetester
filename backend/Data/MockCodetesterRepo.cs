@@ -11,12 +11,22 @@ namespace Codetester.Data
             throw new System.NotImplementedException();
         }
 
-        public void CreateCourse(Course courseModel)
+        public void CreateCourse(Course course)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void CreateExam(Exam examModel)
         {
             throw new System.NotImplementedException();
         }
 
         public void CreateQuestion(Question question)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void CreateSemester(Semester semester)
         {
             throw new System.NotImplementedException();
         }
@@ -31,12 +41,27 @@ namespace Codetester.Data
             throw new System.NotImplementedException();
         }
 
+        public void DeleteExam(Exam examModel)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void DeleteQuestion(Question question)
         {
             throw new System.NotImplementedException();
         }
 
+        public void DeleteSemester(Semester semester)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IEnumerable<Course> GetAllCourses()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<Exam> GetAllExams()
         {
             throw new System.NotImplementedException();
         }
@@ -71,7 +96,17 @@ namespace Codetester.Data
             return questions;
         }
 
-        public Course GetCourseById(int id)
+        public IEnumerable<Semester> GetAllSemesters()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Course GetCourseByCourseCode(string coursecode)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Exam GetExamById(int id)
         {
             throw new System.NotImplementedException();
         }
@@ -92,7 +127,17 @@ namespace Codetester.Data
                 };
         }
 
+        public Semester GetSemesterById(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool SaveChanges()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void UpdateExam(Exam examModel)
         {
             throw new System.NotImplementedException();
         }
@@ -103,6 +148,11 @@ namespace Codetester.Data
         }
 
         public void UpdateQuestion(Question question, QuestionUpdateDto questionUpdateDTO)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void UpdateSemester(Semester semester)
         {
             throw new System.NotImplementedException();
         }

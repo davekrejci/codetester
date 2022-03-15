@@ -125,11 +125,7 @@
               ></v-progress-circular>
             </v-overlay>
           </v-card>
-          <v-card
-            flat
-            outlined
-            class="mt-2 px-12 py-4"
-          >
+          <v-card flat outlined class="mt-2 px-12 py-4">
             <v-slider
               hint="Počet bloků, které student bude muset doplnit(náhodný výběr)"
               v-model="this.question.fillCount"
@@ -237,7 +233,11 @@
         </v-btn>
       </v-form>
     </div>
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
+    <default-snackbar
+      :type="snackbar.type"
+      :text="snackbar.text"
+      v-on:close-snackbar="error = null"
+    ></default-snackbar>
   </v-container>
 </template>
 
@@ -258,8 +258,7 @@ import "codemirror/addon/edit/closebrackets.js";
 import "codemirror/addon/edit/matchbrackets.js";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
-
+import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 const WidgetComponentClass = Vue.extend(FillableWidget);
 
@@ -282,12 +281,13 @@ export default {
         {
           text: "Otázky",
           disabled: false,
-          to: "/questions",
+          link: true,
+          exact: true,
+          to: { name: "Questions" }
         },
         {
           text: "Otázka #" + this.$route.params.id,
-          disabled: true,
-          to: "/question/" + this.$route.params.id,
+          disabled: true
         },
       ],
     };
@@ -328,17 +328,14 @@ export default {
       this.loading = true;
       try {
         this.question = await api.fetchQuestion(this.$route.params.id);
-        if(this.question && this.question.questionType === 'fill-in-code'){
+        if (this.question && this.question.questionType === "fill-in-code") {
           this.initCodemirror();
         }
       } catch (error) {
-        if (error.response.status === 404) {
-          this.$router.replace({
-            name: "NotFound",
-            params: { 0: this.$route.path },
-          });
-        }
-        this.error = error;
+        this.$router.replace({
+          name: "NotFound",
+          params: { 0: this.$route.path },
+        });
       }
       this.loading = false;
     },
@@ -425,19 +422,19 @@ export default {
         return {
           type: "error",
           text: this.error.toString(),
-          show: true
+          show: true,
         };
       }
       if (this.hasSaved) {
         return {
-          type: 'success',
+          type: "success",
           text: "Otázka byla uložena",
-          show: true
+          show: true,
         };
       }
       return {
-        show: false
-      }
+        show: false,
+      };
     },
   },
   watch: {
@@ -461,7 +458,6 @@ export default {
     this.fetchQuestion();
   },
   created() {
-    
     /** needed if <router-view> is not :keyed - (going for simplicity over performance atm, don't mind reloading component for each route)
       //watch the params of the route to fetch the data again
       this.$watch(
@@ -473,8 +469,7 @@ export default {
         // already being observed
         { immediate: true }
     );
-     * */ 
-
+     * */
   },
 };
 </script>

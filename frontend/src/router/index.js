@@ -7,85 +7,97 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: () => import('@/views/Login.vue')
   },
   {
-    path: '/exam/:id',
-    name: 'Exam',
-    component: () => import('../views/Exam.vue')
+    path: '/examinstance/:id',
+    name: 'ExamInstance',
+    component: () => import('@/views/ExamInstance.vue')
   },
   {
     path: '/',
-    component: () => import('../views/Dashboard.vue'),
+    component: () => import('@/views/Dashboard.vue'),
     redirect: '/myexams',
     children: [
       {
         path: 'myexams',
         name: 'MyExams',
-        component: () => import('../views/MyExams.vue')
-    
-      },
-      {
-        path: 'exams',
-        name: 'Exams',
-        component: () => import('../views/Exams.vue')
+        component: () => import('@/views/MyExams.vue')
     
       },
       {
         path: 'settings',
         name: 'Settings',
-        component: () => import('../views/Settings.vue')
+        component: () => import('@/views/Settings.vue')
       },
       {
-        path: 'exam-detail/:id',
+        path: 'exams',
+        name: 'Exams',
+        component: () => import('@/views/Exam/Exams.vue')
+    
+      },
+      {
+        path: 'exams/create',
+        name: 'CreateExam',
+        component: () => import('@/views/Exam/CreateExam.vue')
+      },
+      {
+        path: 'exams/:id',
         name: 'ExamDetail',
-        component: () => import('../views/ExamDetail.vue')
+        component: () => import('@/views/Exam/Exam.vue')
       },
       {
         path: 'courses',
         name: 'Courses',
-        component: () => import('../views/Courses.vue')
+        component: () => import('@/views/Course/Courses.vue')
       },
       {
-        path: 'course/:id',
+        path: 'courses/create',
+        name: 'CreateCourse',
+        component: () => import('@/views/Course/CreateCourse.vue')
+      },
+      {
+        path: 'courses/:coursecode',
         name: 'Course',
-        component: () => import('../views/Course.vue')
+        component: () => import('@/views/Course/Course.vue')
     
       },
       {
-        path: 'course/create',
-        name: 'CreateCourse',
-        component: () => import('../views/CreateCourse.vue')
+        path: 'courses/:coursecode/create/semester',
+        name: 'CreateSemester',
+        component: () => import('@/views/Semester/CreateSemester.vue')
       },
+      {
+        path: 'semesters/:id',
+        name: 'Semester',
+        component: () => import('@/views/Semester/Semester.vue'),
+      },
+      // {
+      //   path: 'courses/:id/:year/:semester',
+      //   name: 'Semester',
+      //   component: () => import('@/views/Semester/Semester.vue')
+      // },
       {
         path: 'questions',
         name: 'Questions',
-        component: () => import('../views/Questions.vue'),
+        component: () => import('@/views/Question/Questions.vue'),
     
       },
       {
-        path: 'question/:id',
+        path: 'questions/create',
+        name: 'CreateQuestion',
+        component: () => import('@/views/Question/CreateQuestion.vue')
+      },
+      {
+        path: 'questions/:id',
         name: 'Question',
-        component: () => import('../views/Question.vue'),
-    
-      },
-      {
-        path: 'questiondesigner',
-        name: 'QuestionDesigner',
-        component: () => import('../views/QuestionDesigner.vue')
+        component: () => import('@/views/Question/Question.vue'),
     
       },
       {
         path: 'users',
         name: 'Users',
-        component: () => import('../views/Users.vue')
-    
-      },
-      {
-        path: 'examdesigner',
-        name: 'Exam Designer',
-        component: () => import('../views/ExamDesigner.vue')
-    
+        component: () => import('@/views/User/Users.vue')
       },
     ]
   },
@@ -93,12 +105,12 @@ const routes = [
   {
     path: '*',
     name: 'NotFound',
-    component: () => import('../views/404.vue')
+    component: () => import('@/views/404.vue')
   }
 ]
 
 const router = new VueRouter({
-  //mode: 'history',
+  mode: 'history',
   routes
 })
 

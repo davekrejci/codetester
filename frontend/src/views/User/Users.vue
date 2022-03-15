@@ -22,7 +22,7 @@
         :loading="loading"
         loading-text="Načítání dat..."
         >
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
             <router-link :to="{ name: 'UserDetail', params: { id: item.id } }">
         <v-btn fab depressed x-small color="primary" class="mx-1">
                 <v-icon

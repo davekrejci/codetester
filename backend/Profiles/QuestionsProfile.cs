@@ -22,6 +22,13 @@ namespace Codetester.Profiles
             CreateMap<MultiChoiceQuestion, MultiChoiceQuestionReadDto>();
             CreateMap<FillInCodeQuestion, FillInCodeQuestionReadDto>();
 
+            CreateMap<QuestionReadDto, Question>();
+            //     .Include<MultiChoiceQuestionReadDto, MultiChoiceQuestion>()
+            //     .Include<FillInCodeQuestionReadDto, FillInCodeQuestion>();
+
+            // CreateMap<MultiChoiceQuestionReadDto, MultiChoiceQuestion>();
+            // CreateMap<FillInCodeQuestionReadDto, FillInCodeQuestion>();
+
             // Create DTOs
             CreateMap<QuestionCreateDto, Question>()
                     .ForMember(q => q.Tags, opt => opt.Ignore());

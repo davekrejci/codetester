@@ -69,12 +69,16 @@ export default {
         {
           text: "Předměty",
           disabled: false,
-          to: "/courses",
+          link: true,
+          exact: true,
+          to: { name: "Courses" }
         },
         {
           text: "Nový Předmět",
           disabled: true,
-          to: "/courses/create",
+          link: true,
+          exact: true,
+          to: { name: "CreateCourses" }
         },
       ],
     };
