@@ -168,7 +168,7 @@
         :max="this.widgets.length == 0 ? 1 : this.widgets.length"
         min="1"
         thumb-label
-        ticks="true"
+        ticks
         tick-size="4"
         persistent-hint
       >

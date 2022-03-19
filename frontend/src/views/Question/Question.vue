@@ -131,7 +131,7 @@
               v-model="this.question.fillCount"
               thumb-label
               :max="this.question.fillInCodeBlocks.length"
-              ticks="true"
+              ticks
               tick-size="4"
               persistent-hint
               readonly
