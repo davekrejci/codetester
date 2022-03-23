@@ -131,7 +131,7 @@ export default {
       this.hasSaved = false;
       this.loading = true;
       try {
-        //await this.$store.dispatch('questionDesigner/createQuestion');
+        await this.$store.dispatch('questionDesigner/createQuestion');
         this.hasSaved = true;
         this.reset();
       } catch (error) {
