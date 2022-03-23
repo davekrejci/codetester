@@ -16,6 +16,7 @@
         </v-card-title>
         <v-data-table
         :headers="headers"
+        dense
         :items="users"
         :items-per-page="5"
         :search="search"

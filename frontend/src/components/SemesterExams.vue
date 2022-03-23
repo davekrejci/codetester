@@ -36,11 +36,40 @@
         v-model="selected"
       >
       <template v-slot:[`item.startDate`]="{ item }">
-        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <div
+            v-bind="attrs"
+                v-on="on"
+            >{{ moment.utc(item.startDate).local().format('LLL') }}</div>
+          </template>
+          <span>{{ moment.utc(item.startDate).local().fromNow() }}</span>
+        </v-tooltip>
       </template>
       <template v-slot:[`item.endDate`]="{ item }">
-        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <div
+            v-bind="attrs"
+                v-on="on"
+            >{{ moment.utc(item.endDate).local().format('LLL') }}</div>
+          </template>
+          <span>{{ moment.utc(item.endDate).local().fromNow() }}</span>
+        </v-tooltip>
       </template>
+      <template v-slot:[`item.tags`]="{ item }">
+          <div
+            v-if="item.tags.length > 0"
+            class="text-truncate"
+            style="max-width: 400px"
+          >
+            <v-slide-group show-arrows="always">
+              <v-chip small v-for="tag in item.tags" :key="tag.tagText" class="mx-1">
+                {{ tag.tagText }}
+              </v-chip>
+            </v-slide-group>
+          </div>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row
             align="center"
@@ -108,6 +137,9 @@
 
 <script>
 //import api from "api-client";
+import moment from 'moment';
+
+moment.locale('cs');
 
 export default {
   name: "SemesterExams",
@@ -116,6 +148,7 @@ export default {
   },
   data() {
     return {
+      moment: moment,
       search: "",
       loading: false,
       examToDelete: {},

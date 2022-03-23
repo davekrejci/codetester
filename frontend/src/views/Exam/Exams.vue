@@ -31,10 +31,10 @@
           </template>
           <span>Přidat Test</span>
         </v-tooltip>
-        
       </v-card-title>
       <v-data-table
         :headers="headers"
+        dense
         :items="exams"
         :items-per-page="15"
         :search="search"
@@ -43,28 +43,54 @@
         no-data-text="Žádné data"
         item-key="exam"
         v-model="selected"
+        :custom-filter="customFilter"
       >
-      <template v-slot:[`item.startDate`]="{ item }">
-        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
-      </template>
-      <template v-slot:[`item.endDate`]="{ item }">
-        <span>{{ new Date(item.startDate).toLocaleString('cs-CZ') }}</span>
-      </template>
-      <template v-slot:[`item.tags`]="{ item }">
+        <template v-slot:[`item.startDate`]="{ item }">
+          <v-tooltip top content-class="custom-tooltip">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                {{ moment.utc(item.startDate).local().format("LLL") }}
+              </div>
+            </template>
+            <span>{{ moment.utc(item.startDate).local().fromNow() }}</span>
+          </v-tooltip>
+        </template>
+        <template v-slot:[`item.endDate`]="{ item }">
+          <v-tooltip top content-class="custom-tooltip">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                {{ moment.utc(item.endDate).local().format("LLL") }}
+              </div>
+            </template>
+            <span>{{ moment.utc(item.endDate).local().fromNow() }}</span>
+          </v-tooltip>
+        </template>
+        <template v-slot:[`item.status`]="{ item }">
+          <v-avatar left size="5" class="mr-1" :color="statusIndicatorColor(item.status)"> </v-avatar>
+          {{ item.status }}
+        </template>
+        <template v-slot:[`item.tags`]="{ item }">
           <div
             v-if="item.tags.length > 0"
             class="text-truncate"
             style="max-width: 400px"
           >
             <v-slide-group show-arrows="always">
-              <v-chip v-for="tag in item.tags" :key="tag" class="mx-1">
-                {{ tag }}
+              <v-chip
+                small
+                v-for="tag in item.tags"
+                :key="tag.tagText"
+                class="mx-1"
+              >
+                {{ tag.tagText }}
               </v-chip>
             </v-slide-group>
           </div>
         </template>
         <template v-slot:[`item.semester`]="{ item }">
-          <span>{{ item.semester.year + " " + item.semester.semesterType.displayText }}</span>
+          <span>{{
+            item.semester.year + " " + item.semester.semesterType.displayText
+          }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row
@@ -103,8 +129,10 @@
           <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
         </v-card-title>
         <v-card-text
-          >Opravdu si přejete smazat test "<strong>{{ examToDelete.name }}</strong>"? Tato akce je
-          nevratná.</v-card-text
+          >Opravdu si přejete smazat test "<strong>{{
+            examToDelete.name
+          }}</strong
+          >"? Tato akce je nevratná.</v-card-text
         >
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -129,21 +157,27 @@
       </v-card>
     </v-dialog>
 
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
-    
+    <default-snackbar
+      :type="snackbar.type"
+      :text="snackbar.text"
+      v-on:close-snackbar="error = null"
+    ></default-snackbar>
   </div>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
+import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
+import moment from "moment";
 
+moment.locale("cs");
 
 export default {
   name: "Exams",
   components: { DefaultSnackbar },
   data() {
     return {
+      moment: moment,
       search: "",
       loading: false,
       error: null,
@@ -164,14 +198,27 @@ export default {
       breadcrumbs: [
         {
           text: "Testy",
-          disabled: true
+          disabled: true,
         },
       ],
     };
   },
   methods: {
+    customFilter(value, search, item) {
+      let tagTexts = item.tags.map((tag) => tag.tagText);
+      return (
+        (value != null &&
+          search != null &&
+          typeof value !== "boolean" &&
+          value
+            .toString()
+            .toLocaleLowerCase()
+            .indexOf(search.toLocaleLowerCase()) !== -1) ||
+        tagTexts.some((tagText) => tagText.includes(search))
+      );
+    },
     showDeleteDialogForExam(exam) {
-      this.examToDelete = exam; 
+      this.examToDelete = exam;
       this.showDeleteDialog = true;
     },
     async deleteExam(id) {
@@ -190,60 +237,48 @@ export default {
     },
     async fetchExams() {
       this.loading = true;
-      try{
-        await this.$store.dispatch("fetchExams")
-      } catch(error){
+      try {
+        await this.$store.dispatch("fetchExams");
+      } catch (error) {
         console.error(error, error.stack);
         this.error = error;
       }
       this.loading = false;
     },
+    statusIndicatorColor(status) {
+      switch(status) {
+        case "planned":
+          return "primary";
+        case "open":
+          return "warning"
+        case "closed":
+          return "success"
+        default: return "grey"
+      }
+    }
   },
   computed: {
     exams() {
-      let exams = this.$store.state.exams;
-      exams.forEach((exam) => {
-        // convert tag objects to array of strings so they are searchable in datatable
-        let textOnlyTags = [];
-        exam.tags.forEach((tag) => textOnlyTags.push(tag.tagText));
-        exam.tags = textOnlyTags;
-
-        //set semesterType displayText
-        let semesterTypeWithDisplayText = {};
-        semesterTypeWithDisplayText.value = exam.semester.semesterType;
-        if(semesterTypeWithDisplayText.value == 'winter') {
-            semesterTypeWithDisplayText.displayText = "zimní"
-        }
-        if(semesterTypeWithDisplayText.value == 'summer') {
-            semesterTypeWithDisplayText.displayText = "letní"
-        }
-        exam.semester.semesterType = semesterTypeWithDisplayText;
-
-        //set status displayText
-        if(exam.status == 'planned') {
-            exam.status = 'naplánovaný'
-        }
-      });
-      return exams;
+      return this.$store.state.exams;
     },
     snackbar() {
       if (this.error != null) {
         return {
           type: "error",
           text: this.error.toString(),
-          show: true
+          show: true,
         };
       }
       if (this.hasBeenDeleted) {
         return {
-          type: 'success',
+          type: "success",
           text: "Test byl smazán",
-          show: true
+          show: true,
         };
       }
       return {
-        show: false
-      }
+        show: false,
+      };
     },
   },
   created() {
@@ -253,4 +288,7 @@ export default {
 </script>
 
 <style>
+.custom-tooltip {
+  opacity: 1 !important;
+}
 </style>

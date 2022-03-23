@@ -35,6 +35,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
+        dense
         :items="courses"
         :items-per-page="15"
         :search="search"

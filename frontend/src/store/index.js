@@ -18,6 +18,23 @@ export default new Vuex.Store({
       state.courses = courses
     },
     setExams (state, exams) {
+      exams.forEach((exam) => {
+        //set semesterType displayText
+        let semesterTypeWithDisplayText = {};
+        semesterTypeWithDisplayText.value = exam.semester.semesterType;
+        if (semesterTypeWithDisplayText.value == "winter") {
+          semesterTypeWithDisplayText.displayText = "zimní";
+        }
+        if (semesterTypeWithDisplayText.value == "summer") {
+          semesterTypeWithDisplayText.displayText = "letní";
+        }
+        exam.semester.semesterType = semesterTypeWithDisplayText;
+
+        //set status displayText
+        // if (exam.status == "planned") {
+        //   exam.status = "naplánovaný";
+        // }
+      });
       state.exams = exams
     },
     setUsers (state, users) {
@@ -64,8 +81,10 @@ export default new Vuex.Store({
       return state.courses.map(({semesters, ...course}) => course);
     },
     getCourseByCourseCode: (state) => (coursecode) => {
-      // eslint-disable-next-line
       return state.courses.find(course => course.courseCode == coursecode);
+    },
+    getExamById: (state) => (id) => {
+      return state.exams.find(exam => exam.id == id);
     },
     getSemester: (state) => (courseCode, year, semesterType) => {
       let course =  state.courses.find(course => course.courseCode == courseCode);

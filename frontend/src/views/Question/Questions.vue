@@ -44,6 +44,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
+        dense
         :items="questions"
         :items-per-page="15"
         :search="search"
@@ -52,6 +53,7 @@
         no-data-text="Žádné data"
         item-key="question"
         v-model="selected"
+        :custom-filter="customFilter"
       >
         <template v-slot:[`item.actions`]="{ item }">
           <v-row
@@ -86,8 +88,8 @@
             style="max-width: 400px"
           >
             <v-slide-group show-arrows="always">
-              <v-chip v-for="tag in item.tags" :key="tag" class="mx-1">
-                {{ tag }}
+              <v-chip small v-for="tag in item.tags" :key="tag.tagText" class="mx-1">
+                {{ tag.tagText }}
               </v-chip>
             </v-slide-group>
           </div>
@@ -165,6 +167,19 @@ export default {
     };
   },
   methods: {
+    customFilter(value, search, item) {
+      let tagTexts = item.tags.map(tag => tag.tagText);
+      return (
+        value != null &&
+        search != null &&
+        typeof value !== "boolean" &&
+        value
+          .toString()
+          .toLocaleLowerCase()
+          .indexOf(search.toLocaleLowerCase()) !== -1 || tagTexts.some(tagText => tagText.includes(search)
+        )
+      );
+    },
     showDeleteDialogForItem(id) {
       this.toDeleteId = id;
       this.showDeleteDialog = true;
@@ -203,10 +218,6 @@ export default {
         if (question.questionType == "fill-in-code") {
           question.questionText = question.codeDescription;
         }
-        // convert tag objects to array of strings so they are searchable in datatable
-        let textOnlyTags = [];
-        question.tags.forEach((tag) => textOnlyTags.push(tag.tagText));
-        question.tags = textOnlyTags;
       });
       return questions;
     },
