@@ -137,7 +137,7 @@ namespace Codetester.Data
         public Semester GetSemesterById(int id)
         {
             return _context.Semesters
-                            .Include("Exams")
+                            .Include("Exams.Tags")
                             .Include("EnrolledStudents")
                             .Include("Course")
                             .FirstOrDefault(s => s.Id == id);
@@ -168,7 +168,7 @@ namespace Codetester.Data
         public IEnumerable<Exam> GetAllExams()
         {
             return _context.Exams
-                            .Include("Questions")
+                            .Include("Questions.Tags")
                             .Include("Tags")
                             .Include("Semester.Course")
                             .ToList();
@@ -176,8 +176,9 @@ namespace Codetester.Data
         public Exam GetExamById(int id)
         {
             return _context.Exams
-                            .Include("Questions")
+                            .Include("Questions.Tags")
                             .Include("Tags")
+                            .Include("Semester.Course")
                             .FirstOrDefault(e => e.Id == id);
         }
         public void CreateExam(Exam exam)
