@@ -12,6 +12,10 @@ namespace Codetester.Profiles
             CreateMap<ExamCreateDto, Exam>()
                 .ForMember(e => e.Tags, opt => opt.Ignore())
                 .ForMember(e => e.Questions, opt => opt.Ignore());
+
+            CreateMap<ExamUpdateDto, Exam>()
+                .ForMember(e => e.Tags, opt => opt.Ignore())
+                .ForMember(e => e.Questions, opt => opt.Ignore());
         }
     }
 }
