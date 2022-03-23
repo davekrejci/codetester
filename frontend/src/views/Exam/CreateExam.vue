@@ -14,7 +14,7 @@
 
       <v-row>
         <!-- Course selector -->
-        <v-col>
+        <v-col  class="py-0">
           <v-autocomplete
             v-model="exam.course"
             :items="courses"
@@ -40,7 +40,7 @@
           </v-autocomplete>
         </v-col>
         <!-- Semester selector -->
-        <v-col v-if="exam.course"> 
+        <v-col v-if="exam.course"  class="py-0">
           <v-autocomplete
             v-model="exam.semesterId"
             :items="exam.course.semesters"
@@ -53,12 +53,12 @@
             outlined
             :rules="[rules.required]"
           >
-          <template slot="item" slot-scope="data">
-            {{ data.item.year }} - {{ data.item.semesterType }}
-          </template>
-          <template slot="selection" slot-scope="data">
-            {{ data.item.year }} - {{ data.item.semesterType }}
-          </template>
+            <template slot="item" slot-scope="data">
+              {{ data.item.year }} - {{ data.item.semesterType }}
+            </template>
+            <template slot="selection" slot-scope="data">
+              {{ data.item.year }} - {{ data.item.semesterType }}
+            </template>
             <template v-slot:no-data>
               <v-list-item>
                 <v-list-item-content>
@@ -72,6 +72,82 @@
           </v-autocomplete>
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col class="py-0">
+          <v-datetime-picker
+            label="Začátek testu"
+            v-model="exam.startTime"
+            :textFieldProps="{
+              outlined: true,
+              rules: [rules.required, rules.minimumStartTime],
+            }"
+            :datePickerProps="{
+              locale: 'cs-CZ',
+            }"
+            :timePickerProps="{
+              format: '24hr',
+            }"
+          >
+            <template slot="dateIcon">
+              <v-icon>mdi-calendar</v-icon>
+            </template>
+            <template slot="timeIcon">
+              <v-icon>mdi-clock-outline</v-icon>
+            </template>
+            <template slot="actions" slot-scope="{ parent }">
+              <v-btn
+                outlined
+                color="error lighten-1"
+                @click.native="parent.clearHandler"
+                >Smazat</v-btn
+              >
+              <v-btn color="primary darken-1" @click="parent.okHandler"
+                >Ok</v-btn
+              >
+            </template>
+          </v-datetime-picker>
+        </v-col>
+        <v-col class="py-0">
+          <v-datetime-picker
+            label="Konec testu"
+            v-model="exam.endTime"
+            :disabled="!this.exam.startTime"
+            :textFieldProps="{
+              outlined: true,
+              rules: [rules.required, rules.minimumEndTime],
+            }"
+            :datePickerProps="{
+              locale: 'cs-CZ',
+            }"
+            :timePickerProps="{ format: '24hr' }"
+          >
+            <template slot="dateIcon">
+              <v-icon>mdi-calendar</v-icon>
+            </template>
+            <template slot="timeIcon">
+              <v-icon>mdi-clock-outline</v-icon>
+            </template>
+            <template slot="actions" slot-scope="{ parent }">
+              <v-btn
+                outlined
+                color="error lighten-1"
+                @click.native="parent.clearHandler"
+                >Smazat</v-btn
+              >
+              <v-btn color="primary darken-1" @click="parent.okHandler"
+                >Ok</v-btn
+              >
+            </template>
+          </v-datetime-picker>
+        </v-col>
+      </v-row>
+
+      <!-- Question selector -->
+      <exam-questions
+        ref="examQuestions"
+        v-on:selectedQuestionsChanged="updateSelectedQuestions"
+      ></exam-questions>
 
       <!-- Tag selector -->
       <v-combobox
@@ -134,12 +210,14 @@
 <script>
 import api from "api-client";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
+import ExamQuestions from "@/components/ExamQuestions.vue";
 
 export default {
-  components: { DefaultSnackbar },
+  components: { DefaultSnackbar, ExamQuestions },
   name: "CreateExam",
   data() {
     return {
+      currentDatetime: new Date(),
       searchTags: "",
       searchCourses: "",
       searchSemesters: "",
@@ -150,9 +228,18 @@ export default {
         name: "",
         semesterId: null,
         tags: [],
+        startTime: null,
+        endTime: null,
+        questions: [],
       },
       rules: {
         required: (value) => !!value || "Povinné.",
+        minimumStartTime: (value) =>
+          new Date(value) > this.currentDatetime ||
+          "Zvolený čas musí být větší než současný čas",
+        minimumEndTime: (value) =>
+          new Date(value) > this.exam.startTime ||
+          "Konec testu nemůže být dřív než začátek",
       },
       breadcrumbs: [
         {
@@ -175,25 +262,78 @@ export default {
     },
     reset() {
       this.$refs.createExamForm.reset();
+      this.$refs.examQuestions.selectedQuestions = [];
+    },
+    // allowedStartDates(val) {
+    //   let date = new Date(val).getDate();
+    //   let today = new Date().getDate();
+    //   return date >= today;
+    // },
+    // allowedStartHours(val) {
+    //   let currentHours = new Date().getHours();
+    //   return val >= currentHours;
+    // },
+    // allowedStartMinutes(val) {
+    //   let currentMinute = new Date().getMinutes();
+    //   return val >= currentMinute;
+    // },
+    // allowedEndHours(val) {
+    //   let startHour = new Date(this.exam.startTime).getHours();
+    //   return val >= startHour;
+    // },
+    // allowedEndMinutes(val) {
+    //   let startMinute = new Date(this.exam.startTime).getMinutes();
+    //   return val >= startMinute;
+    // },
+    // allowedEndDates(val) {
+    //   let date = new Date(val).getDate();
+    //   let today = new Date().getDate();
+    //   return date >= today;
+    // },
+    getCurrentTime() {
+      const today = new Date();
+      this.currentDatetime = today;
+    },
+    updateSelectedQuestions(questions) {
+      this.exam.questions = questions;
     },
     async createExam() {
       let isFormValid = this.validate();
+      console.log(isFormValid);
       if (!isFormValid) return;
+      console.log("got past validity check");
       this.hasSaved = false;
       this.loading = true;
       try {
-        await api.createExam(this.exam);
+      console.log("trying api ...");
+        let questionIds = this.exam.questions.map(question => question.id);
+        let examCreateDto = {
+          name: this.exam.name,
+          startDate: this.exam.startTime,
+          endDate: this.exam.endTime,
+          semesterId: this.exam.semesterId,
+          questionIds: questionIds,
+          tags: this.exam.tags
+        }
+        console.log(examCreateDto);
+        console.log(JSON.stringify(examCreateDto));
+        await api.createExam(examCreateDto);
+        console.log("api called");
         this.hasSaved = true;
         this.reset();
       } catch (error) {
         console.log(error);
         this.error = error;
       }
+      console.log("finalizing ...");
       this.loading = false;
       window.scrollTo(0, 0);
     },
   },
   computed: {
+    currentDateTime() {
+      return new Date();
+    },
     snackbar() {
       if (this.error != null) {
         return {
@@ -249,6 +389,8 @@ export default {
     if (this.$store.state.courses.length == 0) {
       this.$store.dispatch("fetchCourses");
     }
+    // update current time
+    setInterval(this.getCurrentTime, 1000);
   },
 };
 </script>

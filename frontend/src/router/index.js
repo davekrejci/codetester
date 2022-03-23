@@ -43,7 +43,7 @@ const routes = [
       },
       {
         path: 'exams/:id',
-        name: 'ExamDetail',
+        name: 'Exam',
         component: () => import('@/views/Exam/Exam.vue')
       },
       {
@@ -72,11 +72,6 @@ const routes = [
         name: 'Semester',
         component: () => import('@/views/Semester/Semester.vue'),
       },
-      // {
-      //   path: 'courses/:id/:year/:semester',
-      //   name: 'Semester',
-      //   component: () => import('@/views/Semester/Semester.vue')
-      // },
       {
         path: 'questions',
         name: 'Questions',

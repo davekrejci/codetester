@@ -85,6 +85,23 @@ export default {
         console.log(response.data);
         return response.data
     },
+    async fetchExam(id) {
+        const url = "exams/" + id;
+        const response = await axios.get(url);
+        return response.data
+    },
+    async createExam(exam) {
+        const url = "exams";
+        console.log(JSON.stringify(exam));
+        let response = await axios.post(url, exam);
+        console.log(response)
+    },
+    async updateExam(id, exam) {
+        const url = "exams/" + id;
+        console.log(JSON.stringify(exam));
+        let response = await axios.put(url, exam);
+        console.log(response)
+    },
     async deleteExam(id) {
         const url = "exams/" + id;
         const response = await axios.delete(url);
