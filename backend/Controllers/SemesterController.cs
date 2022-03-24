@@ -5,10 +5,12 @@ using AutoMapper;
 using Codetester.Data;
 using Codetester.Dtos;
 using Codetester.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Codetester.Controllers
 {
+    [Authorize]
     [Route("api/semesters")]
     [ApiController]
     public class SemestersController : ControllerBase

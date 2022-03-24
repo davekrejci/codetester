@@ -41,5 +41,12 @@ namespace Codetester.Data
         void UpdateExam(Exam examModel);
         void DeleteExam(Exam examModel);
 
+        // USERS
+        IEnumerable<User> GetAllUsers();
+        User GetUserById(int id);
+        User GetUserByUsername(string username);
+        void CreateUser(User user);
+        void DeleteUser(User user);
+
     }
 }

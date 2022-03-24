@@ -4,12 +4,14 @@ using AutoMapper;
 using Codetester.Data;
 using Codetester.Dtos;
 using Codetester.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Codetester.Controllers
 {
+    [Authorize]
     [Route("api/questions")]
     [ApiController]
     public class QuestionsController : ControllerBase
