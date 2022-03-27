@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using AutoMapper;
 using Codetester.Data;
 using Codetester.Dtos;
@@ -67,7 +64,7 @@ namespace Codetester.Controllers
             var userModel = _mapper.Map<User>(userCreateDto);
 
             // hash password
-            CreatePasswordHash(userCreateDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            AuthUtil.CreatePasswordHash(userCreateDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
             userModel.PasswordHash = passwordHash;
             userModel.PasswordSalt = passwordSalt;
 
@@ -104,7 +101,7 @@ namespace Codetester.Controllers
                 return BadRequest("User not found");
             }
             // verify password
-            var isPasswordValid = VerifyPasswordHash(userLoginDto.Password, userModel.PasswordHash, userModel.PasswordSalt);
+            var isPasswordValid = AuthUtil.VerifyPasswordHash(userLoginDto.Password, userModel.PasswordHash, userModel.PasswordSalt);
             if(!isPasswordValid)
             {
                 return BadRequest("Wrong password");
@@ -115,37 +112,13 @@ namespace Codetester.Controllers
             return Ok(userLoginReadDto);
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using(var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using(var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if(computedHash[i] != passwordHash[i])
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
