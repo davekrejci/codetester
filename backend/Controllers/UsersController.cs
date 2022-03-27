@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Codetester.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Teacher")]
     [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase

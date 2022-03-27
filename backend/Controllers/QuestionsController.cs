@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Codetester.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Teacher")]
     [Route("api/questions")]
     [ApiController]
     public class QuestionsController : ControllerBase

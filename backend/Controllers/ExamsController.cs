@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Codetester.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Teacher")]
     [Route("api/exams")]
     [ApiController]
     public class ExamsController : ControllerBase

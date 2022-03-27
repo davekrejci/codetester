@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Codetester.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Teacher")]
     [Route("api/courses")]
     [ApiController]
     public class CoursesController : ControllerBase
