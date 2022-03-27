@@ -29,6 +29,10 @@ namespace Codetester.Data
             modelBuilder.Entity<MultiChoiceQuestion>().ToTable("MultiChoiceQuestions");
             modelBuilder.Entity<FillInCodeQuestion>().ToTable("FillInCodeQuestions");
 
+            // Set default user role
+            modelBuilder.Entity<User>()
+                .Property(user => user.Role).HasDefaultValue("Student");
+
             // Seed admin user
             AuthUtil.CreatePasswordHash("admin", out byte[] passwordHash, out byte[] passwordSalt);
             modelBuilder.Entity<User>().HasData(
