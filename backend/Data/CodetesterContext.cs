@@ -22,16 +22,27 @@ namespace Codetester.Data
         public DbSet<Semester> Semesters { get; set; }
 
 
-
-
-
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Set inherited question tables to TPT (table-per-type)
             modelBuilder.Entity<Question>().ToTable("Questions");
             modelBuilder.Entity<MultiChoiceQuestion>().ToTable("MultiChoiceQuestions");
             modelBuilder.Entity<FillInCodeQuestion>().ToTable("FillInCodeQuestions");
+
+            // Seed admin user
+            AuthUtil.CreatePasswordHash("admin", out byte[] passwordHash, out byte[] passwordSalt);
+            modelBuilder.Entity<User>().HasData(
+                    new User { 
+                        Id = 1, 
+                        Email = "admin@codetester.com",
+                        Username = "admin", 
+                        PasswordHash = passwordHash, 
+                        PasswordSalt = passwordSalt,
+                        Role = "Admin",
+                        FirstName = "David",
+                        LastName = "Krejci"
+                    }
+                );
         }
 
     }
