@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
+import { Role } from '@/util/role.js';
 
 Vue.use(VueRouter)
 
@@ -13,7 +14,8 @@ const routes = [
   {
     path: '/examinstance/:id',
     name: 'ExamInstance',
-    component: () => import('@/views/ExamInstance.vue')
+    component: () => import('@/views/ExamInstance.vue'),
+    meta: { authorize: [] } 
   },
   {
     path: '/',
@@ -23,77 +25,86 @@ const routes = [
       {
         path: 'myexams',
         name: 'MyExams',
-        component: () => import('@/views/MyExams.vue')
-    
+        component: () => import('@/views/MyExams.vue'),
+        meta: { authorize: [] } 
       },
       {
         path: 'settings',
         name: 'Settings',
-        component: () => import('@/views/Settings.vue')
+        component: () => import('@/views/Settings.vue'),
+        meta: { authorize: [] } 
       },
       {
         path: 'exams',
         name: 'Exams',
-        component: () => import('@/views/Exam/Exams.vue')
-    
+        component: () => import('@/views/Exam/Exams.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'exams/create',
         name: 'CreateExam',
-        component: () => import('@/views/Exam/CreateExam.vue')
+        component: () => import('@/views/Exam/CreateExam.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'exams/:id',
         name: 'Exam',
-        component: () => import('@/views/Exam/Exam.vue')
+        component: () => import('@/views/Exam/Exam.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'courses',
         name: 'Courses',
-        component: () => import('@/views/Course/Courses.vue')
+        component: () => import('@/views/Course/Courses.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'courses/create',
         name: 'CreateCourse',
-        component: () => import('@/views/Course/CreateCourse.vue')
+        component: () => import('@/views/Course/CreateCourse.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'courses/:coursecode',
         name: 'Course',
-        component: () => import('@/views/Course/Course.vue')
-    
+        component: () => import('@/views/Course/Course.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'courses/:coursecode/create/semester',
         name: 'CreateSemester',
-        component: () => import('@/views/Semester/CreateSemester.vue')
+        component: () => import('@/views/Semester/CreateSemester.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'semesters/:id',
         name: 'Semester',
         component: () => import('@/views/Semester/Semester.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'questions',
         name: 'Questions',
         component: () => import('@/views/Question/Questions.vue'),
-    
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'questions/create',
         name: 'CreateQuestion',
-        component: () => import('@/views/Question/CreateQuestion.vue')
+        component: () => import('@/views/Question/CreateQuestion.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'questions/:id',
         name: 'Question',
         component: () => import('@/views/Question/Question.vue'),
-    
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
         path: 'users',
         name: 'Users',
-        component: () => import('@/views/User/Users.vue')
+        component: () => import('@/views/User/Users.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
       },
     ]
   },
@@ -110,17 +121,21 @@ const router = new VueRouter({
   routes
 });
 
-// redirect to login page if not logged in and trying to access a restricted page
-// redirect to home page if logged in and tryin to access login page
+// Setup route guards
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/login'];
-  const authRequired = !publicPages.includes(to.path);
-  const authenticated = store.getters.isAuthenticated;
-
-  if (authRequired && !authenticated) {
+  const { authorize } = to.meta;
+  const loggedUser = store.getters.getLoggedUser;
+  
+  // redirect to login page if not logged in and trying to access a restricted page
+  if (authorize && !loggedUser) {
     return next('/login');
   }
-  if (!authRequired && authenticated) {
+  // redirect to home page if user logged in but does not have required role
+  if (authorize && authorize.length && !authorize.includes(loggedUser.role)) {
+    return next('/');
+  }
+  // redirect to home page if logged in and tryin to access login page
+  if (!authorize && loggedUser) {
     return next('/');
   }
   next();

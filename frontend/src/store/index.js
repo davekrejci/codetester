@@ -119,6 +119,7 @@ export default new Vuex.Store({
       let semester = course.semesters.find(semester => semester.year == year && semester.semesterType == semesterType)
       return semester;
     },
+    getLoggedUser: state => state.user,
     isAuthenticated: state => !!state.user,
     },
   modules: {
