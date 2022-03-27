@@ -1,4 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
+import store from '@/store';
+import router from '@/router';
 
 // Set base API URL
 axios.defaults.baseURL = process.env.VUE_APP_CODETESTER_API_URL;
@@ -15,6 +17,18 @@ axios.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+// If authentication token expires logout user
+axios.interceptors.response.use(undefined, function (error) {
+    if (error) {
+      const originalRequest = error.config;
+      if (error.response.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          store.dispatch('logout');
+          return router.push('/login');
+      }
+    }
+  })
 
 export default {
     // COURSES
