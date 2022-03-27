@@ -81,7 +81,7 @@ export default new Vuex.Store({
     getUser ({ commit }) {
       const user = JSON.parse(localStorage.getItem('user'));
       commit('setUser', user);
-    }
+    },
   },
   getters: {
     getCoursesWithoutSemesters(state) {
@@ -100,6 +100,7 @@ export default new Vuex.Store({
       let semester = course.semesters.find(semester => semester.year == year && semester.semesterType == semesterType)
       return semester;
     },
+    isAuthenticated: state => !!state.user,
     },
   modules: {
     questionDesigner,
