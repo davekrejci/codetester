@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    user: JSON.parse(localStorage.getItem('user')),
     courses : [],
     users: [],
     questions: [],
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     tags: [],
   },
   mutations: {
+    setUser(state, user) {
+      state.user = user
+    },
     setCourses (state, courses) {
       state.courses = courses
     },
@@ -74,6 +78,10 @@ export default new Vuex.Store({
         .fetchTags()
         .then(tags => commit('setTags', tags))
     },
+    getUser ({ commit }) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      commit('setUser', user);
+    }
   },
   getters: {
     getCoursesWithoutSemesters(state) {
@@ -91,8 +99,8 @@ export default new Vuex.Store({
       console.log(course);
       let semester = course.semesters.find(semester => semester.year == year && semester.semesterType == semesterType)
       return semester;
-    }
-  },
+    },
+    },
   modules: {
     questionDesigner,
   }

@@ -1,56 +1,134 @@
 <template>
-	<v-navigation-drawer v-if="$vuetify.breakpoint.mdAndUp" :width="280" app permanent floating mini-variant-width="80" :mini-variant="$vuetify.breakpoint.mdAndDown">
-		<v-list class="mt-2">
-			<v-list-item class="px-2">
-				<v-img src="../assets/svg/logo/symbol_logo.svg" max-height="25" max-width="60" contain></v-img>
-				<v-img src="../assets/svg/logo/text_logo.svg" max-height="100" max-width="150" contain></v-img>
-			</v-list-item>
-		</v-list>
-		<v-list nav>
-			<v-list-item link>
-				<v-badge bordered bottom color="success" dot offset-x="10" offset-y="18">
-					<v-list-item-avatar class="mx-0" color="primary">
-						<!-- <v-icon dark>mdi-account-circle</v-icon> -->
-						<v-img src="https://randomuser.me/api/portraits/men/32.jpg"></v-img>
-					</v-list-item-avatar>
-				</v-badge>
-				<v-list-item-content class="ml-4">
-					<v-list-item-title class="font-weight-medium">David Krejčí</v-list-item-title>
-					<v-list-item-subtitle>Admin</v-list-item-subtitle>
-				</v-list-item-content>
-
-				<v-list-item-action>
-					<v-icon>mdi-menu-down</v-icon>
-				</v-list-item-action>
-			</v-list-item>
-		</v-list>
-		<v-list nav dense>
-			<v-list-item-group color="primary">
-				<v-list-item v-for="item in items" :key="item.title" :to="item.path" link>
-					<v-list-item-action>
-						<v-icon>{{ item.icon }}</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title>{{ item.title }}</v-list-item-title>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list-item-group>
-		</v-list>
-	</v-navigation-drawer>
+  <v-navigation-drawer
+    v-if="$vuetify.breakpoint.mdAndUp"
+    :width="280"
+    app
+    permanent
+    floating
+  >
+    <v-list class="mt-2">
+      <v-list-item class="px-2">
+        <v-img
+          src="../assets/svg/logo/symbol_logo.svg"
+          max-height="25"
+          max-width="60"
+          contain
+        ></v-img>
+        <v-img
+          src="../assets/svg/logo/text_logo.svg"
+          max-height="100"
+          max-width="150"
+          contain
+        ></v-img>
+      </v-list-item>
+    </v-list>
+    <v-card class="mx-2" elevation="0" outlined v-if="user">
+      <v-expansion-panels focusable flat>
+        <v-expansion-panel class="transparent pa-0">
+          <v-expansion-panel-header color="transparent" class="py-0">
+            <v-badge
+              bordered
+              bottom
+              color="success"
+              dot
+              offset-x="10"
+              offset-y="18"
+            >
+              <v-list-item-avatar class="mx-0" color="primary">
+                <!-- <v-icon dark>mdi-account-circle</v-icon> -->
+                <v-img
+                  src="https://randomuser.me/api/portraits/men/32.jpg"
+                ></v-img>
+              </v-list-item-avatar>
+            </v-badge>
+            <v-list-item-content class="ml-4">
+              <v-list-item-title class="font-weight-medium">{{
+                user.firstName + " " + user.lastName
+              }}</v-list-item-title>
+              <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="transparent" class="pa-0">
+            <v-list nav dense>
+              <v-list-item @click="logout" link>
+                <v-list-item-icon>
+                  <v-icon>mdi-logout-variant</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Odhlásit</v-list-item-title>
+              </v-list-item>
+              <v-list-item link to="/settings">
+                <v-list-item-icon>
+                  <v-icon>mdi-cog</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Nastavení</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-card>
+    <v-list nav dense>
+      <v-list-item-group color="primary">
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          :to="item.path"
+          link
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script>
 export default {
-	name: 'NavigationDrawer',
-	data: () => ({
-		items: [
-			{ title: 'Moje Testy', path: '/myexams', icon: 'mdi-pencil' },
-			{ title: 'Testy', path: '/exams', icon: 'mdi-format-list-bulleted' },
-			{ title: 'Předměty', path: '/courses', icon: 'mdi-book-open' },
-			{ title: 'Otázky', path: '/questions', icon: 'mdi-help-circle' },
-			{ title: 'Uživatelé', path: '/users', icon: 'mdi-account-multiple' },
-			{ title: 'Nastavení', path: '/settings', icon: 'mdi-cog' },
-		],
-	}),
+  name: "NavigationDrawer",
+  data() {
+    return {
+      
+      items: [
+        { title: "Moje Testy", path: "/myexams", icon: "mdi-pencil" },
+        { title: "Testy", path: "/exams", icon: "mdi-format-list-bulleted" },
+        { title: "Předměty", path: "/courses", icon: "mdi-book-open" },
+        { title: "Otázky", path: "/questions", icon: "mdi-help-circle" },
+        { title: "Uživatelé", path: "/users", icon: "mdi-account-multiple" },
+      ],
+    };
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("user");
+      this.$store.state.user = null;
+      this.$router.push("/login");
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
+  created() {
+    if (!this.user) {
+      this.$store.dispatch("getUser");
+    }
+  },
 };
 </script>
+
+<style>
+.v-expansion-panel .transparent {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+.v-expansion-panel-content__wrap {
+  padding: 0;
+}
+</style>>
+
+

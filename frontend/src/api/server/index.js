@@ -1,10 +1,22 @@
 import axios from 'axios'
 
+// Set base API URL
 axios.defaults.baseURL = process.env.VUE_APP_CODETESTER_API_URL;
 
+// Add authentication token to each request
+axios.interceptors.request.use(
+    config => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.token)
+            config.headers.authorization = `Bearer ${user.token}`;
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    }
+);
+
 export default {
-
-
     // COURSES
     async fetchCourse(coursecode) {
         const url = "courses/" + coursecode;
@@ -46,6 +58,11 @@ export default {
     },
 
     // USERS
+    async loginUser(userLoginDto) {
+        const url = "users/login";
+        const response = await axios.post(url, userLoginDto);
+        return response.data
+    },
     async fetchUsers() {
         // to implement
     },
