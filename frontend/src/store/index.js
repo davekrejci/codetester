@@ -5,15 +5,19 @@ import questionDesigner from './modules/questionDesigner';
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
+function initState() {
+  return {
     user: JSON.parse(localStorage.getItem('user')),
     courses : [],
     users: [],
     questions: [],
     exams: [],
     tags: [],
-  },
+  }
+}
+
+export default new Vuex.Store({
+  state: initState(),
   mutations: {
     setUser(state, user) {
       state.user = user
@@ -50,6 +54,9 @@ export default new Vuex.Store({
     setTags (state, tags) {
       state.tags = tags
     },
+    reset (state) {
+      Object.assign(state, initState())
+    }
     
   },
   actions: {
@@ -82,6 +89,18 @@ export default new Vuex.Store({
       const user = JSON.parse(localStorage.getItem('user'));
       commit('setUser', user);
     },
+    login ({ commit }, userLoginDto ) {
+      return client
+          .loginUser(userLoginDto)
+          .then(user => {
+              localStorage.setItem("user", JSON.stringify(user));
+              commit('setUser', user)
+          })
+    },
+    logout ({ commit }) {
+      localStorage.removeItem("user");
+      commit('reset')
+    }
   },
   getters: {
     getCoursesWithoutSemesters(state) {

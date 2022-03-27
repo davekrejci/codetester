@@ -97,7 +97,9 @@
 </template>
 
 <script>
-import api from "api-client";
+//import api from "api-client";
+import store from "@/store";
+import router from "@/router";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
@@ -117,17 +119,15 @@ export default {
         password: this.password,
       };
       try {
-		let user = await api.loginUser(userLoginDto);
-		localStorage.setItem("user", JSON.stringify(user));
-		this.$router.push("/");
+        await store.dispatch("login", userLoginDto);
+        router.push("/");
       } catch (error) {
         // Bad request => incorrect username or password
         if (error.response && error.response.status == 400) {
           let errorMessage = error.response.data;
           if (errorMessage == "User not found")
             this.error = "Uživatel nenalezen";
-          if (errorMessage == "Wrong password")
-            this.error = "Nesprávné heslo";
+          if (errorMessage == "Wrong password") this.error = "Nesprávné heslo";
         } else {
           console.log(error);
           this.error = "Error logging in";

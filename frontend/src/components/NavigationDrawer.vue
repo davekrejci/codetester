@@ -88,6 +88,9 @@
 </template>
 
 <script>
+import store from "@/store";
+import router from "@/router";
+
 export default {
   name: "NavigationDrawer",
   data() {
@@ -103,20 +106,19 @@ export default {
     };
   },
   methods: {
-    logout() {
-      localStorage.removeItem("user");
-      this.$store.state.user = null;
-      this.$router.push("/login");
+    async logout() {
+      await store.dispatch('logout');
+      router.push("/login");
     },
   },
   computed: {
     user() {
-      return this.$store.state.user;
+      return store.state.user;
     },
   },
   created() {
     if (!this.user) {
-      this.$store.dispatch("getUser");
+      store.dispatch("getUser");
     }
   },
 };
