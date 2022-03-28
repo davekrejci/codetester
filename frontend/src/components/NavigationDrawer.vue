@@ -96,13 +96,6 @@ export default {
   data() {
     return {
       
-      items: [
-        { title: "Moje Testy", path: "/myexams", icon: "mdi-pencil" },
-        { title: "Testy", path: "/exams", icon: "mdi-format-list-bulleted" },
-        { title: "Předměty", path: "/courses", icon: "mdi-book-open" },
-        { title: "Otázky", path: "/questions", icon: "mdi-help-circle" },
-        { title: "Uživatelé", path: "/users", icon: "mdi-account-multiple" },
-      ],
     };
   },
   methods: {
@@ -115,6 +108,9 @@ export default {
     user() {
       return store.state.user;
     },
+    items() {
+      return store.getters.getUserNavigationItems;
+    }
   },
   created() {
     if (!this.user) {

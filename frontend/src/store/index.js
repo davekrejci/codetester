@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import client from 'api-client'
 import questionDesigner from './modules/questionDesigner';
+import { Role } from '@/util/role.js';
 
 Vue.use(Vuex)
 
@@ -13,6 +14,38 @@ function initState() {
     questions: [],
     exams: [],
     tags: [],
+    navigationItems: [
+      { 
+        title: "Moje Testy", 
+        path: "/myexams", 
+        icon: "mdi-pencil",
+        roles: [Role.Admin, Role.Teacher, Role.Student]
+      },
+      { 
+        title: "Testy", 
+        path: "/exams", 
+        icon: "mdi-format-list-bulleted",
+        roles: [Role.Admin, Role.Teacher]
+      },  
+      { 
+        title: "Předměty", 
+        path: "/courses", 
+        icon: "mdi-book-open",
+        roles: [Role.Admin, Role.Teacher]
+      },
+      { 
+        title: "Otázky", 
+        path: "/questions", 
+        icon: "mdi-help-circle",
+        roles: [Role.Admin, Role.Teacher]
+      },
+      { 
+        title: "Uživatelé", 
+        path: "/users", 
+        icon: "mdi-account-multiple",
+        roles: [Role.Admin, Role.Teacher]
+      },
+    ]
   }
 }
 
@@ -119,8 +152,24 @@ export default new Vuex.Store({
       let semester = course.semesters.find(semester => semester.year == year && semester.semesterType == semesterType)
       return semester;
     },
-    getLoggedUser: state => state.user,
-    isAuthenticated: state => !!state.user,
+    getLoggedUser (state) {
+      return state.user
+    },
+    isAuthenticated (state) {
+      return !!state.user
+    },
+    getUserNavigationItems(state) {
+      let userRole = state.user.role;
+      let navigationItems = state.navigationItems;
+      let userNavigationItems = [];
+      navigationItems.forEach(item => {
+        if (item.roles.includes(userRole)) {
+          userNavigationItems.push(item);
+        }
+      });
+
+      return userNavigationItems;
+    }
     },
   modules: {
     questionDesigner,
