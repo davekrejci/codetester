@@ -1,7 +1,7 @@
 <template>
   <v-container class="px-12">
     <div v-if="exam != null">
-      <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
       <v-form ref="createExamForm">
         <v-text-field
           outlined
