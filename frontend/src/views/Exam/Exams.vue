@@ -186,7 +186,7 @@ export default {
       showDeleteDialog: false,
       headers: [
         { text: "Jméno", value: "name" },
-        { text: "Status", value: "status" },
+        { text: "Status", value: "status", width:"100px" },
         { text: "Předmět", value: "semester.course.courseCode" },
         { text: "Semestr", value: "semester" },
         { text: "Začátek", value: "startDate" },
