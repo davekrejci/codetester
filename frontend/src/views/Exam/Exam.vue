@@ -169,15 +169,44 @@
 
         <!-- Action buttons -->
         <div class="mt-8">
-          <v-btn
-            color="error"
-            :disabled="loading"
-            outlined
-            class="mr-4 mb-2"
-            @click="reset"
-          >
-            Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
-          </v-btn>
+         <v-dialog v-model="showDeleteDialog" max-width="400px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              :loading="loading"
+              :disabled="loading"
+              color="error"
+              outlined
+              class="mr-4 mb-2"
+            >
+              Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
+            </v-btn>
+          </template>
+          <v-card class="text-center pa-4">
+            <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
+            <v-card-title class="text-h5">
+              <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
+            </v-card-title>
+            <v-card-text
+              >Opravdu si přejete test smazat? Tato akce je
+              nevratná.</v-card-text
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="grey"
+                class="mx-2"
+                outlined
+                @click="showDeleteDialog = false"
+              >
+                Ne
+              </v-btn>
+              <v-btn color="error" class="mx-2" outlined @click="deleteExam"> Ano </v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
           <v-btn
             color="primary"
             :loading="loading"
@@ -218,6 +247,7 @@ export default {
       searchSemesters: "",
       error: null,
       hasSaved: false,
+      showDeleteDialog: false,
       loading: false,
       exam: null,
       rules: {
@@ -247,10 +277,6 @@ export default {
   methods: {
     validate() {
       return this.$refs.createExamForm.validate();
-    },
-    reset() {
-      this.$refs.createExamForm.reset();
-      this.$refs.examQuestions.selectedQuestions = [];
     },
     statusIndicatorColor(status) {
       switch (status) {
