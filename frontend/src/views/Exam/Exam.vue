@@ -362,7 +362,6 @@ export default {
         await api.updateExam(this.$route.params.id, examUpdateDto);
         console.log("api called");
         this.hasSaved = true;
-        this.reset();
       } catch (error) {
         console.log(error);
         this.error = error;
