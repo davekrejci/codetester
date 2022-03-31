@@ -101,9 +101,21 @@ const routes = [
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
+        path: 'user/:id',
+        name: 'User',
+        component: () => import('@/views/User/User.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
+      },
+      {
         path: 'users',
         name: 'Users',
         component: () => import('@/views/User/Users.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
+      },
+      {
+        path: 'users/create',
+        name: 'CreateUser',
+        component: () => import('@/views/User/CreateUser.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
     ]

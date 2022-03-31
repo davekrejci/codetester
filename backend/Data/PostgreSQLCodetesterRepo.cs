@@ -239,6 +239,11 @@ namespace Codetester.Data
             }
             _context.Users.Remove(user);
         }
-        
+
+        public void UpdateUser(User user)
+        {
+           // Nothing, updated automatically in controller thanks to mapping from DTO to repo model
+           // Keep here for sake of Interface implementation and/or possible future implementation changes
+        }
     }
 }

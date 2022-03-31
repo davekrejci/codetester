@@ -27,6 +27,7 @@ axios.interceptors.response.use(undefined, function (error) {
           store.dispatch('logout');
           return router.push('/login');
       }
+      return Promise.reject(error);
     }
   })
 
@@ -78,7 +79,36 @@ export default {
         return response.data
     },
     async fetchUsers() {
-        // to implement
+        const url = "users";
+        const response = await axios.get(url);
+        return response.data
+    },
+    async createUser(userCreateDto) {
+        const url = "users";
+        const response = await axios.post(url, userCreateDto);
+        console.log(response)
+    },
+    async updateUser(id, userUpdateDto) {
+        const url = "users/" + id;
+        let response = await axios.put(url, userUpdateDto);
+        console.log(response)
+    },
+    async deleteUser(id) {
+        const url = "users/" + id;
+        let response = await axios.delete(url);
+        console.log(response)
+    },
+    // admin only route for changing any users password (eg. forgotten passwords)
+    async resetUserPassword(id, userPasswordResetDto) {
+        const url = "users/password/reset/" + id;
+        const response = await axios.post(url, userPasswordResetDto);
+        console.log(response)
+    },
+    // any user route for changing their own password
+    async changeUserPassword(userPasswordChangeDto) {
+        const url = "users/password/change";
+        const response = await axios.post(url, userPasswordChangeDto);
+        console.log(response)
     },
 
     // QUESTIONS

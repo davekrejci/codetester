@@ -155,6 +155,9 @@ export default new Vuex.Store({
     getLoggedUser (state) {
       return state.user
     },
+    getUserById: (state) => (id) => {
+      return state.users.find(user => user.id == id);
+    },
     isAuthenticated (state) {
       return !!state.user
     },

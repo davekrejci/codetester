@@ -1,7 +1,163 @@
 <template>
-	<v-switch v-model="$vuetify.theme.dark" class="ma-2" label="Dark Mode"></v-switch>
+  <v-container>
+    <!-- Change Password Dialog -->
+    <v-dialog v-model="showChangePasswordDialog" max-width="400px">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          v-on="on"
+          :loading="loading"
+          :disabled="loading"
+          color="primary"
+          outlined
+          class="mr-4 mb-2"
+        >
+          Změnit heslo <v-icon right dark> mdi-lock </v-icon>
+        </v-btn>
+      </template>
+      <v-card class="text-center pa-4">
+        <v-icon color="primary" x-large>mdi-lock-reset</v-icon>
+        <v-card-title class="text-h5"> </v-card-title>
+        <v-form ref="passwordChangeForm">
+          <v-text-field
+            label="Současné heslo"
+            v-model="currentPassword"
+            single-line
+            :rules="[rules.required]"
+            outlined
+            flat
+            class=""
+            prepend-inner-icon="mdi-lock-outline"
+            :append-icon="
+              currentPasswordHidden ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+            "
+            @click:append="
+              () => (currentPasswordHidden = !currentPasswordHidden)
+            "
+            :type="currentPasswordHidden ? 'password' : 'text'"
+            :disabled="loading"
+          >
+          </v-text-field>
+          <v-text-field
+            label="Nové heslo"
+            v-model="newPassword"
+            single-line
+            :rules="[rules.required]"
+            outlined
+            flat
+            class="mb-4"
+            prepend-inner-icon="mdi-lock-outline"
+            :append-icon="
+              newPasswordHidden ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+            "
+            @click:append="() => (newPasswordHidden = !newPasswordHidden)"
+            :type="newPasswordHidden ? 'password' : 'text'"
+            :disabled="loading"
+          >
+          </v-text-field>
+        </v-form>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="grey"
+            class="mx-2"
+            outlined
+            @click="showChangePasswordDialog = false"
+          >
+            Zrušit
+          </v-btn>
+          <v-btn
+            color="primary"
+            class="mx-2"
+            outlined
+            @click="changeUserPassword"
+          >
+            Změnit
+          </v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-switch
+      v-model="$vuetify.theme.dark"
+      class="ma-2"
+      label="Dark Mode"
+    ></v-switch>
+    <default-snackbar
+      :type="snackbar.type"
+      :text="snackbar.text"
+      v-on:close-snackbar="error = null"
+    ></default-snackbar>
+  </v-container>
 </template>
 
 <script>
-export default {};
+import api from "api-client";
+import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
+
+export default {
+  name: "Settings",
+  components: { DefaultSnackbar },
+  data() {
+    return {
+      loading: false,
+      showChangePasswordDialog: false,
+      currentPassword: "",
+      hasSaved: false,
+      error: null,
+      newPassword: "",
+      currentPasswordHidden: true,
+      newPasswordHidden: true,
+      rules: {
+        required: (value) => !!value || "Povinné.",
+      },
+    };
+  },
+  methods: {
+    validatePasswordChange() {
+      return this.$refs.passwordChangeForm.validate();
+    },
+    async changeUserPassword() {
+      let isFormValid = this.validatePasswordChange();
+      if (!isFormValid) return;
+      this.hasSaved = false;
+      this.loading = true;
+      let userPasswordChangeDto = {
+        currentPassword: this.currentPassword,
+        newPassword: this.newPassword,
+      };
+      try {
+        await api.changeUserPassword(userPasswordChangeDto);
+        this.hasSaved = true;
+      } catch (error) {
+        console.log(error);
+        this.error = error;
+      }
+      this.showChangePasswordDialog = false;
+      this.loading = false;
+      window.scrollTo(0, 0);
+    },
+  },
+  computed: {
+    snackbar() {
+      if (this.error != null) {
+        return {
+          type: "error",
+          text: this.error.toString(),
+          show: true,
+        };
+      }
+      if (this.hasSaved) {
+        return {
+          type: "success",
+          text: "Změny byly uloženy",
+          show: true,
+        };
+      }
+      return {
+        show: false,
+      };
+    },
+  },
+};
 </script>

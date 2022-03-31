@@ -11,6 +11,8 @@ namespace Codetester.Profiles
             CreateMap<User, UserReadDto>();
             CreateMap<User, UserLoginReadDto>();
             CreateMap<UserCreateDto, User>();
+            CreateMap<UserUpdateDto, User>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<UserLoginDto, User>();
         }
     }

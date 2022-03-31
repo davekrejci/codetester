@@ -47,6 +47,6 @@ namespace Codetester.Data
         User GetUserByUsername(string username);
         void CreateUser(User user);
         void DeleteUser(User user);
-
+        void UpdateUser(User user);
     }
 }

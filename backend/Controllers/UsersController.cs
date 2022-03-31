@@ -61,6 +61,12 @@ namespace Codetester.Controllers
                 return BadRequest("Username " + user.Username + " is already taken");
             }
 
+            // check that role is one of possible roles or empty
+            if (userCreateDto.Role != null && userCreateDto.Role != "Student" && userCreateDto.Role != "Teacher" && userCreateDto.Role != "Admin")
+            {
+                return BadRequest("Role " + userCreateDto.Role + " not valid option");
+            }
+
             var userModel = _mapper.Map<User>(userCreateDto);
 
             // hash password
@@ -73,6 +79,28 @@ namespace Codetester.Controllers
 
             var userReadDto = _mapper.Map<UserReadDto>(userModel);
             return CreatedAtRoute(nameof(GetUserById), new { Id = userReadDto.Id }, userReadDto);
+        }
+
+        //PUT api/users/{id}
+        [HttpPut("{id}")]
+        public ActionResult UpdateUser(int id, UserUpdateDto userUpdateDto)
+        {
+            // check that username is unique
+            var userModel = _repository.GetUserById(id);
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+            // check that role is one of possible roles or empty
+            if (userUpdateDto.Role != null && userUpdateDto.Role != "Student" && userUpdateDto.Role != "Teacher" && userUpdateDto.Role != "Admin")
+            {
+                return BadRequest("Role " + userUpdateDto.Role + " not valid option");
+            }
+            _mapper.Map(userUpdateDto, userModel);
+            _repository.UpdateUser(userModel);
+            
+            _repository.SaveChanges();
+            return NoContent();
         }
 
         //DELETE api/users/{id}
@@ -110,6 +138,69 @@ namespace Codetester.Controllers
             var userLoginReadDto = _mapper.Map<UserLoginReadDto>(userModel);
             userLoginReadDto.Token = CreateToken(userModel);
             return Ok(userLoginReadDto);
+        }
+
+        // admin only route for changing any users password (eg. forgotten passwords)
+        //POST api/users/password/reset/:id
+        [HttpPost("password/reset/{id}")]
+        public ActionResult AdminResetPassword(int id, UserAdminPasswordResetDto userAdminPasswordResetDto)
+        {
+            // check that user exists
+            var userModel = _repository.GetUserById(id);
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+
+            // hash password
+            AuthUtil.CreatePasswordHash(userAdminPasswordResetDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            // update model
+            userModel.PasswordHash = passwordHash;
+            userModel.PasswordSalt = passwordSalt;
+
+            // save to repository
+            _repository.UpdateUser(userModel);
+            _repository.SaveChanges();
+
+            return NoContent();
+        }
+
+        // any user route for changing their own password
+        //POST api/users/password/change
+        [Authorize(Roles = "Admin, Teacher, Student")]
+        [HttpPost("password/change")]
+        public ActionResult ChangePassword(UserPasswordChangeDto userPasswordChangeDto)
+        {
+
+            // Get user id from JWT token
+            int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            // check that user exists
+            var userModel = _repository.GetUserById(userId);
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+
+            // verify current password
+            var isPasswordValid = AuthUtil.VerifyPasswordHash(userPasswordChangeDto.CurrentPassword, userModel.PasswordHash, userModel.PasswordSalt);
+            if(!isPasswordValid)
+            {
+                return BadRequest("Wrong password");
+            }
+
+            // hash new password
+            AuthUtil.CreatePasswordHash(userPasswordChangeDto.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+            // update model
+            userModel.PasswordHash = passwordHash;
+            userModel.PasswordSalt = passwordSalt;
+
+            // save to repository
+            _repository.UpdateUser(userModel);
+            _repository.SaveChanges();
+
+            return NoContent();
         }
 
         private string CreateToken(User user)
