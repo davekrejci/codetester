@@ -67,8 +67,12 @@ export default {
     },
     async createSemester(semester) {
         const url = "semesters";
-        console.log(JSON.stringify(semester));
         const response = await axios.post(url, semester);
+        console.log(response)
+    },
+    async updateSemester(id, semesterUpdateDto) {
+        const url = "semesters/" + id;
+        const response = await axios.put(url, semesterUpdateDto);
         console.log(response)
     },
 

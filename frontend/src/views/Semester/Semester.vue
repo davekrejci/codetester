@@ -2,6 +2,7 @@
 <v-container class="px-12">
     <div v-if="semester != null">
         <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
+      <v-form ref="semesterForm">
         <v-text-field
           outlined
           disabled
@@ -40,6 +41,7 @@
         </v-text-field>
             </v-col>
         </v-row>
+      </v-form>
        
         <v-card outlined>
             <v-tabs 
@@ -52,7 +54,10 @@
                 <v-tab>Studenti</v-tab>
                 <v-tab>Testy</v-tab>
                 <v-tab-item>
-                    <semester-students :students="this.semester.enrolledStudents"></semester-students>
+                    <semester-students 
+                      :currentUsers="this.semester.enrolledStudents"
+                      v-on:selectedUsersChanged="updateSelectedUsers"
+                    ></semester-students>
                 </v-tab-item>
                 <v-tab-item>
                     <semester-exams :exams="this.semester.exams"></semester-exams>
@@ -60,7 +65,7 @@
             </v-tabs>
         </v-card>
         <!-- Action buttons -->
-        <!-- Delete Dialog -->
+        <div class="mt-12">
         <v-dialog v-model="showDeleteDialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -70,7 +75,7 @@
               :disabled="loading"
               color="error"
               outlined
-              class="mr-4 mb-2 mt-12"
+              class="mr-4"
             >
               Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
             </v-btn>
@@ -99,6 +104,17 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-btn
+            color="primary"
+            :loading="loading"
+            :disabled="loading"
+            depressed
+            class=""
+            @click="updateSemester"
+          >
+            Uložit <v-icon right dark> mdi-plus-circle-outline </v-icon>
+          </v-btn>
+        </div>
     </div>
     <div v-else>not found</div>
     <default-snackbar
@@ -127,12 +143,16 @@ export default {
     return {
       semester: null,
       loading: false,
+      hasSaved: false,
       error: null,
       showDeleteDialog: false,
       tab: null,
     };
   },
   methods: {
+    validate() {
+      return this.$refs.semesterForm.validate();
+    },
     async fetchSemester() {
       this.error = this.semester = null;
       this.loading = true;
@@ -161,6 +181,28 @@ export default {
       }
       this.loading = false;
     },
+    updateSelectedUsers(users) {
+      this.semester.enrolledStudents = users;
+    },
+    async updateSemester() {
+      let isFormValid = this.validate();
+      if (!isFormValid) return;
+      this.hasSaved = false;
+      this.loading = true;
+      try {
+        let userIds = this.semester.enrolledStudents.map((user) => user.id);
+        let semesterUpdateDto = {
+          userIds: userIds
+        };
+        await api.updateSemester(this.$route.params.id, semesterUpdateDto);
+        this.hasSaved = true;
+      } catch (error) {
+        console.log(error);
+        this.error = error;
+      }
+      this.loading = false;
+      window.scrollTo(0, 0);
+    },
   },
   computed: {
       snackbar() {
@@ -168,6 +210,13 @@ export default {
         return {
           type: "error",
           text: this.error.toString(),
+          show: true,
+        };
+      }
+      if (this.hasSaved) {
+        return {
+          type: "success",
+          text: "Změny byly uloženy",
           show: true,
         };
       }

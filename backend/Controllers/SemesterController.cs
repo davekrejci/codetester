@@ -89,7 +89,17 @@ namespace Codetester.Controllers
             {
                 return NotFound();
             }
-            _mapper.Map(semesterUpdateDto, semesterModel);
+            // map the enrolled students
+            semesterModel.EnrolledStudents.Clear();
+            foreach (var userId in semesterUpdateDto.UserIds)
+            {
+                var userModel = _repository.GetUserById(userId);
+                if (userModel != null)
+                {
+                    semesterModel.EnrolledStudents.Add(userModel);
+                } 
+            }
+
             _repository.UpdateSemester(semesterModel);
             _repository.SaveChanges();
             return NoContent();
