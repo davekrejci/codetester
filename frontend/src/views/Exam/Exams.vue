@@ -66,8 +66,12 @@
           </v-tooltip>
         </template>
         <template v-slot:[`item.status`]="{ item }">
-          <v-avatar left size="5" class="mr-1" :color="statusIndicatorColor(item.status)"> </v-avatar>
-          {{ item.status }}
+          <v-chip label small :color="statusIndicatorColor(item.status)" outlined>
+            <v-icon class="mr-0" left :color="statusIndicatorColor(item.status)">
+              mdi-circle-medium
+            </v-icon>
+            {{ item.status }}
+          </v-chip>
         </template>
         <template v-slot:[`item.tags`]="{ item }">
           <div

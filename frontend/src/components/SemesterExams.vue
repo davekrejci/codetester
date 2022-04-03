@@ -57,6 +57,14 @@
           <span>{{ moment.utc(item.endDate).local().fromNow() }}</span>
         </v-tooltip>
       </template>
+      <template v-slot:[`item.status`]="{ item }">
+          <v-chip label small :color="statusIndicatorColor(item.status)" outlined>
+            <v-icon class="mr-0" left :color="statusIndicatorColor(item.status)">
+              mdi-circle-medium
+            </v-icon>
+            {{ item.status }}
+          </v-chip>
+        </template>
       <template v-slot:[`item.tags`]="{ item }">
           <div
             v-if="item.tags.length > 0"
@@ -182,6 +190,17 @@ export default {
     //   this.loading = false;
     //   // TODO: reload data
     },
+    statusIndicatorColor(status) {
+      switch(status) {
+        case "planned":
+          return "primary";
+        case "open":
+          return "warning"
+        case "closed":
+          return "success"
+        default: return "grey"
+      }
+    }
   },
 };
 </script>
