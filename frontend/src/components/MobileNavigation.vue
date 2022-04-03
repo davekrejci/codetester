@@ -18,7 +18,7 @@
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </v-toolbar> -->
-  <v-toolbar app v-if="$vuetify.breakpoint.smAndDown">
+  <v-toolbar v-if="$vuetify.breakpoint.smAndDown">
     <v-dialog
       v-model="dialog"
       fullscreen
