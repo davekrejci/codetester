@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <!-- Change Password Dialog -->
     <v-dialog v-model="showChangePasswordDialog" max-width="400px">
       <template v-slot:activator="{ on, attrs }">
