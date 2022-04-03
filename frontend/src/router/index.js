@@ -20,12 +20,12 @@ const routes = [
   {
     path: '/',
     component: () => import('@/views/Dashboard.vue'),
-    redirect: '/myexams',
+    redirect: '/exams',
     children: [
       {
-        path: 'myexams',
+        path: 'exams',
         name: 'MyExams',
-        component: () => import('@/views/MyExams.vue'),
+        component: () => import('@/views/ExamInstance/MyExams.vue'),
         meta: { authorize: [] } 
       },
       {
@@ -35,85 +35,85 @@ const routes = [
         meta: { authorize: [] } 
       },
       {
-        path: 'exams',
+        path: 'management/exams',
         name: 'Exams',
         component: () => import('@/views/Exam/Exams.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'exams/create',
+        path: 'management/exams/create',
         name: 'CreateExam',
         component: () => import('@/views/Exam/CreateExam.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'exams/:id',
+        path: 'management/exams/:id',
         name: 'Exam',
         component: () => import('@/views/Exam/Exam.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'courses',
+        path: 'management/courses',
         name: 'Courses',
         component: () => import('@/views/Course/Courses.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'courses/create',
+        path: 'management/courses/create',
         name: 'CreateCourse',
         component: () => import('@/views/Course/CreateCourse.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'courses/:coursecode',
+        path: 'management/courses/:coursecode',
         name: 'Course',
         component: () => import('@/views/Course/Course.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'courses/:coursecode/create/semester',
+        path: 'management/courses/:coursecode/create/semester',
         name: 'CreateSemester',
         component: () => import('@/views/Semester/CreateSemester.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'semesters/:id',
+        path: 'management/semesters/:id',
         name: 'Semester',
         component: () => import('@/views/Semester/Semester.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'questions',
+        path: 'management/questions',
         name: 'Questions',
         component: () => import('@/views/Question/Questions.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'questions/create',
+        path: 'management/questions/create',
         name: 'CreateQuestion',
         component: () => import('@/views/Question/CreateQuestion.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'questions/:id',
+        path: 'management/questions/:id',
         name: 'Question',
         component: () => import('@/views/Question/Question.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'user/:id',
+        path: 'management/user/:id',
         name: 'User',
         component: () => import('@/views/User/User.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'users',
+        path: 'management/users',
         name: 'Users',
         component: () => import('@/views/User/Users.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
-        path: 'users/create',
+        path: 'management/users/create',
         name: 'CreateUser',
         component: () => import('@/views/User/CreateUser.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }

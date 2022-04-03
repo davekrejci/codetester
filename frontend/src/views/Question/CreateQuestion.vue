@@ -115,7 +115,7 @@ export default {
         {
           text: "Nová Otázka",
           disabled: true,
-          to: { name: "CreteQuestion" }
+          to: { name: "CreateQuestion" }
         },
       ],
     };

@@ -72,7 +72,7 @@
         <v-list-item
           v-for="item in items"
           :key="item.title"
-          :to="item.path"
+          :to="item.to"
           link
         >
           <v-list-item-action>

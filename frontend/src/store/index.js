@@ -17,31 +17,31 @@ function initState() {
     navigationItems: [
       { 
         title: "Moje Testy", 
-        path: "/myexams", 
+        to: { name: "MyExams" }, 
         icon: "mdi-pencil",
         roles: [Role.Admin, Role.Teacher, Role.Student]
       },
       { 
         title: "Testy", 
-        path: "/exams", 
+        to: { name: "Exams" }, 
         icon: "mdi-format-list-bulleted",
         roles: [Role.Admin, Role.Teacher]
       },  
       { 
         title: "Předměty", 
-        path: "/courses", 
+        to: { name: "Courses" }, 
         icon: "mdi-book-open",
         roles: [Role.Admin, Role.Teacher]
       },
       { 
         title: "Otázky", 
-        path: "/questions", 
+        to: { name: "Questions" }, 
         icon: "mdi-help-circle",
         roles: [Role.Admin, Role.Teacher]
       },
       { 
         title: "Uživatelé", 
-        path: "/users", 
+        to: { name: "Users" }, 
         icon: "mdi-account-multiple",
         roles: [Role.Admin, Role.Teacher]
       },
