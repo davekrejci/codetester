@@ -131,6 +131,15 @@ namespace Codetester.Controllers
             }
 
             _repository.CreateExam(examModel);
+
+
+            // Create specific exam instances for each user
+            foreach (User user in examModel.Semester.EnrolledStudents)
+            {
+                ExamInstance examInstance = new ExamInstance(examModel, user);
+                _repository.CreateExamInstance(examInstance);
+            }
+            
             _repository.SaveChanges();
 
             var examReadDto = _mapper.Map<ExamReadDto>(examModel);

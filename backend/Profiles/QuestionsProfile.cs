@@ -54,6 +54,7 @@ namespace Codetester.Profiles
             CreateMap<FillInCodeBlockReadDto, FillInCodeBlock>().ReverseMap();
 
             CreateMap<MultiChoiceAnswer, MultiChoiceAnswerReadDto>();
+            CreateMap<MultiChoiceAnswer, MultiChoiceAnswerAttemptReadDto>();
             CreateMap<MultiChoiceAnswerCreateDto, MultiChoiceAnswer>()
                 .EqualityComparison((adto, a) => adto.Id == a.Id);
 

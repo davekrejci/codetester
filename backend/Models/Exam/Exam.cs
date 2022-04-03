@@ -28,6 +28,8 @@ namespace Codetester.Models
         public ICollection<Question> Questions { get; set; }
         
         public ICollection<Tag> Tags { get; set; }
+
+        public ICollection<ExamInstance> ExamInstances { get; set; }
         
         public Exam(){
             this.Tags = new List<Tag>();

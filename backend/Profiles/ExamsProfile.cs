@@ -9,6 +9,7 @@ namespace Codetester.Profiles
         public ExamsProfile()
         {
             CreateMap<Exam, ExamReadDto>();
+            CreateMap<Exam, ExamReadMinimalDto>();
             CreateMap<ExamCreateDto, Exam>()
                 .ForMember(e => e.Tags, opt => opt.Ignore())
                 .ForMember(e => e.Questions, opt => opt.Ignore());

@@ -154,7 +154,8 @@ namespace Codetester.Data
         }
         public void UpdateSemester(Semester semester)
         {
-            throw new NotImplementedException();
+            // Nothing, updated automatically in controller thanks to mapping from DTO to repo model
+            // Keep here for sake of Interface implementation and/or possible future implementation changes
         }
         public void DeleteSemester(Semester semester)
         {
@@ -204,6 +205,41 @@ namespace Codetester.Data
             }
             _context.Exams.Remove(exam);
         }
+
+        // EXAM INSTANCE
+        public void CreateExamInstance(ExamInstance examInstance)
+        {
+            if (examInstance == null)
+            {
+                throw new ArgumentNullException(nameof(examInstance));
+            }
+
+            _context.ExamInstances.Add(examInstance);
+        }
+
+        public IEnumerable<ExamInstance> GetAllExamInstances()
+        {
+            return _context.ExamInstances
+                            .Include("Exam")
+                            .Include("QuestionInstances")
+                            .ToList();
+        }
+
+        public IEnumerable<ExamInstance> GetUsersExamInstances(User user)
+        {
+            return _context.ExamInstances
+                            .Where(e => e.User == user)
+                            .Include("Exam.Semester.Course")
+                            .ToList();
+        }
+
+        public ExamInstance GetExamInstanceById(int id)
+        {
+            return _context.ExamInstances
+                            .Include("Exam.Semester.Course")
+                            .Include("QuestionInstances.Answers")
+                            .FirstOrDefault(e => e.Id == id);
+        }
     
     
         // USERS
@@ -245,5 +281,6 @@ namespace Codetester.Data
            // Nothing, updated automatically in controller thanks to mapping from DTO to repo model
            // Keep here for sake of Interface implementation and/or possible future implementation changes
         }
+
     }
 }

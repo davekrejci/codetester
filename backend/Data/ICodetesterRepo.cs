@@ -26,7 +26,7 @@ namespace Codetester.Data
         Course GetCourseByCourseCode(string coursecode);
         void CreateCourse(Course course);
         void DeleteCourse(Course course);
-        
+
         // SEMESTERS
         IEnumerable<Semester> GetAllSemesters();
         Semester GetSemesterById(int id);
@@ -40,6 +40,13 @@ namespace Codetester.Data
         void CreateExam(Exam examModel);
         void UpdateExam(Exam examModel);
         void DeleteExam(Exam examModel);
+
+        // EXAM INSTANCES
+        void CreateExamInstance(ExamInstance examInstance);
+        IEnumerable<ExamInstance> GetAllExamInstances();
+        IEnumerable<ExamInstance> GetUsersExamInstances(User user);
+        ExamInstance GetExamInstanceById(int id);
+
 
         // USERS
         IEnumerable<User> GetAllUsers();

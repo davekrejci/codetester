@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Codetester.Models
 {
-    public class MultiChoiceQuestion : Question
+    public class MultiChoiceQuestionInstance : QuestionInstance
     {
         [Required]
         public string QuestionText { get; set; }
@@ -11,11 +12,12 @@ namespace Codetester.Models
         [Required]
         public List<MultiChoiceAnswer> Answers { get; set; }
 
+        public int SelectedAnswer { get; set; }
 
-        public MultiChoiceQuestion()
+
+        public MultiChoiceQuestionInstance()
         {
             this.QuestionType = Models.QuestionType.MULTI_CHOICE;
         }
-
     }
 }

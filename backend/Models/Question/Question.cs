@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Codetester.Models
 {
-    public class Question
+    public abstract class Question
     {
         [Key]
         public int Id { get; set; }
@@ -19,6 +19,8 @@ namespace Codetester.Models
         public Question(){
             this.Tags = new List<Tag>();
         }     
+
+        public abstract QuestionInstance CreateInstance();
     }
 
     public static class QuestionType

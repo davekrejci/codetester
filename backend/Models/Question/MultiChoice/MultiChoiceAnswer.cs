@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Codetester.Models
@@ -16,6 +17,9 @@ namespace Codetester.Models
         //Foreign key for MultiChoiceQuestion
         public int MultiChoiceQuestionId { get; set; }
         public MultiChoiceQuestion multiChoiceQuestion { get; set; }
+
+        public ICollection<MultiChoiceQuestionInstance> multiChoiceQuestionInstances { get; set; }
+
 
     }
 }
