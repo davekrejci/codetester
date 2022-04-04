@@ -230,6 +230,7 @@ namespace Codetester.Data
             return _context.ExamInstances
                             .Where(e => e.User == user)
                             .Include("Exam.Semester.Course")
+                            .OrderBy(e => e.Exam.StartDate)
                             .ToList();
         }
 
