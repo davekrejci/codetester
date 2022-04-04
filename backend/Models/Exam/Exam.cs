@@ -26,6 +26,8 @@ namespace Codetester.Models
         
         [Required]
         public ICollection<Question> Questions { get; set; }
+
+        public string Description { get; set; }
         
         public ICollection<Tag> Tags { get; set; }
 
