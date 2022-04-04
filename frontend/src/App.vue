@@ -5,7 +5,12 @@
 </template>
 
 <script>
-export default {};
+export default {
+	created() {
+		// start ticker for calculating current time app wide
+		this.$store.dispatch("startTicker");
+	}
+};
 </script>
 
 <style>

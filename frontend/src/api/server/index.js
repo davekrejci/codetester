@@ -173,6 +173,14 @@ export default {
         return response.data
     },
 
+    // EXAM INSTANCE
+    async fetchMyExams() {
+        const url = "examinstances";
+        const response = await axios.get(url);
+        console.log(response.data);
+        return response.data
+    },
+
     // TAGS
     async fetchTags() {
         const url = "tags";

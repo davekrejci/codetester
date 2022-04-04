@@ -2,17 +2,23 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import client from 'api-client'
 import questionDesigner from './modules/questionDesigner';
+import moment from 'moment';
 import { Role } from '@/util/role.js';
 
 Vue.use(Vuex)
 
+const TICKER_INTERVAL = 1000; // milliseconds
+let tickerPointer = null;
+
 function initState() {
   return {
+    currentTimeUtc: moment.utc(),
     user: JSON.parse(localStorage.getItem('user')),
     courses : [],
     users: [],
     questions: [],
     exams: [],
+    myExams: [],
     tags: [],
     navigationItems: [
       { 
@@ -52,11 +58,17 @@ function initState() {
 export default new Vuex.Store({
   state: initState(),
   mutations: {
+    refreshTicker(state) {
+      state.currentTimeUtc = moment.utc()
+    },
     setUser(state, user) {
       state.user = user
     },
     setCourses (state, courses) {
       state.courses = courses
+    },
+    setMyExams (state, exams) {
+      state.myExams = exams
     },
     setExams (state, exams) {
       exams.forEach((exam) => {
@@ -93,6 +105,18 @@ export default new Vuex.Store({
     
   },
   actions: {
+    startTicker({commit}) {
+      if (tickerPointer === null) {
+        tickerPointer = setInterval(() => {
+          commit('refreshTicker');
+        }, TICKER_INTERVAL);
+      }
+    },
+    haltTicker({state}) {
+      clearInterval(tickerPointer);
+      state.now = null;
+      tickerPointer = null;
+    },
     fetchCourses ({ commit }) {
       return client
         .fetchCourses()
@@ -102,6 +126,11 @@ export default new Vuex.Store({
       return client
         .fetchExams()
         .then(exams => commit('setExams', exams))
+    },
+    fetchMyExams ({ commit }) {
+      return client
+        .fetchMyExams()
+        .then(exams => commit('setMyExams', exams))
     },
     fetchUsers ({ commit }) {
       return client
