@@ -5,7 +5,7 @@
         <v-row class="fill-height" align="center" justify="center">
           <v-img
             class="mx-auto"
-            src="../assets/svg/illustrations/login.svg"
+            src="@/assets/svg/illustrations/login.svg"
             :max-width="illustrationWidth"
             alt=""
           />
