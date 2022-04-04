@@ -2,6 +2,7 @@ using System;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 using Codetester.Data;
+using HashidsNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,7 @@ namespace Codetester
             }, typeof(CodetesterContext).Assembly);
             
             //services.AddScoped<ICodetesterRepo, MockCodetesterRepo>();
+            services.AddSingleton<IHashids>(_ => new Hashids(Configuration.GetSection("AppSettings:HashIdSalt").Value, 16));
             services.AddScoped<ICodetesterRepo, PostgreSQLCodetesterRepo>();
             services.AddSwaggerGen(c =>
             {
