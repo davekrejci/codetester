@@ -4,10 +4,9 @@ using System.Security.Claims;
 using AutoMapper;
 using Codetester.Data;
 using Codetester.Dtos;
-using Codetester.Models;
+using HashidsNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Codetester.Controllers
 {
@@ -28,7 +27,7 @@ namespace Codetester.Controllers
         //GET api/examinstances/all
         [Authorize(Roles = "Admin, Teacher")]
         [HttpGet("all")]
-        public ActionResult<IEnumerable<Exam>> GetAllExamInstances()
+        public ActionResult<IEnumerable<ExamInstanceListReadDto>> GetAllExamInstances()
         {
             var examInstances = _repository.GetAllExamInstances();
             
@@ -38,7 +37,7 @@ namespace Codetester.Controllers
 
         //GET api/examinstances
         [HttpGet]
-        public ActionResult<IEnumerable<Exam>> GetUsersExamInstances()
+        public ActionResult<IEnumerable<ExamInstanceListReadDto>> GetUsersExamInstances()
         {
             // Get user id from JWT token
             int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -55,9 +54,8 @@ namespace Codetester.Controllers
         }
 
         //GET api/examinstances/:id
-        [Authorize(Roles = "Admin, Teacher")]
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Exam>> GetExamInstanceById(int id)
+        public ActionResult<ExamInstanceAttemptReadDto> GetExamInstanceById([ModelBinder(typeof(HashIdModelBinder))] int id)
         {
             // Get user id from JWT token
             int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -67,12 +65,18 @@ namespace Codetester.Controllers
             {
                 return NotFound();
             }
+            
             var examInstance = _repository.GetExamInstanceById(id);
-
+            if (examInstance == null)
+            {
+                return NotFound();
+            }
             // make sure this is the users instance
+            if (examInstance.User != user)
+            {
+                return Forbid();
+            }
             
-            
-            //return Ok(_mapper.Map<IEnumerable<ExamInstanceReadDto>>(exams));
             return Ok(_mapper.Map<ExamInstanceAttemptReadDto>(examInstance));
         }
 
