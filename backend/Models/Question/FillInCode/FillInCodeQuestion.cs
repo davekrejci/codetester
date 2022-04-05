@@ -40,7 +40,7 @@ namespace Codetester.Models
             var blocks = this.FillInCodeBlocks.OrderBy(x => rand.Next()).Take(this.FillCount);
 
             // sort randomly selected blocks by position in content so that the strings can be properly replaced
-            blocks.OrderBy(x => x.StartPosition);
+            blocks = blocks.OrderBy(x => x.StartPosition);
 
             // replace each block with shortcode
             int charDiff = 0;
@@ -55,7 +55,6 @@ namespace Codetester.Models
             }
 
             System.Console.WriteLine("The transformed code: " + transformedCode);
-
             instance.Code = transformedCode;
 
             return instance;
