@@ -65,46 +65,34 @@
     </v-card>
 
     <!-- Delete Dialog -->
-    <v-dialog v-model="showDeleteDialog" max-width="400px">
-      <v-card class="text-center pa-4">
-        <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
-        <v-card-title class="text-h5">
-          <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
-        </v-card-title>
-        <v-card-text
-          >Opravdu si přejete smazat <strong>{{ semesterToDelete.semesterType.displayText }}</strong> semestr <strong>{{ semesterToDelete.year }}</strong>? Tato akce
-          je nevratná.</v-card-text
-        >
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="grey"
-            class="mx-2"
-            outlined
-            @click="showDeleteDialog = false"
-          >
-            Ne
-          </v-btn>
-          <v-btn
-            color="error"
-            class="mx-2"
-            outlined
-            @click="deleteSemester(semesterToDelete.id)"
-          >
-            Ano
-          </v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <default-confirmation-dialog
+      color="error"
+      icon="mdi-alert-circle-outline"
+      confirmationButtonText="Smazat"
+      :show="showDeleteDialog"
+      :confirmAction="deleteSemester"
+      @close-dialog="showDeleteDialog = false"
+    >
+      <template v-slot:title>
+        Smazat semestr?
+      </template>
+      <template v-slot:text>
+        Opravdu si přejete smazat <strong>{{ semesterToDelete.semesterType.displayText }}</strong> semestr <strong>{{ semesterToDelete.year }}</strong>? Tato akce je nevratná.
+      </template>
+    </default-confirmation-dialog>
   </div>
 </template>
 
 <script>
 import api from "api-client";
+import DefaultConfirmationDialog from '@/components/DefaultConfirmationDialog.vue';
+
 
 export default {
   name: "CourseSemesters",
+  components: {
+    DefaultConfirmationDialog
+  },
   props: {
     semesters: { type: Array, required: true },
   },
@@ -134,7 +122,8 @@ export default {
       this.semesterToDelete = semester;
       this.showDeleteDialog = true;
     },
-    async deleteSemester(id) {
+    async deleteSemester() {
+      let id = this.semesterToDelete.id;
       this.semesterToDelete = {
         year: "",
         semesterType: {

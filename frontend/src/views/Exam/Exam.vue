@@ -169,11 +169,8 @@
 
         <!-- Action buttons -->
         <div class="mt-8">
-         <v-dialog v-model="showDeleteDialog" max-width="400px">
-          <template v-slot:activator="{ on, attrs }">
             <v-btn
-              v-bind="attrs"
-              v-on="on"
+              @click="showDeleteDialog = true"
               :loading="loading"
               :disabled="loading"
               color="error"
@@ -182,11 +179,10 @@
             >
               Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
             </v-btn>
-          </template>
-          <v-card class="text-center pa-4">
+          
+          <!-- <v-card class="text-center pa-4">
             <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
             <v-card-title class="text-h5">
-              <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
             </v-card-title>
             <v-card-text
               >Opravdu si přejete test smazat? Tato akce je
@@ -205,8 +201,7 @@
               <v-btn color="error" class="mx-2" outlined @click="deleteExam"> Ano </v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
-          </v-card>
-        </v-dialog>
+          </v-card> -->
           <v-btn
             color="primary"
             :loading="loading"
@@ -220,6 +215,23 @@
         </div>
       </v-form>
     </div>
+
+    <default-confirmation-dialog
+      color="error"
+      icon="mdi-alert-circle-outline"
+      confirmationButtonText="Smazat"
+      :show="showDeleteDialog"
+      :confirmAction="deleteExam"
+      @close-dialog="showDeleteDialog = false"
+    >
+      <template v-slot:title>
+        Smazat test?
+      </template>
+      <template v-slot:text>
+        Opravdu si přejete test smazat? Tato akce je nevratná.
+      </template>
+    </default-confirmation-dialog>
+
     <default-snackbar
       :type="snackbar.type"
       :text="snackbar.text"
@@ -232,12 +244,13 @@
 import api from "api-client";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import ExamQuestions from "@/components/ExamQuestions.vue";
+import DefaultConfirmationDialog from '@/components/DefaultConfirmationDialog.vue';
 import moment from "moment";
 
 moment.locale("cs");
 
 export default {
-  components: { DefaultSnackbar, ExamQuestions },
+  components: { DefaultSnackbar, DefaultConfirmationDialog, ExamQuestions },
   name: "Exam",
   data() {
     return {

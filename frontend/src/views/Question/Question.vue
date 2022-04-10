@@ -175,51 +175,16 @@
 
         <!-- Action buttons -->
         <!-- Delete Dialog -->
-        <v-dialog v-model="showDeleteDialog" max-width="400px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              :loading="loading"
-              :disabled="loading"
-              color="error"
-              outlined
-              class="mr-4 mb-2"
-            >
-              Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
-            </v-btn>
-          </template>
-          <v-card class="text-center pa-4">
-            <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
-            <v-card-title class="text-h5">
-              <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
-            </v-card-title>
-            <v-card-text
-              >Opravdu si přejete smazat otázku? Tato akce je
-              nevratná.</v-card-text
-            >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="grey"
-                class="mx-2"
-                outlined
-                @click="showDeleteDialog = false"
-              >
-                Ne
-              </v-btn>
-              <v-btn
-                color="error"
-                class="mx-2"
-                outlined
-                @click="deleteQuestion()"
-              >
-                Ano
-              </v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <v-btn
+          @click="showDeleteDialog = true"
+          :loading="loading"
+          :disabled="loading"
+          color="error"
+          outlined
+          class="mr-4 mb-2"
+        >
+          Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
+        </v-btn>
         <v-btn
           color="primary"
           depressed
@@ -233,6 +198,21 @@
         </v-btn>
       </v-form>
     </div>
+    <default-confirmation-dialog
+      color="error"
+      icon="mdi-alert-circle-outline"
+      confirmationButtonText="Smazat"
+      :show="showDeleteDialog"
+      :confirmAction="deleteQuestion"
+      @close-dialog="showDeleteDialog = false"
+    >
+      <template v-slot:title>
+        Smazat otázku?
+      </template>
+      <template v-slot:text>
+        Opravdu si přejete smazat otázku? Tato akce je nevratná.
+      </template>
+    </default-confirmation-dialog>
     <default-snackbar
       :type="snackbar.type"
       :text="snackbar.text"
@@ -259,12 +239,13 @@ import "codemirror/addon/edit/matchbrackets.js";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
+import DefaultConfirmationDialog from '../../components/DefaultConfirmationDialog.vue';
 
 const WidgetComponentClass = Vue.extend(FillableWidget);
 
 export default {
   name: "Question",
-  components: { DefaultSnackbar },
+  components: { DefaultSnackbar, DefaultConfirmationDialog },
   data() {
     return {
       loading: false,

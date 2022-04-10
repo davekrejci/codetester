@@ -126,41 +126,23 @@
     </v-card>
 
     <!-- Delete Dialog -->
-    <v-dialog v-model="showDeleteDialog" max-width="400px">
-      <v-card class="text-center pa-4">
-        <v-icon color="error" x-large>mdi-alert-circle-outline</v-icon>
-        <v-card-title class="text-h5">
-          <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
-        </v-card-title>
-        <v-card-text
-          >Opravdu si přejete smazat test "<strong>{{
-            examToDelete.name
-          }}</strong
-          >"? Tato akce je nevratná.</v-card-text
-        >
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="grey"
-            class="mx-2"
-            outlined
-            @click="showDeleteDialog = false"
-          >
-            Ne
-          </v-btn>
-          <v-btn
-            color="error"
-            class="mx-2"
-            outlined
-            @click="deleteExam(examToDelete.id)"
-          >
-            Ano
-          </v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <default-confirmation-dialog
+      color="error"
+      icon="mdi-alert-circle-outline"
+      confirmationButtonText="Smazat"
+      :show="showDeleteDialog"
+      :confirmAction="deleteExam"
+      @close-dialog="showDeleteDialog = false"
+    >
+      <template v-slot:title>
+        Smazat test?
+      </template>
+      <template v-slot:text>
+        Opravdu si přejete smazat test "<strong>{{ examToDelete.name }}</strong>"? Tato akce je nevratná.
+      </template>
+    </default-confirmation-dialog>
 
+    <!-- Snackbar -->
     <default-snackbar
       :type="snackbar.type"
       :text="snackbar.text"
@@ -173,12 +155,13 @@
 import api from "api-client";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import moment from "moment";
+import DefaultConfirmationDialog from '../../components/DefaultConfirmationDialog.vue';
 
 moment.locale("cs");
 
 export default {
   name: "Exams",
-  components: { DefaultSnackbar },
+  components: { DefaultSnackbar, DefaultConfirmationDialog },
   data() {
     return {
       moment: moment,
@@ -225,18 +208,18 @@ export default {
       this.examToDelete = exam;
       this.showDeleteDialog = true;
     },
-    async deleteExam(id) {
+    async deleteExam() {
       this.hasBeenDeleted = false;
-      this.examToDelete = {};
       this.showDeleteDialog = false;
       this.error = null;
       this.loading = true;
       try {
-        await api.deleteExam(id);
+        await api.deleteExam(this.examToDelete.id);
         this.hasBeenDeleted = true;
       } catch (error) {
         this.error = error;
       }
+      this.examToDelete = {};
       this.fetchExams();
     },
     async fetchExams() {
