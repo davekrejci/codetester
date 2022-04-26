@@ -1,5 +1,5 @@
 <template>
-  <v-container class="">
+  <v-container fluid class="">
     <div v-if="this.user != null">
       <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
       <h1 class="ml-1 mt-0">{{this.user.firstName}} {{this.user.lastName}}</h1>

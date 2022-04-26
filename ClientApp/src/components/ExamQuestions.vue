@@ -49,7 +49,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row
             align="center"
-            justify="space-around"
+            justify=""
             class="d-flex flex-nowrap"
           >
             <router-link

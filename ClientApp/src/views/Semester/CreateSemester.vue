@@ -1,8 +1,8 @@
 <template>
-  <v-container class="px-12">
+  <v-container fluid class="">
     <div v-if="this.currentCourse">
-      <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-      <h1 class="mb-8">Vytvořit nový semestr</h1>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+      <h1 class="ml-1 mb-6 mt-0">Vytvořit nový semestr</h1>
         <v-text-field
           outlined
           disabled
@@ -172,6 +172,10 @@ export default {
     breadcrumbs() {
       let currentCourseCode = this.currentCourse.courseCode;
       return [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Předměty",
           disabled: false,

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="">
+  <v-container fluid class="">
     <div v-if="this.course != null">
       <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
       <h1 class="ml-1 mb-6 mt-0">{{course.courseName}}</h1>

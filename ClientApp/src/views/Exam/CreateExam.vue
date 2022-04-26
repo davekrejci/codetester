@@ -1,5 +1,5 @@
 <template>
-  <v-container class="">
+  <v-container fluid class="">
     <v-breadcrumbs :items="breadcrumbs" class="pa-0 pl-1 pb-4"></v-breadcrumbs>
     <h1 class="ml-1 mb-6">Vytvořit nový test</h1>
     <v-form ref="createExamForm">

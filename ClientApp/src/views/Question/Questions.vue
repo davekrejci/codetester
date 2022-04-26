@@ -45,6 +45,7 @@
         </v-tooltip>
       </v-card-title>
       <v-data-table
+        dense
         :headers="headers"
         :items="questions"
         :items-per-page="15"
@@ -60,7 +61,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row
             align="center"
-            justify="space-around"
+            justify=""
             class="d-flex flex-nowrap"
           >
             <router-link
