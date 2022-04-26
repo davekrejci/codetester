@@ -1,6 +1,6 @@
 {
     "scripts": {
-      "heroku-postbuild": "cd ClientApp && npm install && npm run build"
+      "heroku-postbuild": "cd ClientApp && npm install -g @vue/cli && npm install && npm run build"
     },
     "cacheDirectories": [
       "ClientApp/node_modules"
