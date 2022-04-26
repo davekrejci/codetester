@@ -180,6 +180,26 @@ export default {
         console.log(response.data);
         return response.data
     },
+    async fetchExamInstance(id) {
+        const url = "examinstances/" + id;
+        const response = await axios.get(url);
+        console.log(response.data);
+        return response.data
+    },
+    async turnInExamInstance(id, examTurnInDto) {
+        const url = "examinstances/" + id;
+        console.log(JSON.stringify(examTurnInDto));
+        let response = await axios.post(url, examTurnInDto);
+        console.log(response)
+    },
+
+    // EXAM RESULT
+    async fetchExamResult(id) {
+        const url = "examinstances/results/" + id;
+        const response = await axios.get(url);
+        console.log(response.data);
+        return response.data
+    },
 
     // TAGS
     async fetchTags() {

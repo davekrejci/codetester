@@ -1,7 +1,7 @@
 <template>
-  <v-container class="px-12">
-    <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-    <h1 class="mb-8">Vytvořit novou otázku</h1>
+  <v-container class="">
+    <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+    <h1 class="ml-1 mb-6 mt-0">Vytvořit novou otázku</h1>
     <v-form ref="form">
       <!-- Question type selector   -->
       <v-select
@@ -105,6 +105,10 @@ export default {
         required: (value) => !!value || "Povinné.",
       },
       breadcrumbs: [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Otázky",
           disabled: false,

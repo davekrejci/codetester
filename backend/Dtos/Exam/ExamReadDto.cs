@@ -23,6 +23,8 @@ namespace Codetester.Dtos
         public ICollection<QuestionReadDto> Questions { get; set; }
         
         public ICollection<TagReadDto> Tags { get; set; }
+
+        public ICollection<ExamInstanceResultListDto> ExamInstances { get; set; }
         
     }
 }

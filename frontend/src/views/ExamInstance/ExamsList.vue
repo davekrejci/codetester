@@ -6,7 +6,7 @@
       :exam="exam"
       :isClosed="isClosed"
     />
-    <v-card class="pa-8" flat v-if="exams.length == 0 && !isClosed">
+    <v-card class="transparent pa-8" flat v-if="exams.length == 0 && !isClosed">
       <v-row>
         <v-col>
           <h3 class="unselectable text-center font-weight-light italic mb-12">
@@ -21,7 +21,7 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-card class="pa-8" flat v-if="exams.length == 0 && isClosed">
+    <v-card class="transparent pa-8" flat v-if="exams.length == 0 && isClosed">
       <v-row>
         <v-col>
           <h3 class="unselectable text-center font-weight-light mb-12">

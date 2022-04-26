@@ -44,6 +44,7 @@ namespace Codetester.Data
                                 .Include("Answers")
                                 .Include("FillInCodeBlocks")
                                 .Include("Tags")
+                                .Where(question => question.Deleted == null)
                                 .ToList();
         }
         public Question GetQuestionById(int id)
@@ -52,6 +53,7 @@ namespace Codetester.Data
                             .Include("Answers")
                             .Include("FillInCodeBlocks")
                             .Include("Tags")
+                            .Where(question => question.Deleted == null)
                             .FirstOrDefault(q => q.Id == id);
 
         }
@@ -171,6 +173,7 @@ namespace Codetester.Data
         {
             return _context.Exams
                             .Include("Questions.Tags")
+                            .Include("ExamInstances.User")
                             .Include("Tags")
                             .Include("Semester.Course")
                             .ToList();
@@ -239,6 +242,7 @@ namespace Codetester.Data
             return _context.ExamInstances
                             .Include("Exam.Semester.Course")
                             .Include("QuestionInstances.Answers")
+                            .Include("QuestionInstances.FillInCodeBlocks")
                             .FirstOrDefault(e => e.Id == id);
         }
     

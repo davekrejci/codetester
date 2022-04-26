@@ -14,7 +14,13 @@ const routes = [
   {
     path: '/examinstance/:id',
     name: 'ExamInstance',
-    component: () => import('@/views/ExamInstance.vue'),
+    component: () => import('@/views/ExamInstance/ExamInstance.vue'),
+    meta: { authorize: [] } 
+  },
+  {
+    path: '/examresult/:id',
+    name: 'ExamResult',
+    component: () => import('@/views/ExamResult/ExamResult.vue'),
     meta: { authorize: [] } 
   },
   {

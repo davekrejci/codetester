@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <v-card flat class="pa-4">
-      <v-card-title>
+  <v-container fluid>
+    <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+    <h1 class="ml-1 mb-6 mt-0">Předměty</h1>
+    <v-card outlined class="pb-4">
+      <v-card-title class="mb-4">
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -43,6 +45,7 @@
         loading-text="Načítání dat..."
         no-data-text="Žádné data"
         item-key="course"
+        class="mx-4"
         v-model="selected"
       >
         <template v-slot:[`item.actions`]="{ item }">
@@ -93,7 +96,7 @@
 
     <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
     
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -120,6 +123,10 @@ export default {
       ],
       selected: [],
       breadcrumbs: [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Předměty",
           disabled: true,

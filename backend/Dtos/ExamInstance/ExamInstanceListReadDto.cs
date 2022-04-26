@@ -7,6 +7,9 @@ namespace Codetester.Dtos
         [JsonConverter(typeof(HashIdJsonConverter))]
         public int Id { get; set; }
 
+        public bool IsCompleted { get; set; }
+
+
         public ExamReadMinimalDto Exam { get; set; }
         
     }

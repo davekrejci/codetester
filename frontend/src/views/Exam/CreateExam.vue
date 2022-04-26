@@ -1,7 +1,7 @@
 <template>
-  <v-container class="px-12">
-    <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-    <h1 class="mb-8">Vytvořit nový test</h1>
+  <v-container class="">
+    <v-breadcrumbs :items="breadcrumbs" class="pa-0 pl-1 pb-4"></v-breadcrumbs>
+    <h1 class="ml-1 mb-6">Vytvořit nový test</h1>
     <v-form ref="createExamForm">
       <v-text-field
         outlined
@@ -147,10 +147,12 @@
       <exam-questions
         ref="examQuestions"
         v-on:selectedQuestionsChanged="updateSelectedQuestions"
+        hasOutline
       ></exam-questions>
 
       <!-- Tag selector -->
       <v-combobox
+        class="mt-8"
         v-model="exam.tags"
         :items="tags"
         item-text="tagText"
@@ -242,6 +244,10 @@ export default {
           "Konec testu nemůže být dřív než začátek",
       },
       breadcrumbs: [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Testy",
           disabled: false,

@@ -1,7 +1,7 @@
 <template>
-  <v-container class="px-12">
-    <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-    <h1 class="mb-8">Vytvořit nového uživatele</h1>
+  <v-container class="">
+    <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+    <h1 class="ml-1 mb-6 mt-0">Vytvořit nového uživatele</h1>
     <v-form ref="createUserForm">
       <v-text-field
         outlined
@@ -121,6 +121,10 @@ export default {
         email: (value) => /.+@.+\..+/.test(value) || 'Použijte platnou emailovou adresu',
       },
       breadcrumbs: [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Uživatelé",
           disabled: false,

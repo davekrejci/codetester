@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import client from 'api-client'
 import questionDesigner from './modules/questionDesigner';
+import examInstance from './modules/examInstance';
 import moment from 'moment';
 import { Role } from '@/util/role.js';
 
@@ -205,5 +206,6 @@ export default new Vuex.Store({
     },
   modules: {
     questionDesigner,
+    examInstance,
   }
 })

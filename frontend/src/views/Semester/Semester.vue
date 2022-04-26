@@ -1,7 +1,8 @@
 <template>
-<v-container class="px-12">
+<v-container class="">
     <div v-if="semester != null">
-        <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+      <h1 class="ml-1 mb-6 mt-0">{{semester.course.courseName}} - {{formattedSemesterName}} semestr {{semester.year}}</h1>
       <v-form ref="semesterForm">
         <v-text-field
           outlined
@@ -43,16 +44,18 @@
         </v-row>
       </v-form>
        
-        <v-card outlined>
+        <v-card outlined class="mb-1">
             <v-tabs 
                 v-model="tab" 
-                
                 center-active
-                
-                class="rounded-b-0"
+                class=""
             >
                 <v-tab>Studenti</v-tab>
                 <v-tab>Testy</v-tab>
+            </v-tabs>
+        </v-card>
+        <v-card outlined>
+          <v-tabs-items v-model="tab">
                 <v-tab-item>
                     <semester-students 
                       :currentUsers="this.semester.enrolledStudents"
@@ -62,8 +65,9 @@
                 <v-tab-item>
                     <semester-exams :exams="this.semester.exams"></semester-exams>
                 </v-tab-item>
-            </v-tabs>
+          </v-tabs-items>
         </v-card>
+            
         <!-- Action buttons -->
         <div class="mt-12">
         <v-dialog v-model="showDeleteDialog" max-width="400px">
@@ -243,6 +247,10 @@ export default {
     breadcrumbs() {
         
       return [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Předměty",
           disabled: false,

@@ -8,10 +8,14 @@ $darker-2: #23262f;
 $darker-3: #1a1c23;
 $darker-4: #111317;
 
+
+//thicker borders for outlined components
+$sheet-outlined-border-width: 2px;
+
 $material-dark: (
-	'background': $lighter-1,
-	'app-bar': $base,
-	'navigation-drawer': $base,
+	'background': $base,
+	'app-bar': $lighter-1,
+	'navigation-drawer': $lighter-1,
   'cards': $lighter-1,
   'text': (
       // 'theme': map-get($shades, 'white'),
@@ -28,9 +32,9 @@ $material-dark: (
 );
 
 $material-light: (
-	'background': #ffffff,
-	'app-bar': #fafafe,
-	'navigation-drawer': #fafafe,
+	'background': #fafafe,
+	'app-bar': #ffffff,
+	'navigation-drawer': #ffffff,
     //'cards': #F6F7F8,
     'text': (
     //   'theme': map-get($shades, 'white'),
@@ -53,3 +57,4 @@ $material-light: (
 
 $title-font: 'Rubik', sans-serif;
 $heading-font-family: 'Rubik', sans-serif;
+//$body-font-family: 'Rubik', sans-serif

@@ -77,6 +77,9 @@ namespace Codetester.Controllers
                 }
             }
 
+            //set created time
+            questionModel.Created = DateTime.UtcNow;
+
             _repository.CreateQuestion(questionModel);
             _repository.SaveChanges();
             
@@ -98,6 +101,10 @@ namespace Codetester.Controllers
             {
                 return BadRequest("Not possible to change the question type for existing question.");
             }
+
+            // set updated time
+            questionModel.Updated = DateTime.UtcNow;
+
             _mapper.Map(questionUpdateDto, questionModel);
             _repository.UpdateQuestion(questionModel);
             
@@ -140,7 +147,11 @@ namespace Codetester.Controllers
             {
                 return NotFound();
             }
-            _repository.DeleteQuestion(question);
+
+            // set deleted time
+            question.Deleted = DateTime.UtcNow;
+
+            _repository.UpdateQuestion(question);
             _repository.SaveChanges();
             return NoContent();
         }

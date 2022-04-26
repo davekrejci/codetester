@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Codetester.Dtos
 {
@@ -7,6 +6,7 @@ namespace Codetester.Dtos
     {
         public string CodeDescription { get; set; }
         public string Code { get; set; }
+        public ICollection<FillInCodeBlockInstanceAttemptDto> FillInCodeBlocks { get; set; }
 
     }
 }

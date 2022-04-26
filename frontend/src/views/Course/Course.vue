@@ -1,7 +1,8 @@
 <template>
-  <v-container class="px-12">
+  <v-container class="">
     <div v-if="this.course != null">
-      <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+      <h1 class="ml-1 mb-6 mt-0">{{course.courseName}}</h1>
       <v-form ref="form">
         <v-text-field
           outlined
@@ -166,6 +167,10 @@ export default {
     breadcrumbs() {
       let currentCourseCode = this.course.courseCode || ""
       return [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Předměty",
           disabled: false,

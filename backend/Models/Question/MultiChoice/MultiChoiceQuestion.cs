@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Codetester.Models
@@ -23,7 +24,14 @@ namespace Codetester.Models
         {
             MultiChoiceQuestionInstance instance = new MultiChoiceQuestionInstance();
             instance.QuestionText = this.QuestionText;
-            instance.Answers = this.Answers;
+            var instanceAnswers = new List<MultiChoiceAnswerInstance>();
+            foreach (MultiChoiceAnswer answer in this.Answers)
+            {
+                MultiChoiceAnswerInstance instanceAnswer = new MultiChoiceAnswerInstance(answer);
+                instanceAnswers.Add(instanceAnswer);
+            }
+            instance.Answers = instanceAnswers;
+            instance.MaxScore = instanceAnswers.Where(a => a.IsCorrect == true).Count();
             return instance;
         }
     }

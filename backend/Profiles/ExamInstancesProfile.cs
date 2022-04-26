@@ -10,7 +10,8 @@ namespace Codetester.Profiles
         {
             CreateMap<ExamInstance, ExamInstanceListReadDto>();
             CreateMap<ExamInstance, ExamInstanceAttemptReadDto>();
-
+            CreateMap<ExamInstance, ExamInstanceResultDto>();
+            CreateMap<ExamInstance, ExamInstanceResultListDto>();
         }
     }
 }

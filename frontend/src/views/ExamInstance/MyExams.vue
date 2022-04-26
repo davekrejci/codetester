@@ -1,26 +1,32 @@
 <template>
   <v-container fluid>
-    <v-card flat>
-      <v-tabs v-model="tab" center-active class="rounded-b-0">
-        <v-tab>
-          <!-- <v-badge
-            class="mr-8 font-weight-bold"
-            v-if="myExams.length"
-            :content="myExams.length"
-            offset-x="0"
-            offset-y="10"
-          ></v-badge> -->
-          Otevřené
-        </v-tab>
-        <v-tab>Dokončené</v-tab>
+    <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+    <h1 class="ml-1 mb-6 mt-0">Moje Testy</h1>
+      <v-card outlined class="rounded">
+        <v-tabs v-model="tab" class="">
+          <v-tab>
+            <!-- <v-badge
+              class="mr-8 font-weight-bold"
+              v-if="myExams.length"
+              :content="myExams.length"
+              offset-x="0"
+              offset-y="10"
+            ></v-badge> -->
+            Otevřené
+          </v-tab>
+          <v-tab>Dokončené</v-tab>
+      </v-tabs>
+      </v-card>
+      <v-card flat class="transparent">
+      <v-tabs-items v-model="tab" class="transparent">
         <v-tab-item> 
           <exams-list :exams="openExams"></exams-list>
         </v-tab-item>
         <v-tab-item> 
           <exams-list :exams="closedExams" isClosed></exams-list>
         </v-tab-item>
-      </v-tabs>
-    </v-card>
+      </v-tabs-items>
+      </v-card>
     <default-snackbar
       :type="snackbar.type"
       :text="snackbar.text"
@@ -47,6 +53,11 @@ export default {
       error: null,
       breadcrumbs: [
         {
+          text: "Dashboard",
+          disabled: true,
+          to: "Dashboard",
+        },
+        {
           text: "Moje testy",
           disabled: true,
           to: "MyExams",
@@ -72,7 +83,7 @@ export default {
     },
     openExams() {
       return this.myExams.filter(exam => {
-        return moment.utc(exam.exam.endDate).isAfter(this.$store.state.currentTimeUtc); 
+        return (moment.utc(exam.exam.endDate).isAfter(this.$store.state.currentTimeUtc) && exam.isCompleted == false); 
       });
     },
     currentTimeUtc() {
@@ -80,7 +91,7 @@ export default {
     },
     closedExams() {
       return this.myExams.filter(exam => {
-        return moment.utc(exam.exam.endDate).isBefore(this.$store.state.currentTimeUtc); 
+        return (moment.utc(exam.exam.endDate).isBefore(this.$store.state.currentTimeUtc) || exam.isCompleted == true); 
       });
     },
     snackbar() {

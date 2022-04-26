@@ -31,8 +31,16 @@ namespace Codetester.Models
         [Required]
         public string LastName { get; set; }
 
-        public ICollection<Semester> EnrolledSemesters { get; set; }
-
-        
+        public ICollection<Semester> EnrolledSemesters { get; set; } 
     }
+
+    public static class UserRole
+    {
+        public const string ADMIN = "Admin";
+        public const string TEACHER = "Teacher";
+        public const string STUDENT = "Student";
+
+
+    }
+
 }

@@ -1,23 +1,39 @@
 <template>
-  <input placeholder=" " type="text" :class="['editablesection', colorClass ]" :style="{width:width + 'px'}" :maxlength="length" :data-wid="id" spellcheck="false">
+  <input 
+    v-model="text"
+    type="text"
+    :class="['editablesection', colorClass ]"
+    :style="{width:width + 'px'}"
+    :maxlength="length"
+    :data-wid="id"
+    @change="$emit('widgetFilled', { id: id, isFilled: isFilled, text: text })"
+    spellcheck="false">
 </template>
 
 <script>
 export default {
+    name: 'InputWidget',
     props: {
         id: String,
-        length: Number
+        length: Number,
+        //text: String
     },
     data(){
         return{
             width: "0",
+            text: "",
         }
     },
     mounted() {
         this.width = this.getTextWidth(this.length);
     },
     computed: {
-        colorClass: function() { return this.$vuetify.theme.dark ? "dark" : "light" }
+        colorClass() { 
+            return this.$vuetify.theme.dark ? "dark" : "light" 
+        },
+        isFilled() {
+            return this.text.length > 0
+        }
     },
     methods: {
         getTextWidth(textlength) {

@@ -81,7 +81,7 @@ import { shuffleArray } from "@/util/util.js";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/dracula.css";
 import "codemirror/theme/duotone-light.css";
-import "codemirror/theme/material-palenight.css";
+import "codemirror/theme/nord.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/clike/clike.js";
 import "codemirror/addon/search/searchcursor";
@@ -228,7 +228,7 @@ export default {
             {
               autoRefresh: true,
               theme: this.$vuetify.theme.dark
-                ? "material-palenight"
+                ? "nord"
                 : "duotone-light",
               mode: "text/x-java",
               readOnly: "nocursor",

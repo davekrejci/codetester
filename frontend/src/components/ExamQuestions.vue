@@ -1,10 +1,8 @@
 <template>
   <div>
     <!-- selected questions -->
-    <v-card outlined class="pa-4 mb-8">
+    <v-card flat :outlined="hasOutline" class="px-4">
       <v-card-title>
-        <!-- <span>Vybrané otázky</span> -->
-        <div class="text-overline mb-4">Otázky</div>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="searchSelected"
@@ -182,6 +180,10 @@ export default {
       default: () => new Array(), 
     },
     editingDisabled: {
+      type: Boolean,
+      default: false
+    },
+    hasOutline: {
       type: Boolean,
       default: false
     }

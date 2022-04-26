@@ -1,7 +1,8 @@
 <template>
-  <v-container class="px-12">
+  <v-container class="">
     <div v-if="exam != null">
-      <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1" ></v-breadcrumbs>
+      <h1 class="ml-1 mb-6">{{ this.exam.name }}</h1>
       <v-form ref="createExamForm">
         <v-text-field
           outlined
@@ -131,16 +132,34 @@
           </v-col>
         </v-row>
 
-        <!-- Question selector -->
-        <exam-questions
-          ref="examQuestions"
-          v-on:selectedQuestionsChanged="updateSelectedQuestions"
-          :currentQuestions="exam.questions"
-          :editingDisabled="editingDisabled"
-        ></exam-questions>
+        <v-card outlined class="rounded mb-1">
+          <v-tabs v-model="tab" center-active>
+            <v-tab>Otázky</v-tab>
+            <v-tab>Výsledky</v-tab>
+          </v-tabs>
+        </v-card>
+        <v-card outlined class="ma-0 rounded">
+          <v-tabs-items v-model="tab">
+            <v-tab-item> 
+              <!-- Question selector -->
+              <exam-questions
+                ref="examQuestions"
+                v-on:selectedQuestionsChanged="updateSelectedQuestions"
+                :currentQuestions="exam.questions"
+                :editingDisabled="editingDisabled"
+              ></exam-questions>
+            </v-tab-item>
+            <v-tab-item>
+              <exam-results
+                :examInstances="exam.examInstances"
+              ></exam-results>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-card>
 
         <!-- Tag selector -->
         <v-combobox
+        class="mt-8"
           v-model="exam.tags"
           :items="tags"
           item-text="tagText"
@@ -244,16 +263,18 @@
 import api from "api-client";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import ExamQuestions from "@/components/ExamQuestions.vue";
+import ExamResults from "@/components/ExamResults.vue";
 import DefaultConfirmationDialog from '@/components/DefaultConfirmationDialog.vue';
 import moment from "moment";
 
 moment.locale("cs");
 
 export default {
-  components: { DefaultSnackbar, DefaultConfirmationDialog, ExamQuestions },
+  components: { DefaultSnackbar, DefaultConfirmationDialog, ExamQuestions, ExamResults },
   name: "Exam",
   data() {
     return {
+      tab: null,
       currentDatetime: new Date(),
       searchTags: "",
       searchCourses: "",
@@ -272,19 +293,6 @@ export default {
           new Date(value) > this.exam.startDate ||
           "Konec testu nemůže být dřív než začátek",
       },
-      breadcrumbs: [
-        {
-          text: "Testy",
-          disabled: false,
-          link: true,
-          exact: true,
-          to: { name: "Exams" },
-        },
-        {
-          text: "Test #" + this.$route.params.id,
-          disabled: true,
-        },
-      ],
     };
   },
   methods: {
@@ -397,6 +405,25 @@ export default {
     currentDateTime() {
       return new Date();
     },
+    breadcrumbs() {
+      return [
+        {
+          text: "Management",
+          disabled: true,
+        },
+        {
+          text: "Testy",
+          disabled: false,
+          link: true,
+          exact: true,
+          to: { name: "Exams" },
+        },
+        {
+          text: this.exam.name,
+          disabled: true,
+        },
+      ];
+    },
     snackbar() {
       if (this.error != null) {
         return {
@@ -452,4 +479,7 @@ export default {
 </script>
 
 <style>
+.noBottomBorder {
+  border-bottom: none !important;
+}
 </style>

@@ -18,8 +18,6 @@ namespace Codetester.Models
         public int MultiChoiceQuestionId { get; set; }
         public MultiChoiceQuestion multiChoiceQuestion { get; set; }
 
-        public ICollection<MultiChoiceQuestionInstance> multiChoiceQuestionInstances { get; set; }
-
 
     }
 }

@@ -1,7 +1,8 @@
 <template>
-  <v-container class="px-12">
+  <v-container class="">
     <div v-if="this.question != null">
-      <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+      <h1 class="ml-1 mb-6">Otázka #{{question.id}}</h1>
       <v-form ref="form">
         <v-text-field
           :value="this.formattedQuestionType"
@@ -227,10 +228,8 @@ import api from "api-client";
 import * as CodeMirror from "codemirror";
 import "codemirror-formatting";
 import "codemirror/lib/codemirror.css";
-import "codemirror/theme/dracula.css";
+import "codemirror/theme/nord.css";
 import "codemirror/theme/duotone-light.css";
-import "codemirror/theme/material-palenight.css";
-import "codemirror/theme/eclipse.css";
 import "codemirror/mode/clike/clike.js";
 import "codemirror/addon/search/searchcursor";
 import "codemirror/addon/display/placeholder.js";
@@ -259,6 +258,10 @@ export default {
         required: (value) => !!value || "Povinné.",
       },
       breadcrumbs: [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Otázky",
           disabled: false,
@@ -343,7 +346,7 @@ export default {
         this.cm = CodeMirror.fromTextArea(document.getElementById("editor"), {
           lineNumbers: true,
           theme: this.$vuetify.theme.dark
-            ? "material-palenight"
+            ? "nord"
             : "duotone-light",
           mode: "text/x-java",
           autoCloseTags: true,

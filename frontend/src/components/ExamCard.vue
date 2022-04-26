@@ -76,7 +76,7 @@
         </v-tooltip>
       </v-card-actions>
       <v-card-actions v-if="isClosed">
-        <v-btn outlined color="primary" :to="'todo' + exam.id"
+        <v-btn outlined color="primary" :to="'/examresult/' + exam.id"
           >Zobrazit výsledky</v-btn
         >
       </v-card-actions>

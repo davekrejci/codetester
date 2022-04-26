@@ -29,35 +29,6 @@ namespace Codetester.Controllers
         public ActionResult<IEnumerable<Exam>> GetAllExams()
         {
             var exams = _repository.GetAllExams();
-            // update status fields based on current time
-            foreach (var exam in exams)
-            {
-                var status = exam.Status;
-                if (status == "planned")
-                {
-                    if (exam.EndDate < DateTime.UtcNow)
-                    {
-                        System.Console.WriteLine("changing status of exam " + exam.Id + " from " + exam.Status + " to closed ");
-                        System.Console.WriteLine("based on comparison: " + exam.EndDate + " < " + DateTime.UtcNow);
-                        exam.Status = "closed";
-                    }
-                    if (exam.StartDate < DateTime.UtcNow && exam.EndDate > DateTime.UtcNow)
-                    {
-                        System.Console.WriteLine("changing status of exam " + exam.Id + " from " + exam.Status + " to open ");
-                        System.Console.WriteLine("based on comparison: " + exam.StartDate + " < " + DateTime.UtcNow + " && " + exam.EndDate + " > " + DateTime.UtcNow);
-                        exam.Status = "open";
-                    }
-                }
-                if (status == "open")
-                {
-                    if (exam.EndDate < DateTime.UtcNow)
-                    {
-                        System.Console.WriteLine("changing status of exam " + exam.Id + " from " + exam.Status + " to closed ");
-                        System.Console.WriteLine("based on comparison: " + exam.EndDate + " < " + DateTime.UtcNow);
-                        exam.Status = "closed";
-                    }
-                }
-            }
             _repository.SaveChanges();
             return Ok(_mapper.Map<IEnumerable<ExamReadDto>>(exams));
         }
@@ -90,7 +61,6 @@ namespace Codetester.Controllers
             {
                 return BadRequest("End date must be later than start date");
             }
-            examModel.Status = "planned";
             examModel.StartDate = examModel.StartDate.ToUniversalTime();
             examModel.EndDate = examModel.EndDate.ToUniversalTime();
 

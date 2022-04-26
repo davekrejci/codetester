@@ -216,9 +216,8 @@ import { shuffleArray } from "@/util/util.js";
 import * as CodeMirror from "codemirror";
 import "codemirror-formatting";
 import "codemirror/lib/codemirror.css";
-import "codemirror/theme/dracula.css";
 import "codemirror/theme/duotone-light.css";
-import "codemirror/theme/material-palenight.css";
+import "codemirror/theme/nord.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/clike/clike.js";
 import "codemirror/addon/search/searchcursor";
@@ -307,7 +306,7 @@ export default {
     };
     this.cm = CodeMirror.fromTextArea(document.getElementById("editor"), {
       lineNumbers: true,
-      theme: this.$vuetify.theme.dark ? "material-palenight" : "duotone-light",
+      theme: this.$vuetify.theme.dark ? "nord" : "duotone-light",
       mode: "text/x-java",
       extraKeys: {
         "Ctrl-Space": "autocomplete",

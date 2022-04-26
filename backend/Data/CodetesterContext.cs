@@ -18,10 +18,6 @@ namespace Codetester.Data
         public DbSet<Exam> Exams { get; set; }
         public DbSet<ExamInstance> ExamInstances { get; set; }
         public DbSet<QuestionInstance> QuestionInstances { get; set; }
-        
-
-        
-
         public DbSet<Course> Courses { get; set; }
         public DbSet<Semester> Semesters { get; set; }
 
@@ -43,11 +39,25 @@ namespace Codetester.Data
                 .HasDiscriminator<string>("QuestionType")
                 .HasValue<MultiChoiceQuestionInstance>(QuestionType.MULTI_CHOICE)
                 .HasValue<FillInCodeQuestionInstance>(QuestionType.FILL_IN_CODE);
+            
+            modelBuilder.Entity<MultiChoiceQuestionInstance>()
+                .HasMany(q => q.Answers)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FillInCodeQuestionInstance>()
+                .HasMany(q => q.FillInCodeBlocks)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             // Set default user role
             modelBuilder.Entity<User>()
                 .Property(user => user.Role).HasDefaultValue("Student");
+
+            modelBuilder.Entity<QuestionInstance>()
+                .Property(question => question.IsAnswered).HasDefaultValue(false);
+
 
 
             // Seed admin user

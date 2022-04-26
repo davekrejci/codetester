@@ -12,10 +12,22 @@ namespace Codetester.Profiles
                 .Include<MultiChoiceQuestionInstance, MultiChoiceQuestionInstanceAttemptReadDto>()
                 .Include<FillInCodeQuestionInstance, FillInCodeQuestionInstanceAttemptReadDto>();
 
+            CreateMap<QuestionInstance, QuestionInstanceResultDto>()
+                .Include<MultiChoiceQuestionInstance, MultiChoiceQuestionInstanceResultDto>()
+                .Include<FillInCodeQuestionInstance, FillInCodeQuestionInstanceResultDto>();
+
 
             CreateMap<MultiChoiceQuestionInstance, MultiChoiceQuestionInstanceAttemptReadDto>();
-            CreateMap<FillInCodeQuestionInstance, FillInCodeQuestionInstanceAttemptReadDto>();
+            CreateMap<MultiChoiceAnswerInstance, MultiChoiceAnswerAttemptReadDto>();
 
+            CreateMap<MultiChoiceQuestionInstance, MultiChoiceQuestionInstanceResultDto>();
+            CreateMap<MultiChoiceAnswerInstance, MultiChoiceAnswerResultDto>();
+
+            CreateMap<FillInCodeQuestionInstance, FillInCodeQuestionInstanceAttemptReadDto>();
+            CreateMap<FillInCodeBlockInstance, FillInCodeBlockInstanceAttemptDto>();
+
+            CreateMap<FillInCodeQuestionInstance, FillInCodeQuestionInstanceResultDto>();
+            CreateMap<FillInCodeBlockInstance, FillInCodeBlockInstanceResultDto>();
         }
     }
 }

@@ -1,7 +1,10 @@
 <template>
-  <v-container class="px-12">
+  <v-container class="">
     <div v-if="this.user != null">
-      <v-breadcrumbs :items="breadcrumbs" class="mb-4"></v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
+      <h1 class="ml-1 mt-0">{{this.user.firstName}} {{this.user.lastName}}</h1>
+      <div class="ml-1 mt-n2 mb-8 text-subtitle-1">{{this.user.email}}</div>
+      
       <v-form ref="userForm">
         <v-text-field
           outlined
@@ -301,6 +304,10 @@ export default {
   computed: {
     breadcrumbs() {
       return [
+        {
+          text: "Management",
+          disabled: true,
+        },
         {
           text: "Uživatelé",
           disabled: false,
