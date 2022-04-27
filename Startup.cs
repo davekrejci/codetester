@@ -37,7 +37,7 @@ namespace Codetester
             // In production, the Vue files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "clientapp/dist";
+                configuration.RootPath = "ClientApp/dist";
             });
             services.AddAutoMapper((serviceProvider, automapper) =>
             {
