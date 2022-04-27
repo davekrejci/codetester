@@ -35,10 +35,7 @@
               offset-y="18"
             >
               <v-list-item-avatar class="mx-0" color="primary">
-                <!-- <v-icon dark>mdi-account-circle</v-icon> -->
-                <v-img
-                  src="https://randomuser.me/api/portraits/men/32.jpg"
-                ></v-img>
+                <span class="white--text font-weight-medium">{{ userInitials }}</span>
               </v-list-item-avatar>
             </v-badge>
             <v-list-item-content class="ml-4">
@@ -107,6 +104,9 @@ export default {
   computed: {
     user() {
       return store.state.user;
+    },
+    userInitials() {
+      return this.user.firstName[0] + this.user.lastName[0];
     },
     items() {
       return store.getters.getUserNavigationItems;
