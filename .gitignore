@@ -10,6 +10,9 @@
 obj
 bin
 
+# appsettings prod
+appsettings.Production.json
+
 # User-specific files
 *.rsuser
 *.suo
