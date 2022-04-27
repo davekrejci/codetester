@@ -64,11 +64,14 @@
                 :disabled="loading"
               >
               </v-text-field>
-              <a id="forgotPasswordText" class="text--secondary text-caption"
+              <a id="forgotPasswordText" @click="forgotPassword = !forgotPassword" class="text--secondary text-caption"
                 >Zapomněli jste heslo?</a
               >
+              <transition name="slide-y-transition">
+              <div :style="{'opacity':forgotPassword?1:0}" class="text--secondary text-caption ma-0">Kontaktujte prosím svého administrátora a požádejte o obnovení hesla</div>
+              </transition>
             </v-form>
-            <v-card-actions>
+            <v-card-actions >
               <v-btn
                 large
                 block
@@ -143,6 +146,7 @@ export default {
     username: "",
     password: "",
     responseStatus: null,
+    forgotPassword: false,
     value: String,
   }),
   computed: {
