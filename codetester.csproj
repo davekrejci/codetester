@@ -62,4 +62,7 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+  <Target Name="PrePublishTarget" AfterTargets="Publish">
+    <Exec Command="dotnet ef database update" />
+  </Target>
 </Project>
