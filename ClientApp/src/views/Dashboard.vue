@@ -1,9 +1,8 @@
 <template>
 	<div>
-		<mobile-navigation></mobile-navigation>
 		<navigation-drawer></navigation-drawer>
 		<v-main>
-			<v-container class="" fluid>
+			<v-container :class="borderClass" fluid>
 				<router-view :key="$route.fullPath"></router-view>
 			</v-container>
 		</v-main>
@@ -12,13 +11,29 @@
 
 <script>
 import NavigationDrawer from '@/components/NavigationDrawer.vue';
-import MobileNavigation from '@/components/MobileNavigation.vue';
-
 
 export default {
 	components: {
 		NavigationDrawer,
-		MobileNavigation,
 	},
+	computed: {
+		borderClass() {
+			if(this.$vuetify.theme.dark) {
+				return 'darkTopBorder';
+			}
+			else {
+				return 'lightTopBorder';
+			}
+		}
+	}
 };
 </script>
+
+<style scoped>
+.lightTopBorder {
+	border-top: 1px solid #eee;
+}
+.darkTopBorder {
+	border-top: 1px solid #4a4f5c;
+}
+</style>
