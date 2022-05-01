@@ -102,6 +102,11 @@ export default {
         let response = await axios.delete(url);
         console.log(response)
     },
+    async importUsers(users) {
+        const url = "users/import";
+        const response = await axios.post(url, users);
+        console.log(response)
+    },
     // admin only route for changing any users password (eg. forgotten passwords)
     async resetUserPassword(id, userPasswordResetDto) {
         const url = "users/password/reset/" + id;

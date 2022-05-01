@@ -36,9 +36,11 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <div v-bind="attrs" v-on="on">
-              <v-btn class="mx-2" depressed fab disabled small color="primary">
+              <router-link :to="{ name: 'ImportUsers' }">
+              <v-btn class="mx-2" depressed fab small color="primary">
                 <v-icon dark> mdi-cloud-upload </v-icon>
               </v-btn>
+              </router-link>
             </div>
           </template>
           <span>Nahrát Uživatele</span>

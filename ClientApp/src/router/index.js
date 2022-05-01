@@ -124,6 +124,12 @@ const routes = [
         component: () => import('@/views/User/CreateUser.vue'),
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
+      {
+        path: 'management/users/import',
+        name: 'ImportUsers',
+        component: () => import('@/views/User/ImportUsers.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
+      },
     ]
   },
   

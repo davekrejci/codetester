@@ -81,6 +81,40 @@ namespace Codetester.Controllers
             return CreatedAtRoute(nameof(GetUserById), new { Id = userReadDto.Id }, userReadDto);
         }
 
+         //POST api/users/import
+        [HttpPost("import")]
+        public ActionResult<ICollection<UserReadDto>> ImportUsers(ICollection<UserCreateDto> userCreateDtos)
+        {
+            foreach (var userCreateDto in userCreateDtos)
+            {
+                // check that usernames are unique
+                var user = _repository.GetUserByUsername(userCreateDto.Username);
+                if (user != null)
+                {
+                    return BadRequest("Username " + user.Username + " is already taken");
+                }
+                // check that role is one of possible roles or empty
+                if (userCreateDto.Role != null && userCreateDto.Role != "Student" && userCreateDto.Role != "Teacher" && userCreateDto.Role != "Admin")
+                {
+                    return BadRequest("Role " + userCreateDto.Role + " not valid option");
+                }
+            }
+
+            foreach (var userCreateDto in userCreateDtos)
+            {
+                var userModel = _mapper.Map<User>(userCreateDto);
+
+                // hash password
+                AuthUtil.CreatePasswordHash(userCreateDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                userModel.PasswordHash = passwordHash;
+                userModel.PasswordSalt = passwordSalt;
+
+                _repository.CreateUser(userModel);
+            }
+            _repository.SaveChanges();
+            return NoContent();
+        }
+
         //PUT api/users/{id}
         [HttpPut("{id}")]
         public ActionResult UpdateUser(int id, UserUpdateDto userUpdateDto)
