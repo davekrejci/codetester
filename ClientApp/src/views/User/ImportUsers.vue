@@ -3,12 +3,6 @@
     <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
     <div class="mb-4">
       <h1 class="ml-1 mb-6 mt-0 d-inline">Nahrát uživatele</h1>
-      <v-tooltip right>
-        <template v-slot:activator="{ on }">
-          <v-icon v-on="on" class="mb-4 ml-2">mdi-help-circle</v-icon>
-        </template>
-        <span>Nahrejte nové uživatele ze souboru .xlsx nebo .json</span>
-      </v-tooltip>
       <xlsx-workbook class="d-inline">
         <xlsx-sheet
           :collection="templateData"
@@ -18,7 +12,7 @@
           <template #default="{ download }">
             <v-tooltip right>
               <template v-slot:activator="{ on }">
-                <v-btn @click="download" small class="mb-4 ml-1" icon>
+                <v-btn @click="download" small class="mb-4 ml-2" icon>
                   <v-icon v-on="on" class="">mdi-download-circle</v-icon>
                 </v-btn>
               </template>
@@ -27,6 +21,13 @@
           </template>
         </xlsx-download>
       </xlsx-workbook>
+      <div class="text-caption ml-1">
+        <span>
+          Formáty:
+          <v-chip small class="mb-1" color="green" outlined>xlsx</v-chip>
+          <v-chip small class="ml-1 mb-1" color="orange" outlined>json</v-chip>
+        </span>
+      </div>
     </div>
     <v-file-input
       @change="selectFile"
