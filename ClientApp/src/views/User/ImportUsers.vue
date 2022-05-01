@@ -73,7 +73,7 @@ import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
   components: { DefaultSnackbar, XlsxRead, XlsxJson, XlsxSheet, XlsxWorkbook, XlsxDownload },
-  name: "CreateUser",
+  name: "ImportUsers",
   data() {
     return {
       file: null,
