@@ -195,7 +195,7 @@ export default {
       if (this.hasSaved) {
         return {
           type: "success",
-          text: "Uživatel byl vytvořen",
+          text: "Uživatelé byli vytvořeni",
           show: true,
         };
       }
