@@ -49,14 +49,14 @@ namespace Codetester.Profiles
 
             CreateMap<FillInCodeBlock, FillInCodeBlockCreateDto>();
             CreateMap<FillInCodeBlockCreateDto, FillInCodeBlock>()
-                .EqualityComparison((fdto, f) => fdto.Id == f.Id);
+                .ForMember(x => x.Id, opt => opt.Ignore());
 
             CreateMap<FillInCodeBlockReadDto, FillInCodeBlock>().ReverseMap();
 
             CreateMap<MultiChoiceAnswer, MultiChoiceAnswerReadDto>();
             CreateMap<MultiChoiceAnswer, MultiChoiceAnswerAttemptReadDto>();
             CreateMap<MultiChoiceAnswerCreateDto, MultiChoiceAnswer>()
-                .EqualityComparison((adto, a) => adto.Id == a.Id);
+                .ForMember(x => x.Id, opt => opt.Ignore());
 
 
 

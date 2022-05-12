@@ -4,7 +4,6 @@ namespace Codetester.Dtos
 {
     public class FillInCodeBlockCreateDto
     {
-        public int Id { get; set; }
         [Required]
         public string Content { get; set; }
         [Required]

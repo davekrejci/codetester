@@ -144,6 +144,7 @@ export default {
       return isValid;
     },
     selectFile(file) {
+      this.users = null;
       this.file = file;
       var ext = file.name.match(/.([^.]+)$/)[1];
       switch (ext) {

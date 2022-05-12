@@ -142,6 +142,11 @@ export default {
         let response = await axios.post(url, question);
         console.log(response)
     },
+    async importQuestions(questions) {
+        const url = "questions/import";
+        let response = await axios.post(url, questions);
+        console.log(response)
+    },
     async deleteQuestion(id) {
         const url = "questions/" + id;
         let response = await axios.delete(url);

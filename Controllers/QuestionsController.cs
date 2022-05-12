@@ -58,12 +58,12 @@ namespace Codetester.Controllers
             {
                 questionModel = _mapper.Map<FillInCodeQuestion>(questionCreateDto);
             }
-            else 
+            else
             {
                 // return error message that question type not valid
                 return BadRequest("Question type " + questionCreateDto.QuestionType + " is not a valid type");
             }
-        
+
             // map the tags
             foreach (TagCreateDto tagDto in questionCreateDto.Tags)
             {
@@ -71,7 +71,9 @@ namespace Codetester.Controllers
                 if (tagModel != null)
                 {
                     questionModel.Tags.Add(tagModel);
-                } else {
+                }
+                else
+                {
                     var newTag = _mapper.Map<TagCreateDto, Tag>(tagDto);
                     questionModel.Tags.Add(newTag);
                 }
@@ -82,10 +84,55 @@ namespace Codetester.Controllers
 
             _repository.CreateQuestion(questionModel);
             _repository.SaveChanges();
-            
+
 
             var questionReadDto = _mapper.Map<QuestionReadDto>(questionModel);
-            return CreatedAtRoute(nameof(GetQuestionById), new {Id = questionReadDto.Id}, questionReadDto);
+            return CreatedAtRoute(nameof(GetQuestionById), new { Id = questionReadDto.Id }, questionReadDto);
+        }
+
+        //POST api/questions/import
+        [HttpPost("import")]
+        public ActionResult<ICollection<QuestionReadDto>> ImportQuestions(ICollection<QuestionCreateDto> questionCreateDtos)
+        {
+            foreach (var questionCreateDto in questionCreateDtos)
+            {
+                Question questionModel;
+                if (questionCreateDto.QuestionType == QuestionType.MULTI_CHOICE)
+                {
+                    questionModel = _mapper.Map<MultiChoiceQuestion>(questionCreateDto);
+                }
+                else if (questionCreateDto.QuestionType == QuestionType.FILL_IN_CODE)
+                {
+                    questionModel = _mapper.Map<FillInCodeQuestion>(questionCreateDto);
+                }
+                else
+                {
+                    // return error message that question type not valid
+                    return BadRequest("Question type " + questionCreateDto.QuestionType + " is not a valid type");
+                }
+
+                // map the tags
+                foreach (TagCreateDto tagDto in questionCreateDto.Tags)
+                {
+                    var tagModel = _repository.GetTagById(tagDto.Id);
+                    if (tagModel != null)
+                    {
+                        questionModel.Tags.Add(tagModel);
+                    }
+                    else
+                    {
+                        var newTag = _mapper.Map<TagCreateDto, Tag>(tagDto);
+                        questionModel.Tags.Add(newTag);
+                    }
+                }
+
+                //set created time
+                questionModel.Created = DateTime.UtcNow;
+                _repository.CreateQuestion(questionModel);
+
+            }
+            _repository.SaveChanges();
+            return Ok();
         }
 
         //PUT api/questions/{id}
@@ -107,7 +154,7 @@ namespace Codetester.Controllers
 
             _mapper.Map(questionUpdateDto, questionModel);
             _repository.UpdateQuestion(questionModel);
-            
+
             _repository.SaveChanges();
             return NoContent();
         }

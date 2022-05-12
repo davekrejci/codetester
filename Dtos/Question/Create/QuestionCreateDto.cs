@@ -16,7 +16,7 @@ namespace Codetester.Dtos
         [RequiredIf("QuestionType", Models.QuestionType.MULTI_CHOICE)]
         public string QuestionText { get; set; }
         [RequiredIf("QuestionType", Models.QuestionType.MULTI_CHOICE)]
-        public List<MultiChoiceAnswer> Answers { get; set; }
+        public ICollection<MultiChoiceAnswerCreateDto> Answers { get; set; }
 
         // FILLINCODE
         [RequiredIf("QuestionType", Models.QuestionType.FILL_IN_CODE)]

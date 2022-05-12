@@ -101,6 +101,12 @@ const routes = [
         meta: { authorize: [Role.Admin, Role.Teacher] }
       },
       {
+        path: 'management/questions/import',
+        name: 'ImportQuestions',
+        component: () => import('@/views/Question/ImportQuestions.vue'),
+        meta: { authorize: [Role.Admin, Role.Teacher] }
+      },
+      {
         path: 'management/questions/:id',
         name: 'Question',
         component: () => import('@/views/Question/Question.vue'),
