@@ -49,7 +49,6 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row
             align="center"
-            justify=""
             class="d-flex flex-nowrap"
           >
             <router-link
@@ -197,7 +196,6 @@ export default {
       headers: [
         { text: "Id", value: "id" },
         { text: "Typ", value: "questionType" },
-        { text: "Otázka", value: "questionText" },
         { text: "Tagy", value: "tags" },
         { text: "Akce", value: "actions", sortable: false },
       ],

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="mb-4">{{ question.codeDescription }}</p>
+    <div class="mb-8" v-html="question.codeDescription"></div>
     <fill-blank-code-editor
       :content="question.code"
       :id="question.id"

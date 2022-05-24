@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-textarea
+    <!-- <v-textarea
       outlined
       auto-grow
       :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
@@ -10,7 +10,13 @@
       label="Popište kód"
       v-model="codeDescription"
       :rules="[rules.required]"
-    ></v-textarea>
+    ></v-textarea> -->
+    <rich-text-editor
+      class="mb-4" 
+      :value="codeDescription" 
+      placeholder="Popiště kód..."
+      @input="updateCodeDescription"  
+    ></rich-text-editor>
 
     <v-toolbar dense outlined elevation="0" class="rounded rounded-b-0">
       <v-tooltip top>
@@ -211,6 +217,7 @@
 import Vue from "vue";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
+import RichTextEditor from "@/components/RichTextEditor/RichTextEditor.vue";
 import JavaLexer from "./Lexers/javalexer.js";
 import { shuffleArray } from "@/util/util.js";
 import * as CodeMirror from "codemirror";
@@ -239,6 +246,7 @@ const { mapFields, mapMultiRowFields } = createHelpers({
 
 export default {
   name: "FillInCode",
+  components: { RichTextEditor },
   data() {
     return {
       rules: {
@@ -294,7 +302,6 @@ export default {
       "fillInCode.fillInCount"
       ]),
     ...mapMultiRowFields(["fillInCode.widgets"]),
-
   },
   mounted() {
     // reset store widget data that might be left over after leaving and coming back 
@@ -340,6 +347,10 @@ export default {
   },
   methods: {
     ...mapMutations('questionDesigner',["addFillInCodeWidget", "removeFillInCodeWidget", "removeAllFillInCodeWidgets"]),
+    
+    updateCodeDescription(text) {
+      this.codeDescription = text;
+    },
     /**
      * Switches the range in the editor with a FillableWidget component
      * @param {Object} range - the range to set fillable {from: Pos, to: Pos}, defaults to currently selected range

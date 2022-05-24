@@ -1,8 +1,6 @@
 <template>
   <div>
-    <p class="mb-4">
-      {{ question.questionText }}
-    </p>
+    <div class="mb-8" v-html="question.questionText"></div>
     <v-card
       class="question-card"
       color="transparent"

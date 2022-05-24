@@ -14,7 +14,7 @@
 
         <!-- MultiChoice -->
         <div v-if="this.question.questionType === 'multi-choice'" class="mb-8">
-          <v-textarea
+          <!-- <v-textarea
             readonly
             outlined
             auto-grow
@@ -26,7 +26,8 @@
             v-model="this.question.questionText"
             class="mb-2"
             :rules="[rules.required]"
-          ></v-textarea>
+          ></v-textarea> -->
+          <rich-text-editor :value="this.question.questionText" :editable="false" class="mb-8"></rich-text-editor>
 
           <div
             v-for="(answer, index) in this.question.answers"
@@ -103,7 +104,7 @@
 
         <!-- FillInCode -->
         <div v-if="this.question.questionType === 'fill-in-code'" class="mb-8">
-          <v-textarea
+          <!-- <v-textarea
             outlined
             auto-grow
             :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
@@ -114,7 +115,8 @@
             label="Popis kódu"
             v-model="this.question.codeDescription"
             :rules="[rules.required]"
-          ></v-textarea>
+          ></v-textarea> -->
+          <rich-text-editor :value="this.question.codeDescription" :editable="false" class="mb-8"></rich-text-editor>
 
           <v-card flat outlined class="rounded">
             <textarea v-model="this.question.code" id="editor"></textarea>
@@ -129,9 +131,9 @@
           <v-card flat outlined class="mt-2 px-12 py-4">
             <v-slider
               hint="Počet bloků, které student bude muset doplnit(náhodný výběr)"
-              v-model="this.question.fillCount"
+              v-model="question.fillCount"
               thumb-label
-              :max="this.question.fillInCodeBlocks.length"
+              :max="question.fillInCodeBlocks.length"
               ticks
               tick-size="4"
               persistent-hint
@@ -239,12 +241,13 @@ import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import DefaultConfirmationDialog from '../../components/DefaultConfirmationDialog.vue';
+import RichTextEditor from "@/components/RichTextEditor/RichTextEditor.vue";
 
 const WidgetComponentClass = Vue.extend(FillableWidget);
 
 export default {
   name: "Question",
-  components: { DefaultSnackbar, DefaultConfirmationDialog },
+  components: { DefaultSnackbar, DefaultConfirmationDialog, RichTextEditor },
   data() {
     return {
       loading: false,

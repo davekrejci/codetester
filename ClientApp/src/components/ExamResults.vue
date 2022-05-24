@@ -30,7 +30,7 @@
     {{ (item.score / item.maxScore) * 100 }}%
   </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-row align="center" justify="" class="d-flex flex-nowrap">
+        <v-row align="center" class="d-flex flex-nowrap">
           <router-link
             :to="{ name: 'ExamResult', params: { id: item.id } }"
             style="text-decoration: none; color: inherit"

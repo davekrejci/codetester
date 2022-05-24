@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-textarea
+    <!-- <v-textarea
       outlined
       auto-grow
       :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
@@ -11,7 +11,13 @@
       v-model="questionText"
       class="mb-2"
       :rules="[rules.required]"
-    ></v-textarea>
+    ></v-textarea> -->
+    <rich-text-editor
+      class="mb-4" 
+      :value="questionText" 
+      placeholder="Zadání otázky..."
+      @input="updateQuestionText"  
+    ></rich-text-editor>
 
     <div v-for="(answer, index) in answers" :key="index" class="mb-2">
       <v-text-field
@@ -85,8 +91,11 @@
 
 <script>
 import { mapMutations } from "vuex";
+import RichTextEditor from "@/components/RichTextEditor/RichTextEditor.vue";
+
 export default {
   name: "MultiChoice",
+  components: { RichTextEditor },
   data() {
     return {
       rules: {
@@ -119,6 +128,9 @@ export default {
       "toggleMultiChoiceAnswerCorrect",
       "setMultiChoiceAnswerText",
     ]),
+    updateQuestionText(text) {
+      this.questionText = text;
+    }
   },
 };
 </script>
