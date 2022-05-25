@@ -92,7 +92,7 @@
       app
       clipped
       bottom
-      :mini-variant.sync="menuMini"
+      :mini-variant="menuMini"
     >
       <v-layout column fill-height>
         <v-list nav dense>
