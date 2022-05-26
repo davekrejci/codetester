@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using HashidsNet;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -14,7 +15,12 @@ public class HashIdModelBinder : IModelBinder
 
         var str = valueProviderResult.FirstValue;
 
-        bindingContext.Result = ModelBindingResult.Success(hashids.Decode(str)[0]);
+        try{
+            bindingContext.Result = ModelBindingResult.Success(hashids.Decode(str)[0]);
+        }
+        catch(IndexOutOfRangeException e) {
+            System.Console.WriteLine(e);
+        }
 
         return Task.CompletedTask;
     }
