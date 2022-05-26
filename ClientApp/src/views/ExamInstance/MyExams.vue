@@ -5,19 +5,26 @@
       <v-card outlined class="rounded">
         <v-tabs v-model="tab" class="">
           <v-tab>
-            <!-- <v-badge
+            <v-badge
               class="mr-8 font-weight-bold"
-              v-if="myExams.length"
-              :content="myExams.length"
+              v-if="openExams.length"
+              :content="openExams.length"
               offset-x="0"
               offset-y="10"
-            ></v-badge> -->
+            ></v-badge>
             Otevřené
           </v-tab>
           <v-tab>Dokončené</v-tab>
+          <v-progress-linear
+            :active="loading"
+            :indeterminate="loading"
+            absolute
+            bottom
+            color="primary"
+          ></v-progress-linear>
       </v-tabs>
       </v-card>
-      <v-card flat class="transparent">
+      <v-card v-if="!loading" flat class="transparent">
       <v-tabs-items v-model="tab" class="transparent">
         <v-tab-item> 
           <exams-list :exams="openExams"></exams-list>
@@ -27,16 +34,10 @@
         </v-tab-item>
       </v-tabs-items>
       </v-card>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import ExamsList from "./ExamsList.vue";
 import moment from 'moment';
 
@@ -44,13 +45,11 @@ export default {
   name: "MyExams",
   components: {
     ExamsList,
-    DefaultSnackbar,
   },
   data() {
     return {
       tab: null,
       loading: false,
-      error: null,
       breadcrumbs: [
         {
           text: "Dashboard",
@@ -71,8 +70,11 @@ export default {
       try {
         await this.$store.dispatch("fetchMyExams");
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Načtení testů se nepodařilo",
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -93,18 +95,6 @@ export default {
       return this.myExams.filter(exam => {
         return (moment.utc(exam.exam.endDate).isBefore(this.$store.state.currentTimeUtc) || exam.isCompleted == true); 
       });
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
     },
   },
   created() {

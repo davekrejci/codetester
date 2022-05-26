@@ -42,21 +42,16 @@
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
     </v-form>
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 export default {
-  components: { DefaultSnackbar },
   name: "CreateCourse",
   data() {
     return {
-      error: null,
-      hasSaved: false,
       loading: false,
       course: {
         courseCode: "",
@@ -97,41 +92,26 @@ export default {
     async createCourse() {
       let isFormValid = this.validate();
       if (!isFormValid) return;
-      this.hasSaved = false;
       this.loading = true;
       try {
         await api.createCourse(this.course);
-        this.hasSaved = true;
         this.reset();
+        this.$notify({
+          title: "Úspěch",
+          text: "Předmět byl vytvořen",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Předmět se nepodařilo vytvořit",
+          type: "error",
+        });
       }
       this.loading = false;
       window.scrollTo(0, 0);
     },
   },
-  computed: {
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: 'success',
-          text: "Předmět byl vytvořen",
-          show: true
-        };
-      }
-      return {
-        show: false
-      }
-    },
-  }
 };
 </script>
 

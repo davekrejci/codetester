@@ -250,18 +250,11 @@
         Opravdu si přejete test smazat? Tato akce je nevratná.
       </template>
     </default-confirmation-dialog>
-
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import ExamQuestions from "@/components/ExamQuestions.vue";
 import ExamResults from "@/components/ExamResults.vue";
 import DefaultConfirmationDialog from '@/components/DefaultConfirmationDialog.vue';
@@ -270,7 +263,7 @@ import moment from "moment";
 moment.locale("cs");
 
 export default {
-  components: { DefaultSnackbar, DefaultConfirmationDialog, ExamQuestions, ExamResults },
+  components: { DefaultConfirmationDialog, ExamQuestions, ExamResults },
   name: "Exam",
   data() {
     return {
@@ -279,8 +272,6 @@ export default {
       searchTags: "",
       searchCourses: "",
       searchSemesters: "",
-      error: null,
-      hasSaved: false,
       showDeleteDialog: false,
       loading: false,
       exam: null,
@@ -322,25 +313,24 @@ export default {
       return moment.utc(datetime).toDate();
     },
     async fetchExam() {
-      this.error = this.exam = null;
+      this.exam = null;
       this.loading = true;
       try {
         // load from store if data is already there
         this.exam = this.$store.getters.getExamById(this.$route.params.id);
         if (this.exam) {
-          console.log("retrieved data from store");
           this.loading = false;
         } else {
           // fetch exams from api otherwise and then retrieve from store
-          console.log(
-            "fetching exams from api and retrieving from store now ..."
-          );
           await this.$store.dispatch("fetchExams");
           this.exam = this.$store.getters.getExamById(this.$route.params.id);
         }
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Načtení testu se nepodařilo",
+          type: "error",
+        });
       }
       this.exam.startDate = this.alterDateTimeFormat(this.exam.startDate);
       this.exam.endDate = this.alterDateTimeFormat(this.exam.endDate);
@@ -348,27 +338,31 @@ export default {
       this.loading = false;
     },
     async deleteExam() {
-      this.error = null;
       this.loading = true;
       try {
         await api.deleteExam(this.$route.params.id);
         this.$router.push({
           name: "Exams",
         });
+        this.$notify({
+          title: "Úspěch",
+          text: "Test byl smazán",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Smazání testu se nepodařilo",
+          type: "error",
+        });
       }
       this.loading = false;
     },
     async updateExam() {
       let isFormValid = this.validate();
-      console.log(isFormValid);
       if (!isFormValid) return;
-      console.log("got past validity check");
-      this.hasSaved = false;
       this.loading = true;
       try {
-        console.log("trying api ...");
         let questionIds = this.exam.questions.map((question) => question.id);
         let examUpdateDto = {
           name: this.exam.name,
@@ -378,16 +372,19 @@ export default {
           questionIds: questionIds,
           tags: this.exam.tags,
         };
-        console.log(examUpdateDto);
-        console.log(JSON.stringify(examUpdateDto));
         await api.updateExam(this.$route.params.id, examUpdateDto);
-        console.log("api called");
-        this.hasSaved = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Změny byly uloženy.",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Změny se nepodařilo uložit.",
+          type: "error",
+        });
       }
-      console.log("finalizing ...");
       this.loading = false;
       window.scrollTo(0, 0);
     },
@@ -423,25 +420,6 @@ export default {
           disabled: true,
         },
       ];
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Test byl uložen",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
     },
     tags() {
       return this.$store.state.tags;

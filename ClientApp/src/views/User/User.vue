@@ -171,11 +171,6 @@
           Uložit <v-icon right dark> mdi-plus-circle-outline </v-icon>
         </v-btn>
       </v-form>
-      <default-snackbar
-        :type="snackbar.type"
-        :text="snackbar.text"
-        v-on:close-snackbar="error = null"
-      ></default-snackbar>
     </div>
   </v-container>
 </template>
@@ -183,19 +178,15 @@
 <script>
 import api from "api-client";
 import store from "@/store";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
-  components: { DefaultSnackbar },
   name: "User",
   data() {
     return {
-      error: null,
       showDeleteDialog: false,
       showResetPasswordDialog: false,
       newPassword: "",
       passwordHidden: true,
-      hasSaved: false,
       loading: false,
       rules: {
         required: (value) => !!value || "Povinné.",
@@ -215,25 +206,24 @@ export default {
       this.$refs.userForm.reset();
     },
     async fetchUser() {
-      this.error = this.user = null;
+      this.user = null;
       this.loading = true;
       try {
         // load from store if data is already there
         this.user = this.$store.getters.getUserById(this.$route.params.id);
         if (this.user) {
-          console.log("retrieved data from store");
           this.loading = false;
         } else {
           // fetch user from api otherwise and then retrieve from store
-          console.log(
-            "fetching users from api and retrieving from store now ..."
-          );
           await this.$store.dispatch("fetchUsers");
           this.user = this.$store.getters.getUserById(this.$route.params.id);
         }
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: 'Nepodařilo se načíst data.',
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -246,14 +236,17 @@ export default {
           name: "Users",
         });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Smazání uživatele se nepodařilo",
+          type: "error",
+        });
       }
       this.loading = false;
     },
     async updateUser() {
       let isFormValid = this.validate();
       if (!isFormValid) return;
-      this.hasSaved = false;
       this.loading = true;
       try {
         let userUpdateDto = {
@@ -263,18 +256,24 @@ export default {
           lastName: this.user.lastName,
         };
         await api.updateUser(this.$route.params.id, userUpdateDto);
-        this.hasSaved = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Změny byly uloženy",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: 'Změny se nepodařilo uložit',
+          type: "error",
+        });
       }
       this.loading = false;
       window.scrollTo(0, 0);
     },
     async resetUserPassword() {
-        let isFormValid = this.validatePasswordReset();
+      let isFormValid = this.validatePasswordReset();
       if (!isFormValid) return;
-      this.hasSaved = false;
       this.loading = true;
       let userPasswordResetDto = {
         password: this.newPassword,
@@ -284,10 +283,17 @@ export default {
           this.$route.params.id,
           userPasswordResetDto
         );
-        this.hasSaved = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Heslo bylo změněno",
+          type: "success",
+        });
       } catch (error) {
-          console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: 'Heslo se nepodařilo změnit',
+          type: "error",
+        });
       }
     this.showResetPasswordDialog = false;
       this.loading = false;
@@ -346,25 +352,6 @@ export default {
           disabled: true,
         },
       ];
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Změny byly uloženy",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
     },
   },
   created() {

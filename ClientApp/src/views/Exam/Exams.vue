@@ -152,19 +152,11 @@
         Opravdu si přejete smazat test "<strong>{{ examToDelete.name }}</strong>"? Tato akce je nevratná.
       </template>
     </default-confirmation-dialog>
-
-    <!-- Snackbar -->
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import moment from "moment";
 import DefaultConfirmationDialog from '../../components/DefaultConfirmationDialog.vue';
 
@@ -172,14 +164,12 @@ moment.locale("cs");
 
 export default {
   name: "Exams",
-  components: { DefaultSnackbar, DefaultConfirmationDialog },
+  components: { DefaultConfirmationDialog },
   data() {
     return {
       moment: moment,
       search: "",
       loading: false,
-      error: null,
-      hasBeenDeleted: false,
       examToDelete: {},
       showDeleteDialog: false,
       headers: [
@@ -224,15 +214,21 @@ export default {
       this.showDeleteDialog = true;
     },
     async deleteExam() {
-      this.hasBeenDeleted = false;
       this.showDeleteDialog = false;
-      this.error = null;
       this.loading = true;
       try {
         await api.deleteExam(this.examToDelete.id);
-        this.hasBeenDeleted = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Test byl smazán",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Smazání testu se nepodařilo",
+          type: "error",
+        });
       }
       this.examToDelete = {};
       this.fetchExams();
@@ -242,8 +238,11 @@ export default {
       try {
         await this.$store.dispatch("fetchExams");
       } catch (error) {
-        console.error(error, error.stack);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Načtení testů se nepodařilo",
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -262,25 +261,6 @@ export default {
   computed: {
     exams() {
       return this.$store.state.exams;
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasBeenDeleted) {
-        return {
-          type: "success",
-          text: "Test byl smazán",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
     },
   },
   created() {

@@ -64,14 +64,23 @@
                 :disabled="loading"
               >
               </v-text-field>
-              <a id="forgotPasswordText" @click="forgotPassword = !forgotPassword" class="text--secondary text-caption"
+              <a
+                id="forgotPasswordText"
+                @click="forgotPassword = !forgotPassword"
+                class="text--secondary text-caption"
                 >Zapomněli jste heslo?</a
               >
               <transition name="slide-y-transition">
-              <div :style="{'opacity':forgotPassword?1:0}" class="text--secondary text-caption ma-0">Kontaktujte prosím svého administrátora a požádejte o obnovení hesla</div>
+                <div
+                  :style="{ opacity: forgotPassword ? 1 : 0 }"
+                  class="text--secondary text-caption ma-0"
+                >
+                  Kontaktujte prosím svého administrátora a požádejte o obnovení
+                  hesla
+                </div>
               </transition>
             </v-form>
-            <v-card-actions >
+            <v-card-actions>
               <v-btn
                 large
                 block
@@ -84,32 +93,19 @@
                 :loading="loading"
                 >Přihlásit</v-btn
               >
-            </v-card-actions>
-            <!-- <v-divider class="my-4"></v-divider> -->
-            <!-- <p class="text-center text--secondary">Nemáte ještě účet? <a id="signUpText" class="text-decoration-none" href="#">Zaregistrujte se</a></p> -->
-          </div>
+            </v-card-actions></div>
         </v-row>
       </v-col>
     </v-row>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
-//import api from "api-client";
 import store from "@/store";
 import router from "@/router";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
   name: "Login",
-  components: {
-    DefaultSnackbar,
-  },
   methods: {
     async submit() {
       this.loading = true;
@@ -128,12 +124,27 @@ export default {
         // Bad request => incorrect username or password
         if (error.response && error.response.status == 400) {
           let errorMessage = error.response.data;
-          if (errorMessage == "User not found")
+          if (errorMessage == "User not found") {
             this.error = "Uživatel nenalezen";
-          if (errorMessage == "Wrong password") this.error = "Nesprávné heslo";
+            this.$notify({
+              title: "Error",
+              text: "Uživatel nenalezen",
+              type: "error",
+            });
+          }
+          if (errorMessage == "Wrong password") {
+            this.$notify({
+              title: "Error",
+              text: "Nesprávné heslo",
+              type: "error",
+            });
+          }
         } else {
-          console.log(error);
-          this.error = "Error logging in";
+          this.$notify({
+              title: "Error",
+              text: "Nastala chyba při přihlašování",
+              type: "error",
+            });
         }
       }
       this.loading = false;
@@ -165,18 +176,6 @@ export default {
         default:
           return 200;
       }
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error,
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
     },
   },
 };

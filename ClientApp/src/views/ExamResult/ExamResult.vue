@@ -201,8 +201,11 @@ export default {
           this.hasData = true;
         }
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Načtení testu se nepodařilo",
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -224,7 +227,7 @@ export default {
   border: 2px solid rgba(0, 0, 0, 0.12);
 }
 .result-table-header {
-  max-width: 30px;
+  max-width: 40px;
   background-color: "";
   font-size: 14px !important;
 }

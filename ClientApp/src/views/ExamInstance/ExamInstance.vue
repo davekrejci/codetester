@@ -136,9 +136,13 @@
       </default-confirmation-dialog>
     </v-main>
   </div>
-  <div v-else-if="!hasData && loading">Načítání...</div>
+  <div v-else-if="!hasData && loading">
+    <v-overlay>
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+  </div>
   <div v-else>
-    <v-card class="mx-auto mt-12 pa-4" width="500px">
+    <v-card outlined class="mx-auto mt-12 pa-4" width="500px">
       <p>
         Nastala chyba pri pokusu o načtení dat pro test. <br />
         Kontaktujte prosim administratora.
@@ -177,8 +181,11 @@ export default {
         this.warnBeforeReroute = false;
         this.$router.push({ name: 'ExamResult', params: { id: this.$route.params.id }});
       } catch (error) {
-        this.error = error;
-        console.log(error);
+        this.$notify({
+          title: "Error",
+          text: "Odevzdání testu se nepodařilo",
+          type: "error",
+        });
       }
       this.showTurnInConfirmationDialog = false;
     },
@@ -204,11 +211,20 @@ export default {
           id: this.$route.params.id,
         });
       } catch (error) {
-        console.log(error);
-        this.error = error;
-        if (error.response.status === 400) {
+        if(error.response.status == 404) {
+          this.warnBeforeReroute = false;
+          this.$router.push({name: 'NotFound'})
+        }
+        else if (error.response.status === 400) {
           this.warnBeforeReroute = false;
             this.$router.push({ name: 'ExamResult', params: { id: this.$route.params.id }});
+        }
+        else {
+          this.$notify({
+            title: "Error",
+            text: "Načtení testu se nepodařilo",
+            type: "error",
+          });
         }
       }
       this.loading = false;

@@ -68,40 +68,30 @@
 
       </v-form>
     </div>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import DefaultConfirmationDialog from '@/components/DefaultConfirmationDialog.vue';
 import CourseSemesters from '@/components/CourseSemesters.vue';
 
 export default {
   name: "Course",
-  components: { 
-    DefaultSnackbar,
+  components: {
     DefaultConfirmationDialog,
     CourseSemesters,
   },
   data() {
     return {
-      semesterHasBeenDeleted: false,
       showDeleteDialog: false,
       loading: false,
-      error: null,
       course: null,
     };
   },
   methods: {
     async fetchCourse() {
-      this.error = this.course = null;
-      this.hasSaved = false;
+      this.course = null;
       this.loading = true;
       try {
         this.course = await api.fetchCourse(this.$route.params.coursecode);
@@ -114,45 +104,41 @@ export default {
       this.loading = false;
     },
     async deleteCourse() {
-      this.error = null;
       this.loading = true;
       try {
         await api.deleteCourse(this.$route.params.coursecode);
         this.$router.push({ name: "Courses" });
+        this.$notify({
+          title: "Úspěch",
+          text: "Předmět byl smazán",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Předmět se nepodařilo smazat",
+          type: "error",
+        });
       }
       this.loading = false;
     },
-    handleSemesterDeleteError(error) {
-      this.semesterHasBeenDeleted = false;
-      this.error = error;
+    handleSemesterDeleteError() {
+      this.$notify({
+          title: "Error",
+          text: "Semestr se nepodařilo smazat",
+          type: "error",
+        });
     },
     handleSemesterDeleteSuccess() {
-      this.semesterHasBeenDeleted = true;
+      this.$notify({
+          title: "Úspěch",
+          text: "Semestr byl smazán",
+          type: "success",
+        });
       this.fetchCourse();
     }
   },
   computed: {
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.semesterHasBeenDeleted) {
-        return {
-          type: "success",
-          text: "Semestr byl smazán",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
-    },
     semesters() {
       return this.course.semesters.map(semester => {
         let studentCount = semester.enrolledStudents.length;

@@ -94,26 +94,21 @@
       </template>
     </default-confirmation-dialog>
 
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
-    
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 import DefaultConfirmationDialog from '@/components/DefaultConfirmationDialog.vue';
 
 
 export default {
   name: "Courses",
-  components: { DefaultSnackbar, DefaultConfirmationDialog },
+  components: { DefaultConfirmationDialog },
   data() {
     return {
       search: "",
       loading: false,
-      error: null,
-      hasBeenDeleted: false,
       courseToDelete: {},
       showDeleteDialog: false,
       headers: [
@@ -141,15 +136,21 @@ export default {
       this.showDeleteDialog = true;
     },
     async deleteCourse() {
-      this.hasBeenDeleted = false;
       this.showDeleteDialog = false;
-      this.error = null;
       this.loading = true;
       try {
         await api.deleteCourse(this.courseToDelete.courseCode);
-        this.hasBeenDeleted = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Předmět byl smazán",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Předmět se nepodařilo smazat",
+          type: "error",
+        });
       }
       this.courseToDelete = {};
       this.fetchCourses();
@@ -159,8 +160,11 @@ export default {
       try{
         await this.$store.dispatch("fetchCourses")
       } catch(error){
-        console.error(error, error.stack);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Předměty se nepodařilo načíst",
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -169,25 +173,6 @@ export default {
     courses() {
       let courses = this.$store.getters.getCoursesWithoutSemesters;
       return courses;
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true
-        };
-      }
-      if (this.hasBeenDeleted) {
-        return {
-          type: 'success',
-          text: "Předmět byl smazán",
-          show: true
-        };
-      }
-      return {
-        show: false
-      }
     },
   },
   created() {

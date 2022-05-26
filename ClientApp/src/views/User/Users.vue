@@ -37,9 +37,9 @@
           <template v-slot:activator="{ on, attrs }">
             <div v-bind="attrs" v-on="on">
               <router-link :to="{ name: 'ImportUsers' }">
-              <v-btn class="mx-2" depressed fab small color="primary">
-                <v-icon dark> mdi-cloud-upload </v-icon>
-              </v-btn>
+                <v-btn class="mx-2" depressed fab small color="primary">
+                  <v-icon dark> mdi-cloud-upload </v-icon>
+                </v-btn>
               </router-link>
             </div>
           </template>
@@ -60,10 +60,7 @@
         v-model="selected"
       >
         <template v-slot:[`item.actions`]="{ item }">
-          <v-row
-            align="center"
-            class="d-flex flex-nowrap"
-          >
+          <v-row align="center" class="d-flex flex-nowrap">
             <router-link
               :to="{ name: 'User', params: { id: item.id } }"
               style="text-decoration: none; color: inherit"
@@ -96,8 +93,8 @@
           <!-- <span class="mx-auto my-4"> Jste si jistý?</span> -->
         </v-card-title>
         <v-card-text
-          >Opravdu si přejete smazat uživatele {{ userToDelete.username }}? Tato akce je
-          nevratná.</v-card-text
+          >Opravdu si přejete smazat uživatele {{ userToDelete.username }}? Tato
+          akce je nevratná.</v-card-text
         >
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -121,29 +118,20 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
 import store from "@/store";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 export default {
   name: "Users",
-  components: { DefaultSnackbar },
   data() {
     return {
       userToDelete: null,
       search: "",
       loading: false,
-      error: null,
-      hasBeenDeleted: false,
       showDeleteDialog: false,
       selected: [],
       headers: [
@@ -173,16 +161,22 @@ export default {
       this.showDeleteDialog = true;
     },
     async deleteUser(id) {
-      this.hasBeenDeleted = false;
       this.userToDelete = null;
       this.showDeleteDialog = false;
-      this.error = null;
       this.loading = true;
       try {
         await api.deleteUser(id);
-        this.hasBeenDeleted = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Uživatel byl smazán",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Smazání uživatele se nepodařilo",
+          type: "error",
+        });
       }
       this.fetchUsers();
     },
@@ -191,8 +185,11 @@ export default {
       try {
         await this.$store.dispatch("fetchUsers");
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: 'Nepodařilo se načíst data.',
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -203,25 +200,6 @@ export default {
     },
     users() {
       return this.$store.state.users;
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true
-        };
-      }
-      if (this.hasBeenDeleted) {
-        return {
-          type: 'success',
-          text: "Uživatel byl smazán",
-          show: true
-        };
-      }
-      return {
-        show: false
-      }
     },
   },
   created() {

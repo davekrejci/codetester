@@ -66,11 +66,6 @@
           Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
         </v-btn>
       </v-form>
-      <default-snackbar
-        :type="snackbar.type"
-        :text="snackbar.text"
-        v-on:close-snackbar="error = null"
-      ></default-snackbar>
     </div>
     <div v-else>
       <not-found></not-found>
@@ -80,16 +75,13 @@
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import NotFound from "@/views/404.vue";
 
 export default {
-  components: { DefaultSnackbar, NotFound },
+  components: { NotFound },
   name: "CreateSemester",
   data() {
     return {
-      error: null,
-      hasSaved: false,
       loading: false,
       semester: {
         courseCode: this.$route.params.coursecode,
@@ -122,18 +114,30 @@ export default {
     async createSemester() {
       let isFormValid = this.validate();
       if (!isFormValid) return;
-      this.hasSaved = false;
       this.loading = true;
       try {
-        await api.createSemester(this.semester);
-        this.hasSaved = true;
+        let response = await api.createSemester(this.semester);
+        let id = response.data.id;
         this.reset();
+        this.$router.push({ name: "Semester", params: { id: id } });
+        this.$notify({
+          title: "Úspěch",
+          text: "Semestr byl vytvořen",
+          type: "success",
+        });
       } catch (error) {
         if (error.response.status === 400) {
-          this.error = error.response.data;
-
+          this.$notify({
+            title: "Error",
+            text: "Tento semestr už existuje.",
+            type: "error",
+          });
         } else {
-          this.error = error;
+          this.$notify({
+            title: "Error",
+            text: "Semestr se nepodařilo vytvořit.",
+            type: "error",
+          });
         }
       }
       this.loading = false;
@@ -141,25 +145,6 @@ export default {
     },
   },
   computed: {
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Semestr byl vytvořen",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
-    },
     possibleYears() {
       let min = new Date().getFullYear();
       let max = min + 3;

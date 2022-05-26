@@ -201,21 +201,15 @@
         </v-btn>
       </div>
     </v-form>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import ExamQuestions from "@/components/ExamQuestions.vue";
 
 export default {
-  components: { DefaultSnackbar, ExamQuestions },
+  components: { ExamQuestions },
   name: "CreateExam",
   data() {
     return {
@@ -223,8 +217,6 @@ export default {
       searchTags: "",
       searchCourses: "",
       searchSemesters: "",
-      error: null,
-      hasSaved: false,
       loading: false,
       exam: {
         name: "",
@@ -270,32 +262,6 @@ export default {
       this.$refs.createExamForm.reset();
       this.$refs.examQuestions.selectedQuestions = [];
     },
-    // allowedStartDates(val) {
-    //   let date = new Date(val).getDate();
-    //   let today = new Date().getDate();
-    //   return date >= today;
-    // },
-    // allowedStartHours(val) {
-    //   let currentHours = new Date().getHours();
-    //   return val >= currentHours;
-    // },
-    // allowedStartMinutes(val) {
-    //   let currentMinute = new Date().getMinutes();
-    //   return val >= currentMinute;
-    // },
-    // allowedEndHours(val) {
-    //   let startHour = new Date(this.exam.startTime).getHours();
-    //   return val >= startHour;
-    // },
-    // allowedEndMinutes(val) {
-    //   let startMinute = new Date(this.exam.startTime).getMinutes();
-    //   return val >= startMinute;
-    // },
-    // allowedEndDates(val) {
-    //   let date = new Date(val).getDate();
-    //   let today = new Date().getDate();
-    //   return date >= today;
-    // },
     getCurrentTime() {
       const today = new Date();
       this.currentDatetime = today;
@@ -305,13 +271,9 @@ export default {
     },
     async createExam() {
       let isFormValid = this.validate();
-      console.log(isFormValid);
       if (!isFormValid) return;
-      console.log("got past validity check");
-      this.hasSaved = false;
       this.loading = true;
       try {
-      console.log("trying api ...");
         let questionIds = this.exam.questions.map(question => question.id);
         let examCreateDto = {
           name: this.exam.name,
@@ -321,17 +283,20 @@ export default {
           questionIds: questionIds,
           tags: this.exam.tags
         }
-        console.log(examCreateDto);
-        console.log(JSON.stringify(examCreateDto));
         await api.createExam(examCreateDto);
-        console.log("api called");
-        this.hasSaved = true;
         this.reset();
+        this.$notify({
+          title: "Úspěch",
+          text: "Test byl vytvořen.",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Test se nepodařilo vytvořit.",
+          type: "error",
+        });
       }
-      console.log("finalizing ...");
       this.loading = false;
       window.scrollTo(0, 0);
     },
@@ -340,26 +305,6 @@ export default {
     currentDateTime() {
       return new Date();
     },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Test byl vytvořen",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
-    },
-
     courses() {
       return this.$store.state.courses;
     },

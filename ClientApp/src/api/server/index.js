@@ -67,8 +67,7 @@ export default {
     },
     async createSemester(semester) {
         const url = "semesters";
-        const response = await axios.post(url, semester);
-        console.log(response)
+        return await axios.post(url, semester);
     },
     async updateSemester(id, semesterUpdateDto) {
         const url = "semesters/" + id;
@@ -89,8 +88,7 @@ export default {
     },
     async createUser(userCreateDto) {
         const url = "users";
-        const response = await axios.post(url, userCreateDto);
-        console.log(response)
+        return await axios.post(url, userCreateDto);
     },
     async updateUser(id, userUpdateDto) {
         const url = "users/" + id;

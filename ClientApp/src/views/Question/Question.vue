@@ -14,19 +14,6 @@
 
         <!-- MultiChoice -->
         <div v-if="this.question.questionType === 'multi-choice'" class="mb-8">
-          <!-- <v-textarea
-            readonly
-            outlined
-            auto-grow
-            :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
-            color="grey"
-            rows="1"
-            clear-icon="mdi-close-circle"
-            label="Zadání otázky"
-            v-model="this.question.questionText"
-            class="mb-2"
-            :rules="[rules.required]"
-          ></v-textarea> -->
           <rich-text-editor :value="this.question.questionText" :editable="false" class="mb-8"></rich-text-editor>
 
           <div
@@ -104,18 +91,6 @@
 
         <!-- FillInCode -->
         <div v-if="this.question.questionType === 'fill-in-code'" class="mb-8">
-          <!-- <v-textarea
-            outlined
-            auto-grow
-            :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
-            rows="1"
-            readonly
-            color="grey"
-            clear-icon="mdi-close-circle"
-            label="Popis kódu"
-            v-model="this.question.codeDescription"
-            :rules="[rules.required]"
-          ></v-textarea> -->
           <rich-text-editor :value="this.question.codeDescription" :editable="false" class="mb-8"></rich-text-editor>
 
           <v-card flat outlined class="rounded">
@@ -216,11 +191,6 @@
         Opravdu si přejete smazat otázku? Tato akce je nevratná.
       </template>
     </default-confirmation-dialog>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
@@ -239,7 +209,6 @@ import "codemirror/addon/edit/closebrackets.js";
 import "codemirror/addon/edit/matchbrackets.js";
 import vuetify from "@/plugins/vuetify";
 import FillableWidget from "@/components/QuestionDesigner/FillableWidget.vue";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import DefaultConfirmationDialog from '../../components/DefaultConfirmationDialog.vue';
 import RichTextEditor from "@/components/RichTextEditor/RichTextEditor.vue";
 
@@ -247,14 +216,12 @@ const WidgetComponentClass = Vue.extend(FillableWidget);
 
 export default {
   name: "Question",
-  components: { DefaultSnackbar, DefaultConfirmationDialog, RichTextEditor },
+  components: { DefaultConfirmationDialog, RichTextEditor },
   data() {
     return {
       loading: false,
       question: null,
-      error: null,
       cm: null,
-      hasSaved: false,
       showDeleteDialog: false,
       search: "",
       rules: {
@@ -284,34 +251,45 @@ export default {
       this.$refs.form.validate();
     },
     async editQuestion() {
-      this.hasSaved = false;
       this.loading = true;
       try {
         await api.editQuestion(this.$route.params.id, this.question);
-        this.hasSaved = true;
-        //setTimeout(() => { this.hasSaved = false }, 3000)
+        this.$notify({
+          title: "Úspěch",
+          text: "Změny byly uloženy.",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Změny se nepodařilo uložit.",
+          type: "error",
+        });
       }
       this.loading = false;
-      //this.hasSaved = true;
-      // this.loading = false;
     },
     async deleteQuestion() {
-      this.error = null;
+      this.showDeleteDialog = false;
       this.loading = true;
       try {
         await api.deleteQuestion(this.$route.params.id);
         this.$router.push({ name: "Questions" });
+        this.$notify({
+          title: "Úspěch",
+          text: "Otázka byla smazána.",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Otázku se nepodařilo smazat.",
+          type: "error",
+        });
       }
       this.loading = false;
     },
     async fetchQuestion() {
-      this.error = this.question = null;
-      this.hasSaved = false;
+      this.question = null;
       this.loading = true;
       try {
         this.question = await api.fetchQuestion(this.$route.params.id);
@@ -403,25 +381,6 @@ export default {
           this.question.tags = value;
         }
       },
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Otázka byla uložena",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
     },
   },
   watch: {

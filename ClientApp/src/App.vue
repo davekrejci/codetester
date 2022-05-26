@@ -1,6 +1,7 @@
 <template>
 	<v-app>
 		<router-view></router-view>
+		<notifications width="100%" class="mt-1"/>
 	</v-app>
 </template>
 

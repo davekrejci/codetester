@@ -83,28 +83,19 @@
       class="ma-2"
       label="Dark Mode"
     ></v-switch>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
   name: "Settings",
-  components: { DefaultSnackbar },
   data() {
     return {
       loading: false,
       showChangePasswordDialog: false,
       currentPassword: "",
-      hasSaved: false,
-      error: null,
       newPassword: "",
       currentPasswordHidden: true,
       newPasswordHidden: true,
@@ -118,9 +109,9 @@ export default {
       return this.$refs.passwordChangeForm.validate();
     },
     async changeUserPassword() {
+      this.showChangePasswordDialog = false;
       let isFormValid = this.validatePasswordChange();
       if (!isFormValid) return;
-      this.hasSaved = false;
       this.loading = true;
       let userPasswordChangeDto = {
         currentPassword: this.currentPassword,
@@ -128,36 +119,22 @@ export default {
       };
       try {
         await api.changeUserPassword(userPasswordChangeDto);
-        this.hasSaved = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Změny byly uloženy",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Změny se nepodařilo uložit",
+          type: "error",
+        });
       }
       this.showChangePasswordDialog = false;
       this.loading = false;
       window.scrollTo(0, 0);
     },
-  },
-  computed: {
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Změny byly uloženy",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
-    },
-  },
+  }
 };
 </script>

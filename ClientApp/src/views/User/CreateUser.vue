@@ -78,22 +78,17 @@
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
     </v-form>
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
 import store from "@/store";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 export default {
-  components: { DefaultSnackbar },
   name: "CreateUser",
   data() {
     return {
-      error: null,
-      hasSaved: false,
       loading: false,
       user: {
         username: "",
@@ -139,16 +134,26 @@ export default {
     async createUser() {
       let isFormValid = this.validate();
       if (!isFormValid) return;
-      this.hasSaved = false;
       this.loading = true;
       try {
-        await api.createUser(this.user);
-        this.hasSaved = true;
+        let response = await api.createUser(this.user);
+        let id = response.data.id;
         this.reset();
+        this.$router.push({
+          name: "User",
+          params: { id: id }
+        });
+        this.$notify({
+          title: "Úspěch",
+          text: "Uživatel byl vytvořen",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        console.log("it's here!");
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Vytvoření uživatele se nepodařilo",
+          type: "error",
+        });
       }
       this.loading = false;
       window.scrollTo(0, 0);
@@ -186,25 +191,6 @@ export default {
             text: "Student",
           }
         ]
-      }
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: 'success',
-          text: "Uživatel byl vytvořen",
-          show: true
-        };
-      }
-      return {
-        show: false
       }
     },
   }

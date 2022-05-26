@@ -50,28 +50,19 @@
         Nepodporovaný formát.
       </v-alert>
     </div>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
-  components: { DefaultSnackbar },
   name: "ImportQuestions",
   data() {
     return {
       file: null,
       fileType: "",
       isValidFile: true,
-      error: null,
-      hasSaved: false,
       loading: false,
       questions: null,
       headers: [
@@ -136,40 +127,25 @@ export default {
       }
     },
     async importQuestions() {
-      this.hasSaved = false;
       this.loading = true;
       try {
         await api.importQuestions(this.questions);
-        this.hasSaved = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Otázky byly vytvořeny.",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Otázky se nepodařilo vytvořit.",
+          type: "error",
+        });
       }
       this.loading = false;
       window.scrollTo(0, 0);
     },
-  },
-  computed: {
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.response.data,
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Otázky byly vytvořeny",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
-    },
-  },
+  }
 };
 </script>
 

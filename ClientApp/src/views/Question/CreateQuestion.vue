@@ -65,16 +65,13 @@
       <v-btn color="primary" :loading="loading" depressed class="mr-4 mb-2" @click="createQuestion">
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
-    </v-form>
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
-  </v-container>
+    </v-form></v-container>
 </template>
 
 <script>
 import MultiChoice from "@/components/QuestionDesigner/MultiChoice.vue";
 import FillInCode from "@/components/QuestionDesigner/FillInCode.vue";
 import QuestionPreview from "@/components/QuestionDesigner/QuestionPreview.vue";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 
 export default {
@@ -82,8 +79,7 @@ export default {
   components: {
     MultiChoice,
     FillInCode,
-    QuestionPreview,
-    DefaultSnackbar
+    QuestionPreview
   },
   data() {
     return {
@@ -136,11 +132,18 @@ export default {
       this.loading = true;
       try {
         await this.$store.dispatch('questionDesigner/createQuestion');
-        this.hasSaved = true;
         this.reset();
+        this.$notify({
+          title: "Úspěch",
+          text: "Otázka byla vytvořena.",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Otázku se nepodařilo vytvořit.",
+          type: "error",
+        });
       }
       this.loading = false;
       window.scrollTo(0,0);
@@ -165,25 +168,6 @@ export default {
       set(value) {
         this.$store.commit("questionDesigner/setSelectedTags", value);
       },
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: 'success',
-          text: "Otázka byla vytvořena",
-          show: true
-        };
-      }
-      return {
-        show: false
-      }
     },
   },
   watch: {

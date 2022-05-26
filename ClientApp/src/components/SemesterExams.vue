@@ -144,7 +144,7 @@
 </template>
 
 <script>
-//import api from "api-client";
+import api from "api-client";
 import moment from 'moment';
 
 moment.locale('cs');
@@ -178,17 +178,15 @@ export default {
       this.showDeleteDialog = true;
     },
     async deleteExam() {
-    //   this.userToRemove = {};
-    //   this.showRemoveDialog = false;
-    //   this.loading = true;
-    //   try {
-    //     await api.removeUserFromSemester(semesterId, userId);
-    //     this.$emit('user-remove-success');
-    //   } catch (error) {
-    //     this.$emit('user-remove-error', error);
-    //   }
-    //   this.loading = false;
-    //   // TODO: reload data
+      this.loading = true;
+      try {
+        await api.deleteExam(this.examToDelete.id);
+        this.$emit('exam-delete-success');
+      } catch (error) {
+        this.$emit('exam-delete-success');
+      }
+      this.examToDelete = {};
+      this.loading = false;
     },
     statusIndicatorColor(status) {
       switch(status) {

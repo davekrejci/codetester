@@ -117,24 +117,20 @@
         Opravdu si přejete smazat otázku #{{ toDeleteId }}? Tato akce je nevratná.
       </template>
     </default-confirmation-dialog>
-    <default-snackbar :type="snackbar.type" :text="snackbar.text" v-on:close-snackbar="error = null"></default-snackbar>
-  </v-container>
+    </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 import DefaultConfirmationDialog from '@/components/DefaultConfirmationDialog.vue';
 
 export default {
-  components: { DefaultSnackbar, DefaultConfirmationDialog },
+  components: { DefaultConfirmationDialog },
   name: "Questions",
   data() {
     return {
       search: "",
       loading: false,
-      error: null,
-      hasBeenDeleted: false,
       toDeleteId: null,
       showDeleteDialog: false,
       headers: [
@@ -176,16 +172,21 @@ export default {
       this.showDeleteDialog = true;
     },
     async deleteQuestion() {
-      this.hasBeenDeleted = false;
       this.showDeleteDialog = false;
-      this.error = null;
       this.loading = true;
       try {
         await api.deleteQuestion(this.toDeleteId);
-        this.hasBeenDeleted = true;
-        //this.$router.push({ name: "Questions" });
+        this.$notify({
+          title: "Úspěch",
+          text: "Otázka byla smazána.",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Otázku se nepodařilo smazat.",
+          type: "error",
+        });
       }
       this.toDeleteId = null;
       this.fetchQuestions();
@@ -195,8 +196,11 @@ export default {
       try{
         await this.$store.dispatch("fetchQuestions")
       } catch(error){
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Otázky se nepodařilo načíst.",
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -211,25 +215,6 @@ export default {
         }
       });
       return questions;
-    },
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true
-        };
-      }
-      if (this.hasBeenDeleted) {
-        return {
-          type: 'success',
-          text: "Otázka byla smazána",
-          show: true
-        };
-      }
-      return {
-        show: false
-      }
     },
   },
   created() {

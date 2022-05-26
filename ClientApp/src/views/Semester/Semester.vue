@@ -63,7 +63,11 @@
                     ></semester-students>
                 </v-tab-item>
                 <v-tab-item>
-                    <semester-exams :exams="this.semester.exams"></semester-exams>
+                    <semester-exams
+                      :exams="this.semester.exams"
+                      v-on:exam-delete-success="handleExamDeleteSuccess" 
+                      v-on:exam-delete-error="handleExamDeleteError" 
+                    ></semester-exams>
                 </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -121,25 +125,18 @@
         </div>
     </div>
     <div v-else>not found</div>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
 </v-container>
 </template>
 
 <script>
 import api from "api-client";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 import SemesterStudents from '@/components/SemesterStudents.vue';
 import SemesterExams from '@/components/SemesterExams.vue';
 
 
 export default {
   name: "Semester",
-  components: { 
-    DefaultSnackbar,
+  components: {
     SemesterStudents,
     SemesterExams
   },
@@ -147,8 +144,6 @@ export default {
     return {
       semester: null,
       loading: false,
-      hasSaved: false,
-      error: null,
       showDeleteDialog: false,
       tab: null,
     };
@@ -158,19 +153,20 @@ export default {
       return this.$refs.semesterForm.validate();
     },
     async fetchSemester() {
-      this.error = this.semester = null;
+      this.semester = null;
       this.loading = true;
       try {
-        
         this.semester = await api.fetchSemester(this.$route.params.id);
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Semestr se nepodařilo načíst",
+          type: "error",
+        });
       }
       this.loading = false;
     },
     async deleteSemester() {
-      this.error = null;
       this.loading = true;
       try {
         await api.deleteSemester(this.$route.params.id);
@@ -180,8 +176,17 @@ export default {
               coursecode: this.semester.course.courseCode,
             },
           });
+        this.$notify({
+          title: "Úspěch",
+          text: "Semestr byl smazán",
+          type: "success",
+        });
       } catch (error) {
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Semestr se nepodařilo smazat",
+          type: "error",
+        });
       }
       this.loading = false;
     },
@@ -191,7 +196,6 @@ export default {
     async updateSemester() {
       let isFormValid = this.validate();
       if (!isFormValid) return;
-      this.hasSaved = false;
       this.loading = true;
       try {
         let userIds = this.semester.enrolledStudents.map((user) => user.id);
@@ -199,42 +203,38 @@ export default {
           userIds: userIds
         };
         await api.updateSemester(this.$route.params.id, semesterUpdateDto);
-        this.hasSaved = true;
+        this.$notify({
+          title: "Úspěch",
+          text: "Změny byly uloženy",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Změny se nepodařilo uložit",
+          type: "error",
+        });
       }
       this.loading = false;
       window.scrollTo(0, 0);
     },
+    handleExamDeleteError() {
+      this.$notify({
+          title: "Error",
+          text: "Test se nepodařilo smazat",
+          type: "error",
+        });
+    },
+    handleExamDeleteSuccess() {
+      this.$notify({
+          title: "Úspěch",
+          text: "Test byl smazán",
+          type: "success",
+        });
+      this.fetchSemester();
+    }
   },
   computed: {
-      snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.toString(),
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Změny byly uloženy",
-          show: true,
-        };
-      }
-      if (this.semesterHasBeenDeleted) {
-        return {
-          type: "success",
-          text: "Semestr byl smazán",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
-    },
     formattedSemesterName() {
         let formattedSemesterName = this.semester.semesterType;
         if(this.semester.semesterType == 'winter') {
@@ -245,7 +245,6 @@ export default {
         return formattedSemesterName
     },
     breadcrumbs() {
-        
       return [
         {
           text: "Management",

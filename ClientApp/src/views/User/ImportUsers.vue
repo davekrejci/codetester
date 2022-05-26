@@ -59,29 +59,21 @@
         Nepodporovaný formát.
       </v-alert>
     </div>
-    <default-snackbar
-      :type="snackbar.type"
-      :text="snackbar.text"
-      v-on:close-snackbar="error = null"
-    ></default-snackbar>
   </v-container>
 </template>
 
 <script>
 import api from "api-client";
 import { XlsxRead, XlsxJson, XlsxSheet, XlsxWorkbook, XlsxDownload } from "vue-xlsx";
-import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
-  components: { DefaultSnackbar, XlsxRead, XlsxJson, XlsxSheet, XlsxWorkbook, XlsxDownload },
+  components: { XlsxRead, XlsxJson, XlsxSheet, XlsxWorkbook, XlsxDownload },
   name: "ImportUsers",
   data() {
     return {
       file: null,
       fileType: "",
       isValidFile: true,
-      error: null,
-      hasSaved: false,
       loading: false,
       users: null,
       templateData: [
@@ -175,34 +167,23 @@ export default {
       this.loading = true;
       try {
         await api.importUsers(this.users);
-        this.hasSaved = true;
+        this.$router.push({
+          name: "Users",
+        });
+        this.$notify({
+          title: "Úspěch",
+          text: "Uživatelé byli vytvořeni",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
-        this.error = error;
+        this.$notify({
+          title: "Error",
+          text: "Nahrání uživatelů se nepodařilo. Ověřte, že importovaný soubor je validní",
+          type: "error",
+        });
       }
       this.loading = false;
       window.scrollTo(0, 0);
-    },
-  },
-  computed: {
-    snackbar() {
-      if (this.error != null) {
-        return {
-          type: "error",
-          text: this.error.response.data,
-          show: true,
-        };
-      }
-      if (this.hasSaved) {
-        return {
-          type: "success",
-          text: "Uživatelé byli vytvořeni",
-          show: true,
-        };
-      }
-      return {
-        show: false,
-      };
     },
   },
 };
