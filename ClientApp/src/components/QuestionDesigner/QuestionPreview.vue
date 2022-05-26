@@ -27,7 +27,7 @@
             </v-btn>
       </v-card-actions>
       <div v-if="selectedQuestionType == 'multi-choice'">
-        <p class="mb-4">{{ questionText }}</p>
+        <div class="mb-4" v-html="questionText"></div>
         <v-card
           class="question-card"
           v-if="selectedQuestionType == 'multi-choice'"
@@ -49,7 +49,7 @@
                       ></v-checkbox>
                     </v-list-item-action>
                     <v-list-item-content>
-                      <v-list-item-title v-text="answer.text"></v-list-item-title>
+                      <v-list-item-title v-text="answer.answerText"></v-list-item-title>
                     </v-list-item-content>
                   </template>
                 </v-list-item>
@@ -63,7 +63,7 @@
         </v-card>
       </div>
       <div v-if="selectedQuestionType == 'fill-in-code'">
-        <p class="mb-4">{{ codeDescription }}</p>
+        <div class="mb-4" v-html="codeDescription"></div>
         <textarea id="preview-editor"></textarea>
       </div>
 
