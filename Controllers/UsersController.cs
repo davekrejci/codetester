@@ -67,6 +67,13 @@ namespace Codetester.Controllers
                 return BadRequest("Role " + userCreateDto.Role + " not valid option");
             }
 
+            // Only admin user can create admin user
+            int requestUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var requestUser = _repository.GetUserById(requestUserId);
+            if(userCreateDto.Role == "Admin" && requestUser.Role != UserRole.ADMIN) {
+                return Forbid();
+            }
+
             var userModel = _mapper.Map<User>(userCreateDto);
 
             // hash password
@@ -85,6 +92,10 @@ namespace Codetester.Controllers
         [HttpPost("import")]
         public ActionResult<ICollection<UserReadDto>> ImportUsers(ICollection<UserCreateDto> userCreateDtos)
         {
+            int requestUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var requestUser = _repository.GetUserById(requestUserId);
+
+            // Perform checks
             foreach (var userCreateDto in userCreateDtos)
             {
                 // check that usernames are unique
@@ -98,8 +109,13 @@ namespace Codetester.Controllers
                 {
                     return BadRequest("Role " + userCreateDto.Role + " not valid option");
                 }
+                // Only admin user can create admin user
+                if(userCreateDto.Role == "Admin" && requestUser.Role != UserRole.ADMIN) {
+                    return Forbid();
+                }
             }
 
+            // Create users
             foreach (var userCreateDto in userCreateDtos)
             {
                 var userModel = _mapper.Map<User>(userCreateDto);
@@ -130,6 +146,14 @@ namespace Codetester.Controllers
             {
                 return BadRequest("Role " + userUpdateDto.Role + " not valid option");
             }
+
+            // Only admin user can create admin user
+            int requestUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var requestUser = _repository.GetUserById(requestUserId);
+            if(userUpdateDto.Role == "Admin" && requestUser.Role != UserRole.ADMIN) {
+                return Forbid();
+            }
+
             _mapper.Map(userUpdateDto, userModel);
             _repository.UpdateUser(userModel);
             
@@ -141,6 +165,14 @@ namespace Codetester.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteUser(int id)
         {
+            // Get user id from JWT token
+            int requestUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var requestUser = _repository.GetUserById(requestUserId);
+
+            if(requestUser.Role != UserRole.ADMIN) {
+                return Forbid();
+            }
+
             var user = _repository.GetUserById(id);
             if (user == null)
             {

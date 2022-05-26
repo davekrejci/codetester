@@ -32,6 +32,9 @@ namespace Codetester.Models
         public string LastName { get; set; }
 
         public ICollection<Semester> EnrolledSemesters { get; set; } 
+
+        public ICollection<Course> Courses { get; set; } 
+
     }
 
     public static class UserRole

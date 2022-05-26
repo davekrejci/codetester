@@ -23,6 +23,7 @@ namespace Codetester.Data
 
         // COURSES
         IEnumerable<Course> GetAllCourses();
+        IEnumerable<Course> GetAllCourses(User user);
         Course GetCourseByCourseCode(string coursecode);
         void CreateCourse(Course course);
         void DeleteCourse(Course course);
@@ -36,6 +37,7 @@ namespace Codetester.Data
 
         // EXAMS
         IEnumerable<Exam> GetAllExams();
+        IEnumerable<Exam> GetAllExams(User user);
         Exam GetExamById(int id);
         void CreateExam(Exam examModel);
         void UpdateExam(Exam examModel);

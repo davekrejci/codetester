@@ -1,17 +1,22 @@
 <template>
   <v-container fluid class="">
     <div v-if="this.user != null">
-      <v-breadcrumbs :items="breadcrumbs" class="pa-0 pb-4 pl-1"></v-breadcrumbs>
-      <h1 class="ml-1 mt-0">{{this.user.firstName}} {{this.user.lastName}}</h1>
-      <div class="ml-1 mt-n2 mb-8 text-subtitle-1">{{this.user.email}}</div>
-      
+      <v-breadcrumbs
+        :items="breadcrumbs"
+        class="pa-0 pb-4 pl-1"
+      ></v-breadcrumbs>
+      <h1 class="ml-1 mt-0">
+        {{ this.user.firstName }} {{ this.user.lastName }}
+      </h1>
+      <div class="ml-1 mt-n2 mb-8 text-subtitle-1">{{ this.user.email }}</div>
+
       <v-form ref="userForm">
         <v-text-field
           outlined
           :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
           label="Uživatelské jméno"
           v-model="user.username"
-        :rules="[rules.required]"
+          :rules="[rules.required]"
           disabled
         >
         </v-text-field>
@@ -20,7 +25,7 @@
           :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
           label="Email"
           v-model="user.email"
-        :rules="[rules.required, rules.email]"
+          :rules="[rules.required, rules.email]"
         >
         </v-text-field>
         <v-select
@@ -30,16 +35,14 @@
           item-text="text"
           item-value="value"
           outlined
-        :rules="[rules.required]"
-
+          :rules="[rules.required]"
         ></v-select>
         <v-text-field
           outlined
           :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
           label="Jméno"
           v-model="user.firstName"
-        :rules="[rules.required]"
-
+          :rules="[rules.required]"
         >
         </v-text-field>
         <v-text-field
@@ -47,14 +50,17 @@
           :background-color="$vuetify.theme.dark ? '#3D4351' : 'white'"
           label="Příjmení"
           v-model="user.lastName"
-        :rules="[rules.required]"
-
+          :rules="[rules.required]"
         >
         </v-text-field>
 
         <!-- Action buttons -->
         <!-- Delete Dialog -->
-        <v-dialog v-model="showDeleteDialog" max-width="400px">
+        <v-dialog
+          v-if="loggedUser.role == 'Admin'"
+          v-model="showDeleteDialog"
+          max-width="400px"
+        >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               v-bind="attrs"
@@ -114,7 +120,7 @@
             <v-card-title class="text-h5"> </v-card-title>
             <v-card-text>Zadejte nové heslo pro uživatele. </v-card-text>
             <v-form ref="userPasswordResetForm">
-                <v-text-field
+              <v-text-field
                 label="Heslo"
                 v-model="newPassword"
                 single-line
@@ -124,13 +130,13 @@
                 class="mb-4"
                 prepend-inner-icon="mdi-lock-outline"
                 :append-icon="
-                    passwordHidden ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+                  passwordHidden ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
                 "
                 @click:append="() => (passwordHidden = !passwordHidden)"
                 :type="passwordHidden ? 'password' : 'text'"
                 :disabled="loading"
-                >
-                </v-text-field>
+              >
+              </v-text-field>
             </v-form>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -176,6 +182,7 @@
 
 <script>
 import api from "api-client";
+import store from "@/store";
 import DefaultSnackbar from "@/components/DefaultSnackbar.vue";
 
 export default {
@@ -190,20 +197,6 @@ export default {
       passwordHidden: true,
       hasSaved: false,
       loading: false,
-      possibleRoles: [
-        {
-          value: "Admin",
-          text: "Admin",
-        },
-        {
-          value: "Teacher",
-          text: "Učitel",
-        },
-        {
-          value: "Student",
-          text: "Student",
-        },
-      ],
       rules: {
         required: (value) => !!value || "Povinné.",
         email: (value) => /.+@.+\..+/.test(value) || 'Použijte platnou emailovou adresu',
@@ -302,6 +295,39 @@ export default {
     },
   },
   computed: {
+    loggedUser() {
+      return store.state.user;
+    },
+    possibleRoles() {
+      if(this.loggedUser.role == 'Admin') {
+        return [
+          {
+            value: "Admin",
+            text: "Admin",
+          },
+          {
+            value: "Teacher",
+            text: "Učitel",
+          },
+          {
+            value: "Student",
+            text: "Student",
+          }
+        ]
+      } 
+      else {
+        return [
+          {
+            value: "Teacher",
+            text: "Učitel",
+          },
+          {
+            value: "Student",
+            text: "Student",
+          }
+        ]
+      }
+    },
     breadcrumbs() {
       return [
         {

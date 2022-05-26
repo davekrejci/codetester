@@ -12,5 +12,10 @@ namespace Codetester.Models
         [Required]
         public string CourseName { get; set; }
         public ICollection<Semester> Semesters { get; set; }
+        public ICollection<User> Teachers { get; set; }
+
+        public Course(){
+            this.Teachers = new List<User>();
+        }   
     }
 }

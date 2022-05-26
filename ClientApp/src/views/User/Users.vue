@@ -77,6 +77,7 @@
               small
               icon
               plain
+              v-if="user.role == 'Admin'"
               color="error"
               class="mx-1"
             >
@@ -130,6 +131,7 @@
 
 <script>
 import api from "api-client";
+import store from "@/store";
 import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 export default {
@@ -196,6 +198,9 @@ export default {
     },
   },
   computed: {
+    user() {
+      return store.state.user;
+    },
     users() {
       return this.$store.state.users;
     },

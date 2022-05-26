@@ -3,15 +3,17 @@ using System;
 using Codetester.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Codetester.Migrations
 {
     [DbContext(typeof(CodetesterContext))]
-    partial class CodetesterContextModelSnapshot : ModelSnapshot
+    [Migration("20220525113557_CourseTeachers")]
+    partial class CourseTeachers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

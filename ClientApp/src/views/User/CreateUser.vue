@@ -32,7 +32,7 @@
       >
       </v-text-field>
       <v-select
-      v-model="user.role"
+          v-model="user.role"
           :items="possibleRoles"
           label="Role"
           item-text="text"
@@ -84,6 +84,7 @@
 
 <script>
 import api from "api-client";
+import store from "@/store";
 import DefaultSnackbar from '@/components/DefaultSnackbar.vue';
 
 export default {
@@ -94,20 +95,6 @@ export default {
       error: null,
       hasSaved: false,
       loading: false,
-      possibleRoles: [
-          {
-              value: "Admin",
-              text: "Admin"
-          },
-          {
-              value: "Teacher",
-              text: "Učitel"
-          },
-          {
-              value: "Student",
-              text: "Student"
-          }
-        ],
       user: {
         username: "",
         email: "",
@@ -168,6 +155,39 @@ export default {
     },
   },
   computed: {
+    loggedUser() {
+      return store.state.user;
+    },
+    possibleRoles() {
+      if(this.loggedUser.role == 'Admin') {
+        return [
+          {
+            value: "Admin",
+            text: "Admin",
+          },
+          {
+            value: "Teacher",
+            text: "Učitel",
+          },
+          {
+            value: "Student",
+            text: "Student",
+          }
+        ]
+      } 
+      else {
+        return [
+          {
+            value: "Teacher",
+            text: "Učitel",
+          },
+          {
+            value: "Student",
+            text: "Student",
+          }
+        ]
+      }
+    },
     snackbar() {
       if (this.error != null) {
         return {

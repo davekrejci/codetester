@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using AutoMapper;
 using Codetester.Data;
 using Codetester.Dtos;
@@ -28,20 +29,39 @@ namespace Codetester.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Exam>> GetAllExams()
         {
-            var exams = _repository.GetAllExams();
-            _repository.SaveChanges();
-            return Ok(_mapper.Map<IEnumerable<ExamReadDto>>(exams));
+            // Get user id from JWT token
+            int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var user = _repository.GetUserById(userId);
+            if (user.Role == UserRole.ADMIN)
+            {
+                var exams = _repository.GetAllExams();
+                return Ok(_mapper.Map<IEnumerable<ExamReadDto>>(exams));
+            }
+            else {
+                var exams = _repository.GetAllExams(user);
+                return Ok(_mapper.Map<IEnumerable<ExamReadDto>>(exams));
+            }
         }
 
         //GET api/exams/{id}
         [HttpGet("{id}", Name = "GetExamById")]
         public ActionResult<ExamReadDto> GetExamById(int id)
         {
+            // Get user id from JWT token
+            int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var user = _repository.GetUserById(userId);
+
             var exam = _repository.GetExamById(id);
             if (exam == null)
             {
                 return NotFound();
             }
+
+            // if user is not admin and is not a teacher in the exams course, forbid access
+            if(user.Role != UserRole.ADMIN && exam.Semester.Course.Teachers.Contains(user) == false) {
+                return Forbid();
+            }
+
             return Ok(_mapper.Map<ExamReadDto>(exam));
         }
 
@@ -186,16 +206,26 @@ namespace Codetester.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteExam(int id)
         {
+            // Get user id from JWT token
+            int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var user = _repository.GetUserById(userId);
+
             var exam = _repository.GetExamById(id);
             if (exam == null)
             {
                 return NotFound();
             }
+
+            // if user is not admin and is not a teacher in the exams course, forbid access
+            var courseCode = exam.Semester.Course.CourseCode;
+            var course = _repository.GetCourseByCourseCode(courseCode);
+            if(user.Role != UserRole.ADMIN && course.Teachers.Contains(user) == false) {
+                return Forbid();
+            }
+            
             _repository.DeleteExam(exam);
             _repository.SaveChanges();
             return NoContent();
         }
-
-
     }
 }

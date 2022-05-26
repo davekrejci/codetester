@@ -104,10 +104,18 @@ namespace Codetester.Data
                             .Include("Semesters")
                             .ToList();
         }
+        public IEnumerable<Course> GetAllCourses(User user)
+        {
+            return _context.Courses
+                            .Where(c => c.Teachers.Contains(user))
+                            .Include("Semesters")
+                            .ToList();
+        }
         public Course GetCourseByCourseCode(string coursecode)
         {
             return _context.Courses
                             .Include("Semesters")
+                            .Include("Teachers")
                             .FirstOrDefault(c => c.CourseCode == coursecode);
         }
         public void CreateCourse(Course course)
@@ -178,6 +186,16 @@ namespace Codetester.Data
                             .Include("Semester.Course")
                             .ToList();
         }
+        public IEnumerable<Exam> GetAllExams(User user)
+        {
+            return _context.Exams
+                            .Where(e => e.Semester.Course.Teachers.Contains(user))
+                            .Include("Questions.Tags")
+                            .Include("ExamInstances.User")
+                            .Include("Tags")
+                            .Include("Semester.Course")
+                            .ToList();
+        }
         public Exam GetExamById(int id)
         {
             return _context.Exams
@@ -219,7 +237,6 @@ namespace Codetester.Data
 
             _context.ExamInstances.Add(examInstance);
         }
-
         public IEnumerable<ExamInstance> GetAllExamInstances()
         {
             return _context.ExamInstances
@@ -227,7 +244,6 @@ namespace Codetester.Data
                             .Include("QuestionInstances")
                             .ToList();
         }
-
         public IEnumerable<ExamInstance> GetUsersExamInstances(User user)
         {
             return _context.ExamInstances
@@ -236,7 +252,6 @@ namespace Codetester.Data
                             .OrderBy(e => e.Exam.StartDate)
                             .ToList();
         }
-
         public ExamInstance GetExamInstanceById(int id)
         {
             return _context.ExamInstances
