@@ -41,7 +41,8 @@ namespace Codetester
                     Port = databaseUri.Port,
                     Username = userInfo[0],
                     Password = userInfo[1],
-                    Database = databaseUri.LocalPath.TrimStart('/')
+                    Database = databaseUri.LocalPath.TrimStart('/'),
+                    SslMode = SslMode.Require
                 };
                 connectionString = builder.ToString();
             }
