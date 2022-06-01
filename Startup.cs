@@ -28,10 +28,8 @@ namespace Codetester
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         { 
-            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-            if(connectionString == null) {
-                connectionString = Configuration.GetConnectionString("CodetesterConnection");
-            }
+            
+            var connectionString = Configuration.GetConnectionString("CodetesterConnection");
             services.AddDbContext<CodetesterContext>(opt => opt.UseNpgsql(connectionString));
             services.AddControllers().AddNewtonsoftJson(s =>
             {
