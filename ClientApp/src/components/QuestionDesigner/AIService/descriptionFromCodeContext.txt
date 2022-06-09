@@ -1,0 +1,99 @@
+Q:  
+String[] cars = {"Volvo", "BMW", "Ford"}; 
+System.out.println(cars.length); 
+A: Prints out how many elements the cars array has. 
+Q: 
+String[] cars = {"Volvo", "BMW", "Ford"};  
+System.out.println(cars[1]); 
+A: Prints the second item in the cars array. 
+Q: 
+int[][] myNumbers = { {1, 2, 3, 4}, {5, 6, 7} }; 
+A: Create a two-dimensional array of numbers called myNumbers 
+Q: 
+static void myMethod() {  
+  System.out.println("I just got executed!");  
+}  
+  
+public static void main(String[] args) {    
+  myMethod();  
+  myMethod();  
+} 
+A: A method called myMethod that print the string "I just got executed!" to the console. This method gets called from main two times. 
+Q: 
+int i = 1;  
+while (i < 6) {  
+  System.out.println(i);  
+  i++ ;  
+} 
+A: Print i as long as i is less than 6. 
+Q: 
+// Create a MyClass class  
+public class MyClass {  
+  int x ;  // Create a class attribute x  
+  
+  // Create a class constructor for the MyClass class  
+  public MyClass() {  
+    x = 5 ;  // Set the initial value for the class attribute x to 5  
+  }  
+} 
+A: A class called MyClass with a constructor and an attribute of type int called x. 
+Q: 
+public class Person  
+{  
+    private int age;  
+    private String name; 
+    public Person(int age, String name)  
+    {  
+        this.age = age;  
+        this.name = name;  
+    } 
+    public int getAge()  
+    {  
+        return age;  
+    }  
+    public void setAge(int age)  
+    {  
+        this.age = age;  
+    }  
+    public String getName()  
+    {  
+        return name;  
+    }  
+    public void setName(String name)  
+    {  
+        this.name = name;  
+    }  
+} 
+A: A class called Person with two attributes called age and name. It has a constructor and getters and setters for age and name 
+Q:  
+class Bicycle { 
+ 
+  // state or field 
+  private int gear = 5; 
+ 
+  // behavior or method 
+  public void braking() { 
+    System.out.println("Working of Braking"); 
+  } 
+}
+A: A class called Bicycle with an attribute of type int called gear . It has a method called braking that prints "Working of Braking" to the console 
+Q:
+class Animal { 
+  public void animalSound() { 
+    System.out.println("The animal makes a sound"); 
+  } 
+} 
+ 
+class Pig extends Animal { 
+  public void animalSound() { 
+    System.out.println("The pig says: wee wee"); 
+  } 
+} 
+ 
+class Dog extends Animal { 
+  public void animalSound() { 
+    System.out.println("The dog says: bow wow"); 
+  } 
+}
+A: Declare a class called Animal with a method animalSound. Declare a class called Pig that extends Animal and declare a class called Dog that extends Animal. 
+Q:

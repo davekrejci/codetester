@@ -1,0 +1,68 @@
+Q:Java code for: Find out how many elements the cars array have.
+String[] cars = {"Volvo", "BMW", "Ford"};
+System.out.println(cars.length);
+Q:Print the second item in the cars array.
+String[] cars = {"Volvo", "BMW", "Ford"}; 
+System.out.println(cars[1]);
+Q:Create a two-dimensional array
+int[][] myNumbers = { {1, 2, 3, 4}, {5, 6, 7} };
+Q:Call myMethod from main two times
+static void myMethod() { 
+  System.out.println("I just got executed!"); 
+} 
+ 
+public static void main(String[] args) {   
+  myMethod(); 
+  myMethod(); 
+}
+Q:Java code for: Print i as long as i is less than 6.
+int i = 1; 
+while (i < 6) { 
+  System.out.println(i); 
+  i++ ; 
+}
+Q:Java code for: Create and call a class constructor of MyClass
+// Create a MyClass class 
+public class MyClass { 
+  int x;  // Create a class attribute x 
+ 
+  // Create a class constructor for the MyClass class 
+  public MyClass() { 
+    x = 5;  // Set the initial value for the class attribute x to 5 
+  } 
+ 
+  public static void main(String[] args) { 
+    // Create an myObj object of class MyClass (This will call the constructor) 
+    MyClass myObj = new MyClass();  
+    // Print the value of x 
+    System.out.println(myObj.x); 
+  } 
+}
+Q:Java code for: Create a Person class
+public class Person 
+{
+    private int age; 
+    private String name;
+    public Person(int age, String name) 
+    { 
+        this.age = age; 
+        this.name = name; 
+    }
+    public int getAge() 
+    { 
+        return age; 
+    } 
+    public void setAge(int age) 
+    { 
+        this.age = age; 
+    } 
+    public String getName() 
+    { 
+        return name; 
+    } 
+    public void setName(String name) 
+    { 
+        this.name = name; 
+    } 
+}
+Q:Java code for: 

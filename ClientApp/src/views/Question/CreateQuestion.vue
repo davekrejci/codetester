@@ -61,17 +61,23 @@
       <v-btn color="error" :disabled="loading" outlined class="mr-4 mb-2" @click="reset">
         Smazat <v-icon right dark> mdi-trash-can-outline </v-icon>
       </v-btn>
+      <v-btn color="primary" :disabled="loading" outlined class="mr-4 mb-2" @click="aiDialog = true">
+        AI <v-icon right dark> mdi-memory </v-icon>
+      </v-btn>
       <question-preview :loading="loading"></question-preview>
       <v-btn color="primary" :loading="loading" depressed class="mr-4 mb-2" @click="createQuestion">
         Vytvořit <v-icon right dark> mdi-plus-circle-outline </v-icon>
       </v-btn>
-    </v-form></v-container>
+    </v-form>
+    <ai-dialog :aiDialog.sync="aiDialog"></ai-dialog>
+    </v-container>
 </template>
 
 <script>
 import MultiChoice from "@/components/QuestionDesigner/MultiChoice.vue";
 import FillInCode from "@/components/QuestionDesigner/FillInCode.vue";
 import QuestionPreview from "@/components/QuestionDesigner/QuestionPreview.vue";
+import AiDialog from "@/components/QuestionDesigner/AIService/AiDialog.vue";
 
 
 export default {
@@ -79,7 +85,8 @@ export default {
   components: {
     MultiChoice,
     FillInCode,
-    QuestionPreview
+    QuestionPreview,
+    AiDialog,
   },
   data() {
     return {
@@ -87,6 +94,7 @@ export default {
       error: null,
       loading: false,
       hasSaved: false,
+      aiDialog: false,
       questionTypes: [
       {
         displayText: "Multi-Choice",

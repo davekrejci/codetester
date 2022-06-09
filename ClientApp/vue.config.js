@@ -7,6 +7,12 @@ module.exports = {
       'api-client',
       path.resolve(__dirname, `src/api/${apiClient}`)
     )
+    config.module
+      .rule('raw')
+      .test(/\.txt$/)
+      .use('raw-loader')
+      .loader('raw-loader')
+      .end()
   },
   "transpileDependencies": [
     "vuetify"
