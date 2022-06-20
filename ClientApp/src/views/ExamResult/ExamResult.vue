@@ -213,7 +213,7 @@ export default {
   },
   computed: {
     percentageScore() {
-      return (this.examResult.score / this.examResult.maxScore) * 100 + "%"
+      return ((this.examResult.score / this.examResult.maxScore) * 100).toFixed(2) + "%"
     }
   },
   created() {

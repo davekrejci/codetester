@@ -27,7 +27,7 @@
     >
     <template
             v-slot:[`item.percentage`]="{ item }">
-    {{ (item.score / item.maxScore) * 100 }}%
+    {{ ((item.score / item.maxScore) * 100).toFixed(2) }}%
   </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-row align="center" class="d-flex flex-nowrap">
