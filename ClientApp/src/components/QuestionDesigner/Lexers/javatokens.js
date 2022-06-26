@@ -145,6 +145,47 @@ const Keyword = createToken({
   pattern: Lexer.NA
 });
 
+// subcategory for keywords
+const DataType = createToken({
+  name: "DataType",
+  pattern: Lexer.NA
+});
+
+// subcategory for keywords
+const ReservedLiteralValues = createToken({
+  name: "ReservedLiteralValues",
+  pattern: Lexer.NA
+});
+
+// subcategory for keywords
+const Modifier = createToken({
+  name: "Modifier",
+  pattern: Lexer.NA
+});
+
+// subcategory for keywords
+const AccessModifier = createToken({
+  name: "AccessModifier",
+  pattern: Lexer.NA
+});
+
+// subcategory for keywords
+const FlowControl = createToken({
+  name: "FlowControl",
+  pattern: Lexer.NA
+});
+
+// subcategory for keywords
+const ErrorHandling = createToken({
+  name: "ErrorHandling",
+  pattern: Lexer.NA
+});
+
+// subcategory for keywords
+const OtherKeyword = createToken({
+  name: "OtherKeyword",
+  pattern: Lexer.NA
+});
 
 const Operator = createToken({
   name: "Operator",
@@ -286,57 +327,57 @@ sortDescLength(restrictedKeywords).forEach(word => {
 
 // https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.9
 const keywords = [
-  "abstract",
-  "continue",
-  "for",
-  "new",
-  "switch",
-  "assert",
-  "default",
-  "if",
-  "package",
-  "synchronized",
-  "boolean",
-  "do",
-  "goto",
-  "private",
-  "this",
-  "break",
-  "double",
-  "implements",
-  "protected",
-  "throw",
-  "byte",
-  "else",
-  "import",
-  "public",
-  "throws",
-  "case",
-  "enum",
+  ["abstract", "abstract", [Modifier]],
+  ["continue", "continue", [FlowControl]],
+  ["for", "for", [FlowControl]],
+  ["new", "new", [OtherKeyword]],
+  ["switch", "switch", [FlowControl]],
+  ["assert", "assert", [ErrorHandling]],
+  ["default", "default", [FlowControl]],
+  ["if", "if", [FlowControl]],
+  ["package", "package", [OtherKeyword]],
+  ["synchronized", "synchronized", [Modifier]],
+  ["boolean", "boolean", [DataType]],
+  ["do", "do", [FlowControl]],
+  ["goto", "goto", [OtherKeyword]],
+  ["private", "private", [AccessModifier]],
+  ["this", "this", [OtherKeyword]],
+  ["break", "break", [FlowControl]],
+  ["double", "double", [DataType]],
+  ["implements", "implements", [OtherKeyword]],
+  ["protected", "protected", [AccessModifier]],
+  ["throw", "throw", [ErrorHandling]],
+  ["byte", "byte", [DataType]],
+  ["else", "else", [FlowControl]],
+  ["import", "import", [OtherKeyword]],
+  ["public", "public", [AccessModifier]],
+  ["throws", "throws", [ErrorHandling]],
+  ["case", "case", [FlowControl]],
+  ["enum", "enum", [OtherKeyword]],
   // "instanceof", // special handling for "instanceof" operator below
-  "return",
-  "transient",
-  "catch",
-  "extends",
-  "int",
-  "short",
-  "try",
-  "char",
-  "final",
-  "interface",
-  "static",
-  "void",
-  "class",
-  "finally",
-  "long",
-  "strictfp",
-  "volatile",
-  "const",
-  "float",
-  "native",
-  "super",
-  "while",
-  ["_", "underscore"]
+  ["return", "return", [FlowControl]],
+  ["transient", "transient", [Modifier]],
+  ["catch", "catch", [ErrorHandling]],
+  ["extends", "extends", [OtherKeyword]],
+  ["int", "int", [DataType]],
+  ["short", "short", [DataType]],
+  ["try", "try", [ErrorHandling]],
+  ["char", "char", [DataType]],
+  ["final", "final", [Modifier]],
+  ["interface", "interface", [OtherKeyword]],
+  ["static", "static", [Modifier]],
+  ["void", "void", [OtherKeyword]],
+  ["class", "class", [OtherKeyword]],
+  ["finally", "finally", [ErrorHandling]],
+  ["long", "long", [DataType]],
+  ["strictfp", "strictfp", [OtherKeyword]],
+  ["volatile", "volatile", [Modifier]],
+  ["const", "const", [OtherKeyword]],
+  ["float", "float", [DataType]],
+  ["native", "native", [Modifier]],
+  ["super", "super", [OtherKeyword]],
+  ["while", "while", [FlowControl]],
+  ["_", "underscore", [OtherKeyword]]
 ];
 
 sortDescLength(keywords).forEach(word => {
@@ -344,11 +385,13 @@ sortDescLength(keywords).forEach(word => {
   const isPair = Array.isArray(word);
   const actualName = isPair ? word[1] : word;
   const actualPattern = isPair ? word[0] : word;
+  let wordCategories = word[2];
+  let categories = [Keyword].concat(wordCategories);
 
   const options = {
     name: actualName[0].toUpperCase() + actualName.substr(1),
     pattern: actualPattern,
-    categories: Keyword
+    categories: categories
   };
 
   if (isPair) {
@@ -361,6 +404,13 @@ createKeywordLikeToken({
   name: "Instanceof",
   pattern: "instanceof",
   categories: [Keyword, BinaryOperator]
+});
+
+// added with DataType category for simple filtering along with primitive data types
+createKeywordLikeToken({
+  name: "String",
+  pattern: "String",
+  categories: [DataType]
 });
 
 createKeywordLikeToken({
@@ -384,9 +434,9 @@ createKeywordLikeToken({
   // "record is not a keyword, but rather an identifier with special meaning as the type of a local variable declaration"
   categories: Identifier
 });
-createKeywordLikeToken({ name: "True", pattern: "true", });
-createKeywordLikeToken({ name: "False", pattern: "false" });
-createKeywordLikeToken({ name: "Null", pattern: "null" });
+createKeywordLikeToken({ name: "True", pattern: "true", categories: ReservedLiteralValues });
+createKeywordLikeToken({ name: "False", pattern: "false", categories: ReservedLiteralValues });
+createKeywordLikeToken({ name: "Null", pattern: "null", categories: ReservedLiteralValues });
 
 // punctuation and symbols
 createToken({ name: "At", pattern: "@", categories: [Separators] });

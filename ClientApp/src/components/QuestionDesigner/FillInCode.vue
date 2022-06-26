@@ -69,7 +69,7 @@
         </template>
 
         <v-card>
-          <v-list>
+          <v-list dense>
             <v-list-item>
               <v-list-item-action>
                 <v-switch
@@ -111,16 +111,95 @@
               <v-list-item-title>Identifikátory</v-list-item-title>
               <v-list-item-subtitle>a, b, jmeno ...</v-list-item-subtitle>
             </v-list-item>
-            <v-list-item>
-              <v-list-item-action>
-                <v-switch
-                  v-model="allowedTokenTypes.keywords.allowed"
-                  color="primary"
-                ></v-switch>
-              </v-list-item-action>
-              <v-list-item-title>Klíčové slova</v-list-item-title>
-              <v-list-item-subtitle>abstract, if, for ...</v-list-item-subtitle>
-            </v-list-item>
+            <v-list-group
+              :value="false"
+              no-action
+              class="pa-0"
+            >
+              <template v-slot:activator>
+                <v-list-item>
+                  <!-- <v-list-item-action class="ml-0">
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.allowed"
+                      color="primary"
+                      @click.native.stop
+                    ></v-switch>
+                  </v-list-item-action> -->
+                  <v-list-item-title>Klíčové slova</v-list-item-title>
+                  <!-- <v-list-item-subtitle>abstract, if, for ...</v-list-item-subtitle> -->
+                </v-list-item>
+              </template>
+              <v-list-item>
+                <v-list-item-action>
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.subcategories.dataTypes.allowed"
+                      color="primary"
+                    ></v-switch>
+                  </v-list-item-action>
+                  <v-list-item-title>Datové typy</v-list-item-title>
+                  <v-list-item-subtitle>int, float, long ...</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.subcategories.accessModifiers.allowed"
+                      color="primary"
+                    ></v-switch>
+                  </v-list-item-action>
+                  <v-list-item-title>Přístupové modifikátory</v-list-item-title>
+                  <v-list-item-subtitle>private, public, protected</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.subcategories.modifiers.allowed"
+                      color="primary"
+                    ></v-switch>
+                  </v-list-item-action>
+                  <v-list-item-title>Ostatní modifikátory</v-list-item-title>
+                  <v-list-item-subtitle>static, final, ...</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.subcategories.flowControl.allowed"
+                      color="primary"
+                    ></v-switch>
+                  </v-list-item-action>
+                  <v-list-item-title>Řízení toku</v-list-item-title>
+                  <v-list-item-subtitle>if, while, for, ...</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.subcategories.errorHandling.allowed"
+                      color="primary"
+                    ></v-switch>
+                  </v-list-item-action>
+                  <v-list-item-title>Zpracování výjimek</v-list-item-title>
+                  <v-list-item-subtitle>try, catch, throw, ...</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.subcategories.reservedLiteralValues.allowed"
+                      color="primary"
+                    ></v-switch>
+                  </v-list-item-action>
+                  <v-list-item-title>Rezervované literály</v-list-item-title>
+                  <v-list-item-subtitle>true, false, null</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                    <v-switch
+                      v-model="allowedTokenTypes.keywords.subcategories.other.allowed"
+                      color="primary"
+                    ></v-switch>
+                  </v-list-item-action>
+                  <v-list-item-title>Ostatní</v-list-item-title>
+                  <v-list-item-subtitle>new, return, this, ...</v-list-item-subtitle>
+              </v-list-item>
+            </v-list-group>
           </v-list>
         </v-card>
       </v-menu>
@@ -290,6 +369,36 @@ export default {
         keywords: {
           allowed: true,
           names: ["Keyword"],
+          subcategories: {
+            dataTypes: {
+              allowed: true,
+              names: ["DataType"]
+            },
+            accessModifiers: {
+              allowed: true,
+              names: ["AccessModifier"]
+            },
+            modifiers: {
+              allowed: true,
+              names: ["Modifier"]
+            },
+            flowControl: {
+              allowed: true,
+              names: ["FlowControl"]
+            },  
+            errorHandling: {
+              allowed: true,
+              names: ["ErrorHandling"]
+            },
+            reservedLiteralValues: {
+              allowed: true,
+              names: ["ReservedLiteralValues"]
+            },
+            other: {
+              allowed: true,
+              names: ["OtherKeyword"]
+            }
+          }
         },
       },
     };
@@ -455,6 +564,15 @@ export default {
         console.log(key);
         if (value.allowed == false) {
           toFilter.push(...value.names);
+        }
+        if (value.subcategories != null) {
+          for (const [key2, value2] of Object.entries(value.subcategories)) {
+            console.log(key2);
+            console.log(value2.allowed)
+            if (value2.allowed == false) {
+              toFilter.push(...value2.names);
+            }
+          }
         }
       }
       console.log(toFilter);
