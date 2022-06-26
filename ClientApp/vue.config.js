@@ -1,6 +1,9 @@
 const path = require('path')
 
 module.exports = {
+  configureWebpack: {
+    devtool: 'source-map'
+},
   chainWebpack: config => {
     const apiClient = process.env.VUE_APP_API_CLIENT // mock or server
     config.resolve.alias.set(
