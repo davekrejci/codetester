@@ -239,7 +239,31 @@
 import { Editor, EditorContent } from "@tiptap/vue-2";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
-import Placeholder from '@tiptap/extension-placeholder'
+import Placeholder from '@tiptap/extension-placeholder';
+// load all highlight.js languages
+// import { lowlight } from "lowlight";
+
+// load 35 common languages
+// import { lowlight } from "lowlight/lib/common.js";
+
+// load specific languages only
+import { lowlight } from 'lowlight/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import java from 'highlight.js/lib/languages/java'
+import sql from 'highlight.js/lib/languages/sql'
+import csharp from 'highlight.js/lib/languages/csharp'
+import python from 'highlight.js/lib/languages/python'
+
+lowlight.registerLanguage('javascript', javascript)
+lowlight.registerLanguage('java', java)
+lowlight.registerLanguage('sql', sql)
+lowlight.registerLanguage('csharp', csharp)
+lowlight.registerLanguage('python', python)
+
+
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import CodeBlockComponent from '@/components/RichTextEditor/CodeBlockComponent.vue'
+import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import CustomImageExtension from "@/components/RichTextEditor/CustomImageExtension.js";
 import UploadImageDialog from "@/components/RichTextEditor/UploadImageDialog.vue";
 import LinkDialog from "@/components/RichTextEditor/LinkDialog.vue";
@@ -348,7 +372,12 @@ export default {
       editable: this.editable,
       content: this.value,
       extensions: [
-        StarterKit,
+        StarterKit.configure({ codeBlock: false }),
+        CodeBlockLowlight.extend({
+          addNodeView() {
+            return VueNodeViewRenderer(CodeBlockComponent);
+          },
+        }).configure({ lowlight }),
         CustomImageExtension.configure({
           allowBase64: true,
         }),
@@ -364,7 +393,7 @@ export default {
 
           //   return 'Can you add some further context?'
           // },
-        })
+        }),
       ],
       onUpdate: () => {
         // HTML

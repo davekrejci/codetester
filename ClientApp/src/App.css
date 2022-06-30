@@ -20,7 +20,7 @@
 	display: block;
 }
 .theme--light.v-application code {
-	background-color: rgba(0, 0, 0, 0.05);
+	background-color: rgba(50, 50, 50, 0.02);
 	color: currentColor;
 }
 .theme--dark.v-application code {

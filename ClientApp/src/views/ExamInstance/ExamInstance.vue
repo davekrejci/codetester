@@ -157,6 +157,10 @@ import MultiChoiceQuestionInstance from "@/components/ExamInstance/QuestionInsta
 import FillInCodeQuestionInstance from "@/components/ExamInstance/QuestionInstance/FillInCodeQuestionInstance.vue";
 import { QuestionTypes } from "@/util/questionTypes.js";
 import DefaultConfirmationDialog from "../../components/DefaultConfirmationDialog.vue";
+import hljs from 'highlight.js';
+import javascript from 'highlight.js/lib/languages/javascript';
+import java from 'highlight.js/lib/languages/java';
+
 export default {
   name: "ExamInstance",
   components: {
@@ -210,6 +214,7 @@ export default {
         await this.$store.dispatch("examInstance/fetchExamInstance", {
           id: this.$route.params.id,
         });
+        this.hljs.highlightAll();
       } catch (error) {
         if(error.response.status == 404) {
           this.warnBeforeReroute = false;
@@ -252,9 +257,15 @@ export default {
   },
   created() {
     this.fetchExamInstance();
+    window.addEventListener("resize", () => hljs.highlightAll());
   },
   beforeMount() {
     window.addEventListener("beforeunload", this.preventNav);
+  },
+  mounted() {
+    this.hljs = hljs;
+    this.hljs.registerLanguage(javascript);
+    this.hljs.registerLanguage(java);
   },
   beforeDestroy() {
     window.removeEventListener("beforeunload", this.preventNav);

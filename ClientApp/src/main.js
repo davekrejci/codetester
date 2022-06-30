@@ -5,7 +5,7 @@ import store from './store'
 import vuetify from './plugins/vuetify';
 import Notifications from 'vue-notification'
 import DatetimePicker from 'vuetify-datetime-picker'
-
+import 'highlight.js/styles/hybrid.css';
 
 Vue.config.productionTip = false
 Vue.use(DatetimePicker);

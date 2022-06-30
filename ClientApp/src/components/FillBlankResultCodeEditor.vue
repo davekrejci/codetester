@@ -120,5 +120,6 @@ export default {
   padding: 10px;
   max-width: 800px;
   height: auto;
+  border: 2px solid rgba(0,0,0,0.12);
 }
 </style>
